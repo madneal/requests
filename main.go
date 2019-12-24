@@ -1,9 +1,11 @@
-package requests
+package main
 
 import (
 	"fmt"
 	"gopkg.in/yaml.v2"
-	"os"
+	"io/ioutil"
+	//"gopkg.in/yaml.v2"
+	//"gopkg.in/yaml.v2"
 )
 
 type Request struct {
@@ -13,20 +15,18 @@ type Request struct {
 }
 
 func init() {
-	f, err := os.Open("config.yaml")
+	source, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
 		fmt.Println(err)
 	}
-	defer f.Close()
-	var cfg Config
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(cfg)
+	var config Config
+	err = yaml.Unmarshal(source, &config)
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	fmt.Println(config.Kafka)
 }
 
 func main() {
-
+	fmt.Println(1134)
 }

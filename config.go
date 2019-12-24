@@ -1,4 +1,4 @@
-package requests
+package main
 
 type Config struct {
 	Kafka struct {

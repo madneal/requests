@@ -1,3 +1,3 @@
-package requests
+package main
 
 var CONFIG Config

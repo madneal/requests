@@ -8,12 +8,6 @@ import (
 	//"gopkg.in/yaml.v2"
 )
 
-type Request struct {
-	Url     string
-	Headers map[string]string
-	Method  string
-}
-
 func init() {
 	source, err := ioutil.ReadFile("config.yaml")
 	if err != nil {

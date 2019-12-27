@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	md52 "crypto/md5"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	kafka "github.com/segmentio/kafka-go"
+	"net/url"
 	"reflect"
 )
 
@@ -84,4 +86,25 @@ func ParseJson(msg string) Request {
 	}
 	request.Headers = headers
 	return request
+}
+
+func InsertAsset(request Request) {
+	u, err := url.Parse(request.Url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
+	md5 := fmt.Sprintf("%x", md52.Sum([]byte(str)))
+	fmt.Println(md5)
+	asset := Asset{
+		Url:    request.Url,
+		Method: request.Method,
+		Md5:    md5,
+	}
+	exists := Exists(md5)
+	if !exists {
+		NewAsset(asset)
+	} else {
+		fmt.Println("the record has exists!")
+	}
 }

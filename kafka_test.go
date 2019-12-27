@@ -125,3 +125,29 @@ func TestParseJson(t *testing.T) {
 	request3 := ParseJson(data3)
 	assert.Equal(t, request3.Postdata, "abc=123", "the post data should be the same")
 }
+
+func TestInsertAsset(t *testing.T) {
+	data := `
+{
+    "url": "http://testasp.vulnweb.com/showthread.asp?id=0",
+    "headers": {
+        "Host": "testasp.vulnweb.com",
+        "Connection": "keep-alive",
+        "Cache-Control": "max-age=0",
+        "DNT": "1",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Cookie": "ASPSESSIONIDQQBRQABB=FDKAKDNCHPAKFGGIMLNLFBLB"
+    },
+    "host": "testasp.vulnweb.com",
+    "method": "GET",
+    "agentId": "b77f3736-8542-4626-a9aa-c0fd41d15b61",
+    "postdata": "",
+    "t": 1565079259
+}`
+	request := ParseJson(data)
+	InsertAsset(request)
+}

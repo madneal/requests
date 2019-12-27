@@ -15,7 +15,7 @@ type Request struct {
 
 func SendRequest(request Request) {
 	if request.Method == GET_METHOD {
-		doGet(request)
+		DoGet(request)
 	} else if request.Method == POST_METHOD {
 		doPost(request)
 	} else {
@@ -23,7 +23,7 @@ func SendRequest(request Request) {
 	}
 }
 
-func doGet(request Request) {
+func DoGet(request Request) *resty.Response {
 	client := resty.New()
 	res := client.R()
 	res.SetHeaders(request.Headers)
@@ -32,6 +32,7 @@ func doGet(request Request) {
 		fmt.Println(err)
 	}
 	fmt.Println(response.StatusCode())
+	return response
 }
 
 func doPost(request Request) {

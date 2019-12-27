@@ -9,16 +9,6 @@ import (
 	"reflect"
 )
 
-type Request struct {
-	Url       string
-	Headers   map[string]string
-	Method    string
-	Host      string
-	AgentId   string
-	Timestamp int64
-	Postdata  string
-}
-
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 

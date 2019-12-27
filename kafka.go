@@ -55,7 +55,7 @@ func ParseJson(msg string) Request {
 		headers1 := data["headers"].([]interface{})
 		for _, header := range headers1 {
 			headerMap := header.(map[string]interface{})
-			headers[headerMap["name"].(string)] = headerMap["value"].(string)
+			headers[headerMap["Name"].(string)] = headerMap["value"].(string)
 		}
 	} else if headersType == "map[string]interface {}" {
 		headers1 := data["headers"].(map[string]interface{})

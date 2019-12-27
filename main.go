@@ -13,12 +13,12 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	var config Config
-	err = yaml.Unmarshal(source, &config)
+
+	err = yaml.Unmarshal(source, &CONFIG)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(config.Kafka)
+	fmt.Println(CONFIG.Kafka)
 }
 
 func main() {

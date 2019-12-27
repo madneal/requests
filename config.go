@@ -5,4 +5,11 @@ type Config struct {
 		Brokers []string
 		Topic   string
 	}
+	Database struct {
+		Host string
+		Port int
+		User string
+		Pass string
+		Name string
+	}
 }

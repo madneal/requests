@@ -13,6 +13,12 @@ type Asset struct {
 	Md5    string `gorm:"type:varchar(100);column:md5"`
 }
 
+type Resource struct {
+	Id       int64 `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url      string
+	Protocol string
+}
+
 var db *gorm.DB
 
 func init() {
@@ -29,6 +35,11 @@ func init() {
 	} else {
 		db.AutoMigrate(&Asset{})
 	}
+	if !db.HasTable(&Resource{}) {
+		db.CreateTable(&Resource{})
+	} else {
+		db.AutoMigrate(&Resource{})
+	}
 	//defer db.Close()
 }
 
@@ -40,4 +51,13 @@ func NewAsset(asset Asset) error {
 func Exists(md5 string) bool {
 	var asset Asset
 	return !db.Where("md5 = ?", md5).First(&asset).RecordNotFound()
+}
+
+func NewResouce(resource Resource) error {
+	return db.Create(&resource).Error
+}
+
+func ResourceExists(url string) bool {
+	var reource Resource
+	return !db.Where("url = ?", url).First(&reource).RecordNotFound()
 }

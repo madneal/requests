@@ -19,8 +19,8 @@ func ReadKafka(topic string, hosts []string) {
 		Brokers:   hosts,
 		Topic:     topic,
 		Partition: 0,
-		MinBytes:  1,    // 10KB
-		MaxBytes:  1000, // 10MB
+		MinBytes:  1,
+		MaxBytes:  1000,
 	})
 	//r.SetOffset(42)
 

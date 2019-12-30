@@ -14,9 +14,10 @@ type Asset struct {
 }
 
 type Resource struct {
-	Id       int64 `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url      string
-	Protocol string
+	Id       int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url      string `gorm:"type:varchar(100);column:url"`
+	Protocol string `gorm:"type:varchar(10);column:protocol"`
+	Method   string `gorm:"type:varchar(5);column:method"`
 }
 
 var db *gorm.DB
@@ -57,7 +58,8 @@ func NewResouce(resource Resource) error {
 	return db.Create(&resource).Error
 }
 
-func ResourceExists(url string) bool {
+func ResourceExists(url, protocol, method string) bool {
 	var reource Resource
-	return !db.Where("url = ?", url).First(&reource).RecordNotFound()
+	return !db.Where("url = ? and protocol = ? and method = ?", url, protocol, method).
+		First(&reource).RecordNotFound()
 }

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net"
+)
 import "github.com/go-resty/resty/v2"
 
 type Request struct {
@@ -50,4 +53,13 @@ func DoPost(request Request) *resty.Response {
 		fmt.Println(err)
 	}
 	return res
+}
+
+func GetIp(host string) []net.IP {
+	ip, err := net.LookupIP(host)
+	if err != nil {
+		fmt.Println(err)
+		return []net.IP{}
+	}
+	return ip
 }

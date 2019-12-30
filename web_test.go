@@ -37,3 +37,18 @@ func TestDoPost(t *testing.T) {
 	fmt.Println(string(res.Body()))
 	assert.Equal(t, 302, res.StatusCode(), "the status code should be 302")
 }
+
+func TestMatchIp(t *testing.T) {
+	falseIp := "192.168.21.1"
+	assert.Equal(t, false, MatchIp(falseIp), "the ip should not match")
+	ip1 := "113.98.55.193"
+	ip2 := "113.98.240.33"
+	ip3 := "183.62.75.65"
+	ip4 := "193.62.75.65"
+	ip5 := "210.22.18.193"
+	assert.Equal(t, true, MatchIp(ip1), "the ip shoud match")
+	assert.Equal(t, true, MatchIp(ip2), "the ip shoud match")
+	assert.Equal(t, true, MatchIp(ip3), "the ip shoud match")
+	assert.Equal(t, true, MatchIp(ip4), "the ip shoud match")
+	assert.Equal(t, true, MatchIp(ip5), "the ip shoud match")
+}

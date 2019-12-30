@@ -63,3 +63,22 @@ func GetIp(host string) []net.IP {
 	}
 	return ip
 }
+
+// check if ip in the given networks
+func MatchIp(ip string) (result bool) {
+	result = false
+	if len(CONFIG.Network.Network) == 0 {
+		fmt.Println("Plase assign network in config.yaml!")
+	}
+	for _, network := range CONFIG.Network.Network {
+		_, subnet, err := net.ParseCIDR(network)
+		if err != nil {
+			fmt.Println(err)
+		}
+		if subnet.Contains(net.ParseIP(ip)) {
+			result = true
+			break
+		}
+	}
+	return result
+}

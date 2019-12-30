@@ -12,4 +12,7 @@ type Config struct {
 		Pass string
 		Name string
 	}
+	Network struct {
+		Network [5]string
+	}
 }

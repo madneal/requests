@@ -14,12 +14,19 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
+	var res *resty.Response
 	if request.Method == GET_METHOD {
-		DoGet(request)
+		res = DoGet(request)
 	} else if request.Method == POST_METHOD {
-		DoPost(request)
+		res = DoPost(request)
 	} else {
 		fmt.Print("method does not support")
+	}
+	statusCode := res.StatusCode()
+	if statusCode == 200 {
+
+	} else {
+
 	}
 }
 

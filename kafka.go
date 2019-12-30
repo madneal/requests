@@ -14,9 +14,9 @@ import (
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 
-func ReadKafka(topic string) {
+func ReadKafka(topic string, hosts []string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{"localhost:9092"},
+		Brokers:   hosts,
 		Topic:     topic,
 		Partition: 0,
 		MinBytes:  1,    // 10KB
@@ -27,6 +27,7 @@ func ReadKafka(topic string) {
 	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
+			fmt.Println(err)
 			break
 		}
 		fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))

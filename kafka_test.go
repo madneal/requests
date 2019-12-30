@@ -4,10 +4,10 @@ import "testing"
 import "github.com/stretchr/testify/assert"
 
 func TestReadKafka(t *testing.T) {
-	//var localhost []string
+	var localhost []string
 	topic := "test"
-	//localhost = append(localhost, "localhost:9092")
-	ReadKafka(topic)
+	localhost = append(localhost, "localhost:9092")
+	ReadKafka(topic, localhost)
 }
 
 func TestParseJson(t *testing.T) {

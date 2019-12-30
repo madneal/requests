@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	md52 "crypto/md5"
+	md5 "crypto/md5"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -94,14 +94,14 @@ func InsertAsset(request Request) {
 		fmt.Println(err)
 	}
 	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
-	md5 := fmt.Sprintf("%x", md52.Sum([]byte(str)))
-	fmt.Println(md5)
+	md5Str := fmt.Sprintf("%x", md5.Sum([]byte(str)))
+	fmt.Println(md5Str)
 	asset := Asset{
 		Url:    request.Url,
 		Method: request.Method,
-		Md5:    md5,
+		Md5:    md5Str,
 	}
-	exists := Exists(md5)
+	exists := Exists(md5Str)
 	if !exists {
 		NewAsset(asset)
 	} else {

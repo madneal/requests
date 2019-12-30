@@ -17,7 +17,7 @@ func SendRequest(request Request) {
 	if request.Method == GET_METHOD {
 		DoGet(request)
 	} else if request.Method == POST_METHOD {
-		doPost(request)
+		DoPost(request)
 	} else {
 		fmt.Print("method does not support")
 	}
@@ -35,6 +35,12 @@ func DoGet(request Request) *resty.Response {
 	return response
 }
 
-func doPost(request Request) {
+func DoPost(request Request) *resty.Response {
+	client := resty.New()
 
+	res, err := client.R().SetHeaders(request.Headers).SetBody(request.Postdata).Post(request.Url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return res
 }

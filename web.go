@@ -24,7 +24,7 @@ func SendRequest(request Request) {
 		resource := CreateResourceByRequest(request)
 		err := NewResouce(resource)
 		if err != nil {
-			fmt.Println(err)
+			Log.Error(err)
 		}
 		return
 	}
@@ -42,7 +42,10 @@ func SendRequest(request Request) {
 					Method:    POST_METHOD,
 					Firstpath: "/" + strings.Split(u.Path, "/")[1],
 				}
-				NewResouce(resource)
+				err := NewResouce(resource)
+				if err != nil {
+					Log.Error(err)
+				}
 			}
 		} else {
 			return

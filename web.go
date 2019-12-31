@@ -20,6 +20,14 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
+	if IsValidReferer(request) {
+		resource := CreateResourceByRequest(request)
+		err := NewResouce(resource)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	}
 	if request.Method == POST_METHOD {
 		results := *MatchUrl(request.Url)
 		if len(results) > 0 {
@@ -89,6 +97,16 @@ func DoPost(request Request) *resty.Response {
 	return res
 }
 
+// judge if referer valid, the host + firstpath of referer and url is same
+func IsValidReferer(request Request) bool {
+	for k, v := range request.Headers {
+		if k == REFERER {
+			return IsCommonUrl(request.Url, v)
+		}
+	}
+	return false
+}
+
 func CreateResourceByRequest(request Request) Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
@@ -154,19 +172,19 @@ func IsNeedReplay(host string) bool {
 }
 
 // judge if urls match, host + only one path
-//func MatchUrl(postUrl, getUrl string) bool {
-//	uGet, err := url.Parse(getUrl)
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	uPost, err := url.Parse(postUrl)
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	if uGet.Path == "" || uPost.Path == "" {
-//		return false
-//	}
-//	pathGet := "/" + strings.Split(uGet.Path, "/")[1]
-//	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
-//	return (uGet.Host + pathGet) == (uPost.Host + pathPost)
-//}
+func IsCommonUrl(url1, url2 string) bool {
+	u1, err := url.Parse(url1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	u2, err := url.Parse(url2)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if u1.Path == "" || u2.Path == "" {
+		return false
+	}
+	pathGet := "/" + strings.Split(u1.Path, "/")[1]
+	pathPost := "/" + strings.Split(u2.Path, "/")[1]
+	return (u1.Host + pathGet) == (u2.Host + pathPost)
+}

@@ -88,3 +88,40 @@ func TestCreateResourceByRequest(t *testing.T) {
 	assert.Equal(t, "www.baidu.com/abc", resource.Firstpath, "the fisrtpath should be the same")
 	assert.Equal(t, "GET", resource.Method, "the method should be the same")
 }
+
+func TestIsValidReferer(t *testing.T) {
+	request := Request{
+		Url: "https://www.baidu.com/abc",
+		Headers: map[string]string{
+			"Referer": "https://www.baidu.com/abc",
+		},
+		Method:    "GET",
+		Host:      "www.baidu.com",
+		AgentId:   "test",
+		Timestamp: 0,
+		Postdata:  "",
+	}
+	assert.Equal(t, true, IsValidReferer(request), "it should be valid Referer")
+	request1 := Request{
+		Url: "https://www.baidu.com/abc",
+		Headers: map[string]string{
+			"Referer": "https://www.baidu.com/",
+		},
+		Method:    "GET",
+		Host:      "www.baidu.com",
+		AgentId:   "test",
+		Timestamp: 0,
+		Postdata:  "",
+	}
+	assert.Equal(t, false, IsValidReferer(request1), "it should not be valid Referer")
+	request2 := Request{
+		Url:       "https://www.baidu.com/abc",
+		Headers:   nil,
+		Method:    "GET",
+		Host:      "www.baidu.com",
+		AgentId:   "test",
+		Timestamp: 0,
+		Postdata:  "",
+	}
+	assert.Equal(t, false, IsValidReferer(request2), "it should not be valid Referer")
+}

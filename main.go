@@ -22,5 +22,5 @@ func init() {
 }
 
 func main() {
-	fmt.Println(1134)
+	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers)
 }

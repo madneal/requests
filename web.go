@@ -52,9 +52,16 @@ func SendRequest(request Request) {
 	} else {
 		fmt.Print("method does not support")
 	}
+	if res == nil {
+		return
+	}
 	statusCode := res.StatusCode()
 	if statusCode == 200 {
-
+		resource := CreateResourceByRequest(request)
+		err := NewResouce(resource)
+		if err != nil {
+			fmt.Println(err)
+		}
 	} else {
 		return
 	}

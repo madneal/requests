@@ -30,6 +30,7 @@ func ReadKafka(topic string, hosts []string) {
 			fmt.Println(err)
 			break
 		}
+		go SendRequest(ParseJson(string(m.Value)))
 		fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 	}
 

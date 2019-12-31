@@ -22,5 +22,11 @@ func init() {
 }
 
 func main() {
+	if CONFIG.Kafka.Topic == "" {
+		fmt.Println("Please set the topic")
+	}
+	if len(CONFIG.Kafka.Brokers) == 0 {
+		fmt.Println("Please set the brokers")
+	}
 	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers)
 }

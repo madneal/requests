@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"net/url"
+	"strings"
 )
 import _ "github.com/jinzhu/gorm/dialects/mysql"
 
@@ -14,10 +16,11 @@ type Asset struct {
 }
 
 type Resource struct {
-	Id       int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url      string `gorm:"type:varchar(100);column:url"`
-	Protocol string `gorm:"type:varchar(10);column:protocol"`
-	Method   string `gorm:"type:varchar(5);column:method"`
+	Id        int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url       string `gorm:"type:varchar(100);column:url"`
+	Protocol  string `gorm:"type:varchar(10);column:protocol"`
+	Method    string `gorm:"type:varchar(5);column:method"`
+	Firstpath string `gorm:"type:varchar(100);column:firstpath"`
 }
 
 var db *gorm.DB
@@ -62,4 +65,22 @@ func ResourceExists(url, protocol, method string) bool {
 	var reource Resource
 	return !db.Where("url = ? and protocol = ? and method = ?", url, protocol, method).
 		First(&reource).RecordNotFound()
+}
+
+func MatchUrl(postUrl string) *[]Resource {
+	resources := make([]Resource, 0)
+	uPost, err := url.Parse(postUrl)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if uPost.Path == "" {
+		return &resources
+	}
+	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
+	firstUrl := uPost.Host + pathPost
+	err = db.Where("firstpath = ?", firstUrl).Find(&resources).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+	return &resources
 }

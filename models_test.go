@@ -3,6 +3,7 @@ package main
 import (
 	//"fmt"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -36,4 +37,12 @@ func TestExists(t *testing.T) {
 	md5 := "123"
 	exists := Exists(md5)
 	fmt.Println(exists)
+}
+
+func TestMatchUrl(t *testing.T) {
+	postUrl := "http://www.baidu.com/abc"
+	assert.Equal(t, true, len(*MatchUrl(postUrl)) == 1, "there shoud mathch one")
+	postUrl1 := "http://www.baidu.com"
+	assert.Equal(t, false, len(*MatchUrl(postUrl1)) == 1, "there shoud not mathch one")
+
 }

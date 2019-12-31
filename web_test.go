@@ -52,3 +52,23 @@ func TestMatchIp(t *testing.T) {
 	assert.Equal(t, true, MatchIp(ip4), "the ip shoud match")
 	assert.Equal(t, true, MatchIp(ip5), "the ip shoud match")
 }
+
+//func TestMatchUrl(t *testing.T) {
+//	postUrl := "http://www.baidu.com/abc/dfgs?adf=1234"
+//	getUrl := "http://www.baidu.com/"
+//	assert.Equal(t, false, MatchUrl(postUrl, getUrl), "the result shoud be false")
+//	postUrl1 := "http://www.baidu.com/abc/def"
+//	getUrl1 := "http://www.baidu.com/abc"
+//	assert.Equal(t, true, MatchUrl(postUrl1, getUrl1), "the result should be true")
+//	postUrl2 := "https://www.baidu.com/abc/def"
+//	getUrl2 := "http://www.baidu.com/abc"
+//	assert.Equal(t, false, MatchUrl(postUrl2, getUrl2), "the result should be false")
+//}
+
+func TestGetIp(t *testing.T) {
+	host := "www.baidu.com"
+	ips := GetIp(host)
+	for _, ip := range ips {
+		fmt.Println(ip)
+	}
+}

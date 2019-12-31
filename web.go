@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net"
+	"net/url"
+	"regexp"
+	"strings"
 )
 import "github.com/go-resty/resty/v2"
 
@@ -17,6 +20,26 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
+	if request.Method == POST_METHOD {
+		results := *MatchUrl(request.Url)
+		if len(results) > 0 {
+			u, err := url.Parse(request.Url)
+			if err != nil {
+				fmt.Println(err)
+			}
+			for _, result := range results {
+				resource := Resource{
+					Url:       u.Host + u.Path,
+					Protocol:  result.Protocol,
+					Method:    POST_METHOD,
+					Firstpath: "/" + strings.Split(u.Path, "/")[1],
+				}
+				NewResouce(resource)
+			}
+		} else {
+			return
+		}
+	}
 	var res *resty.Response
 	if request.Method == GET_METHOD {
 		res = DoGet(request)
@@ -82,3 +105,42 @@ func MatchIp(ip string) (result bool) {
 	}
 	return result
 }
+
+// judge if url need to replay
+func IsNeedReplay(host string) bool {
+	// judge the ip of host if matches network
+	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if isIp == true {
+		return true
+	} else {
+		ips := GetIp(host)
+		for ip := range ips {
+			ipStr := string(ip)
+			if MatchIp(ipStr) == true {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// judge if urls match, host + only one path
+//func MatchUrl(postUrl, getUrl string) bool {
+//	uGet, err := url.Parse(getUrl)
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//	uPost, err := url.Parse(postUrl)
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//	if uGet.Path == "" || uPost.Path == "" {
+//		return false
+//	}
+//	pathGet := "/" + strings.Split(uGet.Path, "/")[1]
+//	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
+//	return (uGet.Host + pathGet) == (uPost.Host + pathPost)
+//}

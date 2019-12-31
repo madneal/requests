@@ -72,3 +72,19 @@ func TestGetIp(t *testing.T) {
 		fmt.Println(ip)
 	}
 }
+
+func TestCreateResourceByRequest(t *testing.T) {
+	request := Request{
+		Url:       "http://www.baidu.com/abc/def?name=123",
+		Headers:   nil,
+		Method:    "GET",
+		Host:      "www.baidu.com",
+		AgentId:   "test",
+		Timestamp: 0,
+		Postdata:  "",
+	}
+	resource := CreateResourceByRequest(request)
+	assert.Equal(t, "www.baidu.com/abc/def", resource.Url, "the url should be the same")
+	assert.Equal(t, "www.baidu.com/abc", resource.Firstpath, "the fisrtpath should be the same")
+	assert.Equal(t, "GET", resource.Method, "the method should be the same")
+}

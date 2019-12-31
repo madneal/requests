@@ -40,11 +40,15 @@ func SendRequest(request Request) {
 			return
 		}
 	}
+	if IsNeedReplay(request.Host) == false {
+		return
+	}
 	var res *resty.Response
 	if request.Method == GET_METHOD {
 		res = DoGet(request)
 	} else if request.Method == POST_METHOD {
-		res = DoPost(request)
+		//res = DoPost(request)
+		fmt.Println("there should not exist any post request")
 	} else {
 		fmt.Print("method does not support")
 	}
@@ -52,7 +56,7 @@ func SendRequest(request Request) {
 	if statusCode == 200 {
 
 	} else {
-
+		return
 	}
 }
 
@@ -76,6 +80,21 @@ func DoPost(request Request) *resty.Response {
 		fmt.Println(err)
 	}
 	return res
+}
+
+func CreateResourceByRequest(request Request) Resource {
+	u, err := url.Parse(request.Url)
+	if err != nil {
+		fmt.Println(nil)
+		return Resource{}
+	}
+	path := "/" + strings.Split(u.Path, "/")[1]
+	return Resource{
+		Url:       u.Host + u.Path,
+		Protocol:  u.Scheme,
+		Method:    request.Method,
+		Firstpath: u.Host + path,
+	}
 }
 
 func GetIp(host string) []net.IP {

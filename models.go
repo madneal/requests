@@ -48,7 +48,11 @@ func init() {
 }
 
 func NewAsset(asset Asset) error {
-	return db.Create(&asset).Error
+	if !Exists(asset.Md5) {
+		return db.Create(&asset).Error
+	} else {
+		return nil
+	}
 }
 
 // check if record exists by md5
@@ -58,7 +62,11 @@ func Exists(md5 string) bool {
 }
 
 func NewResouce(resource Resource) error {
-	return db.Create(&resource).Error
+	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
+		return db.Create(&resource).Error
+	} else {
+		return nil
+	}
 }
 
 func ResourceExists(url, protocol, method string) bool {

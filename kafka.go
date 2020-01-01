@@ -109,13 +109,8 @@ func InsertAsset(request Request) {
 		Method: request.Method,
 		Md5:    md5Str,
 	}
-	exists := Exists(md5Str)
-	if !exists {
-		err := NewAsset(asset)
-		if err != nil {
-			Log.Error(err)
-		}
-	} else {
-		fmt.Println("the record has exists!")
+	err = NewAsset(asset)
+	if err != nil {
+		Log.Error(err)
 	}
 }

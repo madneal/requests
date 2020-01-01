@@ -22,7 +22,7 @@ type Request struct {
 func SendRequest(request Request) {
 	if IsValidReferer(request) {
 		resource := CreateResourceByRequest(request)
-		err := NewResouce(resource)
+		err := NewResouce(*resource)
 		if err != nil {
 			Log.Error(err)
 		}
@@ -69,7 +69,7 @@ func SendRequest(request Request) {
 	statusCode := res.StatusCode()
 	if statusCode == 200 {
 		resource := CreateResourceByRequest(request)
-		err := NewResouce(resource)
+		err := NewResouce(*resource)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -110,14 +110,14 @@ func IsValidReferer(request Request) bool {
 	return false
 }
 
-func CreateResourceByRequest(request Request) Resource {
+func CreateResourceByRequest(request Request) *Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
 		fmt.Println(nil)
-		return Resource{}
+		return nil
 	}
 	path := "/" + strings.Split(u.Path, "/")[1]
-	return Resource{
+	return &Resource{
 		Url:       u.Host + u.Path,
 		Protocol:  u.Scheme,
 		Method:    request.Method,

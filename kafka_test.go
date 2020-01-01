@@ -109,20 +109,20 @@ func TestParseJson(t *testing.T) {
     "t": 1565079259
 }
 `
-	request := ParseJson(data)
+	request, _ := ParseJson(data)
 	assert.Equal(t, request.Url, "http://testasp.vulnweb.com/showthread.asp?id=0", "the url should be the same")
 	assert.Equal(t, request.Headers["Referer"], "http://testasp.vulnweb.com/showforum.asp?id=1", "the Referer should be the same")
 	assert.Equal(t, request.Host, "testasp.vulnweb.com", "the host should be the same")
 	assert.Equal(t, request.Timestamp, int64(1565079259), "the t should be the same")
-	request1 := ParseJson(data1)
+	request1, _ := ParseJson(data1)
 	assert.Equal(t, request1.Url, "http://testasp.vulnweb.com/showthread.asp?id=0")
 	assert.Equal(t, request1.Headers["DNT"], "1", "the header should be the same")
 	assert.Equal(t, request1.Method, "GET", "the method should be the same")
 	assert.Equal(t, request1.Timestamp, int64(1565079259), "the t should be the same")
-	request2 := ParseJson(data2)
+	request2, _ := ParseJson(data2)
 	assert.Equal(t, request2.Headers["Content-Type"], "json", "the content-type should be the same")
 	assert.Equal(t, request2.Timestamp, int64(1565079259), "the timestamp should be the same")
-	request3 := ParseJson(data3)
+	request3, _ := ParseJson(data3)
 	assert.Equal(t, request3.Postdata, "abc=123", "the post data should be the same")
 }
 
@@ -148,6 +148,6 @@ func TestInsertAsset(t *testing.T) {
     "postdata": "",
     "t": 1565079259
 }`
-	request := ParseJson(data)
+	request, _ := ParseJson(data)
 	InsertAsset(request)
 }

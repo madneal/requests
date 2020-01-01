@@ -16,13 +16,12 @@ var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie"
 
 func ReadKafka(topic string, hosts []string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   hosts,
-		Topic:     topic,
-		Partition: 0,
-		MinBytes:  1,
-		MaxBytes:  1000,
+		Brokers:  hosts,
+		Topic:    topic,
+		GroupID:  "consumer-group-pvs",
+		MinBytes: 1,
+		MaxBytes: 1000,
 	})
-	//r.SetOffset(42)
 
 	for {
 		m, err := r.ReadMessage(context.Background())
@@ -30,18 +29,25 @@ func ReadKafka(topic string, hosts []string) {
 			fmt.Println(err)
 			break
 		}
-		go SendRequest(ParseJson(string(m.Value)))
+		request, err := ParseJson(string(m.Value))
+		if err != nil {
+			Log.Error(err)
+		} else {
+			go SendRequest(request)
+		}
 		fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 	}
 
 	defer r.Close()
 }
 
-func ParseJson(msg string) Request {
+func ParseJson(msg string) (Request, error) {
 	var request Request
 	var data map[string]interface{}
-	if err := json.Unmarshal([]byte(msg), &data); err != nil {
+	var err error
+	if err = json.Unmarshal([]byte(msg), &data); err != nil {
 		fmt.Println(err)
+		return request, err
 	}
 	var headersType string
 	if _, ok := data["headers"]; ok {
@@ -87,7 +93,7 @@ func ParseJson(msg string) Request {
 		request.Postdata = string(body)
 	}
 	request.Headers = headers
-	return request
+	return request, err
 }
 
 func InsertAsset(request Request) {

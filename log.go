@@ -19,6 +19,7 @@ func init() {
 	if err != nil {
 		logger.Fatal(err)
 	}
-	defer file.Close()
+	//defer file.Close()
 	logger.SetOutput(file)
+	Log = logger.WithFields(logrus.Fields{"prefix": "pvs"})
 }

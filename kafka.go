@@ -26,12 +26,13 @@ func ReadKafka(topic string, hosts []string) {
 	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
-			fmt.Println(err)
+			Log.Error(err)
 			break
 		}
 		request, err := ParseJson(string(m.Value))
 		if err != nil {
 			Log.Error(err)
+			continue
 		} else {
 			go SendRequest(request)
 		}

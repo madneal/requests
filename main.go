@@ -18,7 +18,7 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(CONFIG.Kafka)
+	//fmt.Println(CONFIG.Kafka)
 }
 
 func main() {
@@ -28,5 +28,7 @@ func main() {
 	if len(CONFIG.Kafka.Brokers) == 0 {
 		fmt.Println("Please set the brokers")
 	}
+	fmt.Println("*********Begin the Assets detect*************")
+	fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
 	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers)
 }

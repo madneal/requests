@@ -11,12 +11,12 @@ import (
 func init() {
 	source, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 
 	err = yaml.Unmarshal(source, &CONFIG)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	//fmt.Println(CONFIG.Kafka)
 }

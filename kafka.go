@@ -47,7 +47,7 @@ func ParseJson(msg string) (Request, error) {
 	var data map[string]interface{}
 	var err error
 	if err = json.Unmarshal([]byte(msg), &data); err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 		return request, err
 	}
 	var headersType string
@@ -89,7 +89,7 @@ func ParseJson(msg string) (Request, error) {
 	if request.Method == "POST" && data["postdata"].(string) != "" {
 		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 		if err != nil {
-			fmt.Println(err)
+			Log.Error(err)
 		}
 		request.Postdata = string(body)
 	}
@@ -100,7 +100,7 @@ func ParseJson(msg string) (Request, error) {
 func InsertAsset(request Request) {
 	u, err := url.Parse(request.Url)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
 	md5Str := fmt.Sprintf("%x", md5.Sum([]byte(str)))

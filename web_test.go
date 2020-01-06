@@ -8,7 +8,7 @@ import (
 
 func TestDoGet(t *testing.T) {
 	request := Request{
-		Url:       "https://www.baidu.com",
+		Url:       "https://www.google.com",
 		Headers:   nil,
 		Method:    "GET",
 		Host:      "www.baidu.com",

@@ -32,7 +32,7 @@ func init() {
 	var err error
 	db, err = gorm.Open("mysql", conStr)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	if !db.HasTable(&Asset{}) {
 		db.CreateTable(&Asset{})
@@ -79,7 +79,7 @@ func MatchUrl(postUrl string) *[]Resource {
 	resources := make([]Resource, 0)
 	uPost, err := url.Parse(postUrl)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	if uPost.Path == "" {
 		return &resources
@@ -88,7 +88,7 @@ func MatchUrl(postUrl string) *[]Resource {
 	firstUrl := uPost.Host + pathPost
 	err = db.Where("firstpath = ?", firstUrl).Find(&resources).Error
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	return &resources
 }

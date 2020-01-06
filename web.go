@@ -33,7 +33,7 @@ func SendRequest(request Request) {
 		if len(results) > 0 {
 			u, err := url.Parse(request.Url)
 			if err != nil {
-				fmt.Println(err)
+				Log.Error(err)
 			}
 			for _, result := range results {
 				resource := Resource{
@@ -71,7 +71,7 @@ func SendRequest(request Request) {
 		resource := CreateResourceByRequest(request)
 		err := NewResouce(*resource)
 		if err != nil {
-			fmt.Println(err)
+			Log.Error(err)
 		}
 	} else {
 		return
@@ -84,7 +84,7 @@ func DoGet(request Request) *resty.Response {
 	res.SetHeaders(request.Headers)
 	response, err := res.Get(request.Url)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	fmt.Println(response.StatusCode())
 	return response
@@ -95,7 +95,7 @@ func DoPost(request Request) *resty.Response {
 
 	res, err := client.R().SetHeaders(request.Headers).SetBody(request.Postdata).Post(request.Url)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	return res
 }
@@ -128,7 +128,7 @@ func CreateResourceByRequest(request Request) *Resource {
 func GetIp(host string) []net.IP {
 	ip, err := net.LookupIP(host)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 		return []net.IP{}
 	}
 	return ip
@@ -143,7 +143,7 @@ func MatchIp(ip string) (result bool) {
 	for _, network := range CONFIG.Network.Network {
 		_, subnet, err := net.ParseCIDR(network)
 		if err != nil {
-			fmt.Println(err)
+			Log.Error(err)
 		}
 		if subnet.Contains(net.ParseIP(ip)) {
 			result = true
@@ -158,7 +158,7 @@ func IsNeedReplay(host string) bool {
 	// judge the ip of host if matches network
 	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	if isIp == true {
 		return true
@@ -178,11 +178,11 @@ func IsNeedReplay(host string) bool {
 func IsCommonUrl(url1, url2 string) bool {
 	u1, err := url.Parse(url1)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	u2, err := url.Parse(url2)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	if u1.Path == "" || u2.Path == "" {
 		return false

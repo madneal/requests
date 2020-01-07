@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net"
 	"net/url"
 	"regexp"
@@ -86,6 +87,8 @@ func DoGet(request Request) *resty.Response {
 	response, err := res.Get(request.Url)
 	if err != nil {
 		Log.Error(err)
+		Log.WithFields(logrus.Fields{"url": request.Url})
+		return nil
 	}
 	fmt.Println(response.StatusCode())
 	return response

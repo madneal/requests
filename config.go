@@ -15,4 +15,8 @@ type Config struct {
 	Network struct {
 		Network [5]string
 	}
+	Run struct {
+		Threads int
+		Debug   bool
+	}
 }

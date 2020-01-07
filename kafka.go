@@ -64,6 +64,7 @@ func ReadKafka(topic string, hosts []string) {
 			Log.Error(err)
 			continue
 		} else {
+			InsertAsset(request)
 			SendRequest(request)
 		}
 	}

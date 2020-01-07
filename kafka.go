@@ -9,6 +9,7 @@ import (
 	kafka "github.com/segmentio/kafka-go"
 	"net/url"
 	"reflect"
+	"strings"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
@@ -66,6 +67,12 @@ func ReadKafka(topic string, hosts []string) {
 		} else {
 			InsertAsset(request)
 			SendRequest(request)
+			if strings.Contains(request.Url, "https") {
+				request.Url = strings.Replace(request.Url, "https", "http", -1)
+			} else {
+				request.Url = strings.Replace(request.Url, "http", "https", -1)
+			}
+			SendRequest(request)
 		}
 	}
 }
@@ -108,7 +115,16 @@ func ParseJson(msg string) (Request, error) {
 				headers[msg] = data[msg].(string)
 			}
 		}
-		request.Url = headers["host"] + data["uri"].(string)
+		port := data["resp_p"].(string)
+		var schema string
+		if port == "443" {
+			schema = "https://"
+		} else if port == "-" {
+			return request, nil
+		} else {
+			schema = "http://"
+		}
+		request.Url = schema + headers["host"] + data["uri"].(string)
 	}
 	if request.Url == "" {
 		request.Url = data["url"].(string)

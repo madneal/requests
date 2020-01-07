@@ -68,9 +68,9 @@ func ReadKafka(topic string, hosts []string) {
 			InsertAsset(request)
 			SendRequest(request)
 			if strings.Contains(request.Url, "https") {
-				request.Url = strings.Replace(request.Url, "https", "http", -1)
+				request.Url = strings.Replace(request.Url, "https", "http", 1)
 			} else {
-				request.Url = strings.Replace(request.Url, "http", "https", -1)
+				request.Url = strings.Replace(request.Url, "http", "https", 1)
 			}
 			SendRequest(request)
 		}
@@ -101,7 +101,7 @@ func ParseJson(msg string) (Request, error) {
 		headers1 := data["headers"].([]interface{})
 		for _, header := range headers1 {
 			headerMap := header.(map[string]interface{})
-			headers[headerMap["Name"].(string)] = headerMap["value"].(string)
+			headers[headerMap["name"].(string)] = headerMap["value"].(string)
 		}
 	} else if headersType == "map[string]interface {}" {
 		headers1 := data["headers"].(map[string]interface{})
@@ -124,7 +124,8 @@ func ParseJson(msg string) (Request, error) {
 		} else {
 			schema = "http://"
 		}
-		request.Url = schema + headers["host"] + data["uri"].(string)
+		request.Url = schema + headers["Host"] + data["uri"].(string)
+		//fmt.Println(request.Url)
 	}
 	if request.Url == "" {
 		request.Url = data["url"].(string)
@@ -146,6 +147,7 @@ func InsertAsset(request Request) {
 	u, err := url.Parse(request.Url)
 	if err != nil {
 		Log.Error(err)
+		return
 	}
 	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
 	md5Str := fmt.Sprintf("%x", md5.Sum([]byte(str)))

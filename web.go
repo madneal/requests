@@ -34,17 +34,18 @@ func SendRequest(request Request) {
 			u, err := url.Parse(request.Url)
 			if err != nil {
 				Log.Error(err)
-			}
-			for _, result := range results {
-				resource := Resource{
-					Url:       u.Host + u.Path,
-					Protocol:  result.Protocol,
-					Method:    POST_METHOD,
-					Firstpath: "/" + strings.Split(u.Path, "/")[1],
-				}
-				err := NewResouce(resource)
-				if err != nil {
-					Log.Error(err)
+			} else {
+				for _, result := range results {
+					resource := Resource{
+						Url:       u.Host + u.Path,
+						Protocol:  result.Protocol,
+						Method:    POST_METHOD,
+						Firstpath: "/" + strings.Split(u.Path, "/")[1],
+					}
+					err := NewResouce(resource)
+					if err != nil {
+						Log.Error(err)
+					}
 				}
 			}
 		} else {
@@ -176,13 +177,18 @@ func IsNeedReplay(host string) bool {
 
 // judge if urls match, host + only one path
 func IsCommonUrl(url1, url2 string) bool {
+	if strings.Contains(url1, "/") == false || strings.Contains(url2, "/") == false {
+		return false
+	}
 	u1, err := url.Parse(url1)
 	if err != nil {
 		Log.Error(err)
+		return false
 	}
 	u2, err := url.Parse(url2)
 	if err != nil {
 		Log.Error(err)
+		return false
 	}
 	if u1.Path == "" || u2.Path == "" {
 		return false

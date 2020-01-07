@@ -24,22 +24,49 @@ func ReadKafka(topic string, hosts []string) {
 	})
 
 	for {
+		//var wg sync.WaitGroup
+		//for i := 0; i < CONFIG.Run.Threads; i++ {
+		//	fmt.Println("Main:Starting worker", i)
+		//	wg.Add(1)
+		//	go func(r *kafka.Reader, wg *sync.WaitGroup, i int) {
+		//		defer wg.Done()
+		//		fmt.Sprintf("Worker %v: Started\n", i)
+		//		m, err := r.ReadMessage(context.Background())
+		//		if err != nil {
+		//			Log.Error(err)
+		//			return
+		//		}
+		//		request, err := ParseJson(string(m.Value))
+		//		if err != nil {
+		//			Log.Error(err)
+		//			return
+		//		} else {
+		//			SendRequest(request)
+		//		}
+		//		if CONFIG.Run.Debug == true {
+		//			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
+		//		}
+		//		fmt.Sprintf("Worker %v: Finished\n", i)
+		//	}(r, &wg, i)
+		//}
+		//wg.Wait()
+
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
 			Log.Error(err)
 			break
 		}
 		request, err := ParseJson(string(m.Value))
+		if CONFIG.Run.Debug == true {
+			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
+		}
 		if err != nil {
 			Log.Error(err)
 			continue
 		} else {
-			go SendRequest(request)
+			SendRequest(request)
 		}
-		fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 	}
-
-	defer r.Close()
 }
 
 func ParseJson(msg string) (Request, error) {
@@ -90,8 +117,9 @@ func ParseJson(msg string) (Request, error) {
 		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 		if err != nil {
 			Log.Error(err)
+		} else {
+			request.Postdata = string(body)
 		}
-		request.Postdata = string(body)
 	}
 	request.Headers = headers
 	return request, err

@@ -28,7 +28,7 @@ var db *gorm.DB
 func init() {
 	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", CONFIG.Database.User, CONFIG.Database.Pass,
 		CONFIG.Database.Host, CONFIG.Database.Port, CONFIG.Database.Name)
-	fmt.Println(conStr)
+	//fmt.Println(conStr)
 	var err error
 	db, err = gorm.Open("mysql", conStr)
 	if err != nil {
@@ -80,15 +80,18 @@ func MatchUrl(postUrl string) *[]Resource {
 	uPost, err := url.Parse(postUrl)
 	if err != nil {
 		Log.Error(err)
+		return nil
 	}
 	if uPost.Path == "" {
-		return &resources
+		return nil
 	}
 	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
 	firstUrl := uPost.Host + pathPost
 	err = db.Where("firstpath = ?", firstUrl).Find(&resources).Error
 	if err != nil {
 		Log.Error(err)
+		return nil
 	}
 	return &resources
+
 }

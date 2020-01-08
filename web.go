@@ -196,7 +196,13 @@ func IsCommonUrl(url1, url2 string) bool {
 	if u1.Path == "" || u2.Path == "" {
 		return false
 	}
-	pathGet := "/" + strings.Split(u1.Path, "/")[1]
-	pathPost := "/" + strings.Split(u2.Path, "/")[1]
+	var pathGet string
+	var pathPost string
+	if len(strings.Split(u1.Path, "/")) > 1 && len(strings.Split(u2.Path, "/")) > 1 {
+		pathGet = "/" + strings.Split(u1.Path, "/")[1]
+		pathPost = "/" + strings.Split(u2.Path, "/")[1]
+	} else {
+		return false
+	}
 	return (u1.Host + pathGet) == (u2.Host + pathPost)
 }

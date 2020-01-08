@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
@@ -24,56 +25,57 @@ func ReadKafka(topic string, hosts []string) {
 		MaxBytes: 1000,
 	})
 
-	for {
-		//var wg sync.WaitGroup
-		//for i := 0; i < CONFIG.Run.Threads; i++ {
-		//	fmt.Println("Main:Starting worker", i)
-		//	wg.Add(1)
-		//	go func(r *kafka.Reader, wg *sync.WaitGroup, i int) {
-		//		defer wg.Done()
-		//		fmt.Sprintf("Worker %v: Started\n", i)
-		//		m, err := r.ReadMessage(context.Background())
-		//		if err != nil {
-		//			Log.Error(err)
-		//			return
-		//		}
-		//		request, err := ParseJson(string(m.Value))
-		//		if err != nil {
-		//			Log.Error(err)
-		//			return
-		//		} else {
-		//			SendRequest(request)
-		//		}
-		//		if CONFIG.Run.Debug == true {
-		//			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
-		//		}
-		//		fmt.Sprintf("Worker %v: Finished\n", i)
-		//	}(r, &wg, i)
-		//}
-		//wg.Wait()
+	messages := make([]string, 0)
 
+	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
 			Log.Error(err)
 			break
 		}
-		request, err := ParseJson(string(m.Value))
+
 		if CONFIG.Run.Debug == true {
 			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 		}
-		if err != nil {
-			Log.Error(err)
+		//var i int
+
+		if len(messages) <= CONFIG.Run.Threads {
+			messages = append(messages, string(m.Value))
 			continue
-		} else {
-			InsertAsset(request)
-			SendRequest(request)
-			if strings.Contains(request.Url, "https") {
-				request.Url = strings.Replace(request.Url, "https", "http", 1)
-			} else {
-				request.Url = strings.Replace(request.Url, "http", "https", 1)
-			}
-			SendRequest(request)
 		}
+
+		var wg sync.WaitGroup
+		for j := 0; j < CONFIG.Run.Threads; j++ {
+			//fmt.Println("Main:Starting worker")
+			wg.Add(1)
+			go func(msg string) {
+				//fmt.Printf("Worker %v: Started\n", j)
+				RunTask(msg)
+				wg.Done()
+				//fmt.Printf("Worker %v: Finished\n", j)
+			}(messages[j])
+			wg.Wait()
+		}
+		//i = 0
+		messages = nil
+	}
+}
+
+func RunTask(msg string) {
+	//fmt.Printf("process msg: %s\n", msg)
+	request, err := ParseJson(msg)
+	if err != nil {
+		Log.Error(err)
+		return
+	} else {
+		InsertAsset(request)
+		SendRequest(request)
+		if strings.Contains(request.Url, "https") {
+			request.Url = strings.Replace(request.Url, "https", "http", 1)
+		} else {
+			request.Url = strings.Replace(request.Url, "http", "https", 1)
+		}
+		SendRequest(request)
 	}
 }
 

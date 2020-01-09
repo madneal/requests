@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"net"
 	"net/url"
 	"regexp"
 	"strings"
 )
-import "github.com/go-resty/resty/v2"
 
 type Request struct {
 	Url       string
@@ -84,6 +84,7 @@ func DoGet(request Request) *resty.Response {
 	client := resty.New()
 	res := client.R()
 	res.SetHeaders(request.Headers)
+	fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
 		Log.Error(err)

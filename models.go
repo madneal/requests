@@ -10,7 +10,7 @@ import _ "github.com/jinzhu/gorm/dialects/mysql"
 
 type Asset struct {
 	Id     int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url    string `gorm:"type:varchar(300);column:url`
+	Url    string `gorm:"type:varchar(300);column:url"`
 	Method string `gorm:"type:varchar(5);column:method"`
 	Md5    string `gorm:"type:varchar(100);column:md5"`
 }

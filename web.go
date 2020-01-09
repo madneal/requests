@@ -166,7 +166,7 @@ func IsNeedReplay(host string) bool {
 		Log.Error(err)
 	}
 	if isIp == true {
-		return true
+		return MatchIp(GetIpFromHost(host))
 	} else {
 		ips := GetIp(host)
 		for ip := range ips {
@@ -177,6 +177,15 @@ func IsNeedReplay(host string) bool {
 		}
 	}
 	return false
+}
+
+// obtain the ip from host
+func GetIpFromHost(host string) string {
+	if strings.Contains(host, ":") {
+		return strings.Split(host, ":")[0]
+	} else {
+		return host
+	}
 }
 
 // judge if urls match, host + only one path

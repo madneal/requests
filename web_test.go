@@ -125,3 +125,10 @@ func TestIsValidReferer(t *testing.T) {
 	}
 	assert.Equal(t, false, IsValidReferer(request2), "it should not be valid Referer")
 }
+
+func TestGetIpFromHost(t *testing.T) {
+	host := "192.168.192.1:8080"
+	assert.Equal(t, "192.168.192.1", GetIpFromHost(host), "the host should be the same")
+	host1 := "192.168.1.1"
+	assert.Equal(t, "192.168.1.1", GetIpFromHost(host1), "the host should be the same")
+}

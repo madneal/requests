@@ -10,7 +10,6 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
-	"sync"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
@@ -25,7 +24,7 @@ func ReadKafka(topic string, hosts []string) {
 		MaxBytes: 1000,
 	})
 
-	messages := make([]string, 0)
+	//messages := make([]string, 0)
 
 	for {
 		m, err := r.ReadMessage(context.Background())
@@ -39,25 +38,26 @@ func ReadKafka(topic string, hosts []string) {
 		}
 		//var i int
 
-		if len(messages) <= CONFIG.Run.Threads {
-			messages = append(messages, string(m.Value))
-			continue
-		}
+		//if len(messages) <= CONFIG.Run.Threads {
+		//	messages = append(messages, string(m.Value))
+		//	continue
+		//}
+		//
+		//var wg sync.WaitGroup
+		//for j := 0; j < CONFIG.Run.Threads; j++ {
+		//	//fmt.Println("Main:Starting worker")
+		//	wg.Add(1)
+		//	go func(msg string) {
+		//		//fmt.Printf("Worker %v: Started\n", j)
+		//		RunTask(msg)
+		//		wg.Done()
+		//		//fmt.Printf("Worker %v: Finished\n", j)
+		//	}(messages[j])
+		//	wg.Wait()
+		//}
+		//messages = nil
 
-		var wg sync.WaitGroup
-		for j := 0; j < CONFIG.Run.Threads; j++ {
-			//fmt.Println("Main:Starting worker")
-			wg.Add(1)
-			go func(msg string) {
-				//fmt.Printf("Worker %v: Started\n", j)
-				RunTask(msg)
-				wg.Done()
-				//fmt.Printf("Worker %v: Finished\n", j)
-			}(messages[j])
-			wg.Wait()
-		}
-		//i = 0
-		messages = nil
+		RunTask(string(m.Value))
 	}
 }
 
@@ -66,8 +66,10 @@ func RunTask(msg string) {
 	request, err := ParseJson(msg)
 	if err != nil {
 		Log.Error(err)
+		fmt.Println("parse request failed")
 		return
 	} else {
+		fmt.Printf("handle for request %s\n", request.Url)
 		InsertAsset(request)
 		SendRequest(request)
 		if strings.Contains(request.Url, "https") {

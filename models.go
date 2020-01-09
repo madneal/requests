@@ -51,6 +51,7 @@ func NewAsset(asset Asset) error {
 	if !Exists(asset.Md5) {
 		return db.Create(&asset).Error
 	} else {
+		fmt.Println("asset exists!")
 		return nil
 	}
 }

@@ -21,14 +21,7 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
-	if IsValidReferer(request) {
-		resource := CreateResourceByRequest(request, "")
-		err := NewResouce(*resource)
-		if err != nil {
-			Log.Error(err)
-		}
-		return
-	}
+
 	if request.Method == POST_METHOD {
 		results := *MatchUrl(request.Url)
 		if len(results) > 0 {
@@ -107,13 +100,29 @@ func DoPost(request Request) *resty.Response {
 }
 
 // judge if referer valid, the host + firstpath of referer and url is same
-func IsValidReferer(request Request) bool {
+// return isValid referer and schema
+func IsValidReferer(request Request) (bool, string) {
 	for k, v := range request.Headers {
 		if k == REFERER {
-			return IsCommonUrl(request.Url, v)
+			if IsCommonUrl(request.Url, v) == true {
+				scheme, err := GetScheme(v)
+				if err != nil {
+					Log.Error(err)
+					return false, ""
+				}
+				return true, scheme
+			}
 		}
 	}
-	return false
+	return false, ""
+}
+
+func GetScheme(urlStr string) (string, error) {
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		return "", err
+	}
+	return u.Scheme, err
 }
 
 func CreateResourceByRequest(request Request, ip string) *Resource {

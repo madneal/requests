@@ -30,5 +30,18 @@ func TestMatchUrl(t *testing.T) {
 	assert.Equal(t, true, len(*MatchUrl(postUrl)) == 1, "there shoud mathch one")
 	postUrl1 := "http://www.baidu.com"
 	assert.Equal(t, false, len(*MatchUrl(postUrl1)) == 1, "there shoud not mathch one")
+}
 
+func TestNewResouce(t *testing.T) {
+	resource := Resource{
+		Url:       "www.baidu.com",
+		Protocol:  "",
+		Method:    "",
+		Firstpath: "",
+		Ip:        "1.1.1.1",
+	}
+	err := NewResouce(resource)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

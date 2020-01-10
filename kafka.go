@@ -99,6 +99,13 @@ func RunTask(msg string) {
 		}
 
 		InsertAsset(request)
+		// obtain scheme from referer and send request
+		isValidReferer, scheme := IsValidReferer(request)
+		if isValidReferer == true {
+			request.Url = SetUrlByScheme(scheme, request.Url)
+			SendRequest(request)
+			return
+		}
 		SendRequest(request)
 		if strings.Contains(request.Url, "https") {
 			request.Url = strings.Replace(request.Url, "https", "http", 1)
@@ -107,6 +114,16 @@ func RunTask(msg string) {
 		}
 		SendRequest(request)
 	}
+}
+
+func SetUrlByScheme(scheme, urlStr string) string {
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		Log.Error(err)
+		return urlStr
+	}
+	u.Scheme = scheme
+	return u.String()
 }
 
 func ParseJson(msg string) (Request, error) {

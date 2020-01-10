@@ -101,7 +101,8 @@ func TestIsValidReferer(t *testing.T) {
 		Timestamp: 0,
 		Postdata:  "",
 	}
-	assert.Equal(t, true, IsValidReferer(request), "it should be valid Referer")
+	result, _ := IsValidReferer(request)
+	assert.Equal(t, true, result, "it should be valid Referer")
 	request1 := Request{
 		Url: "https://www.baidu.com/abc",
 		Headers: map[string]string{
@@ -113,7 +114,8 @@ func TestIsValidReferer(t *testing.T) {
 		Timestamp: 0,
 		Postdata:  "",
 	}
-	assert.Equal(t, false, IsValidReferer(request1), "it should not be valid Referer")
+	result1, _ := IsValidReferer(request1)
+	assert.Equal(t, false, result1, "it should not be valid Referer")
 	request2 := Request{
 		Url:       "https://www.baidu.com/abc",
 		Headers:   nil,
@@ -123,7 +125,8 @@ func TestIsValidReferer(t *testing.T) {
 		Timestamp: 0,
 		Postdata:  "",
 	}
-	assert.Equal(t, false, IsValidReferer(request2), "it should not be valid Referer")
+	result2, _ := IsValidReferer(request2)
+	assert.Equal(t, false, result2, "it should not be valid Referer")
 }
 
 func TestGetIpFromHost(t *testing.T) {

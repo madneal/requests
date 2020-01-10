@@ -177,3 +177,9 @@ func TestRedis(t *testing.T) {
 	assert.Equal(t, false, rdb.SIsMember(CONFIG.Redis.Set, "25542352345").Val(), "the data "+
 		"should not exists")
 }
+
+func TestSetUrlByScheme(t *testing.T) {
+	url := SetUrlByScheme("http", "https://play.golang.org/")
+	fmt.Println(url)
+	assert.Equal(t, "http://play.golang.org/", url, "the url shoule be http")
+}

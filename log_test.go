@@ -6,7 +6,7 @@ import (
 )
 
 func TestLog(t *testing.T) {
-	Log = Log.WithFields(logrus.Fields{"url": "adfasd412384198jj"})
+	Log = Log.WithFields(logrus.Fields{"url": "adfasd412384198jj", "ip": "1.1.1.1"})
 	Log.Info("test1234")
 	Log.Info("afasdfqwerqw")
 }

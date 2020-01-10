@@ -52,7 +52,7 @@ func SendRequest(request Request) {
 	}
 	var res *resty.Response
 	if request.Method == GET_METHOD {
-		res = DoGet(request)
+		res = DoGet(request, ip)
 	} else if request.Method == POST_METHOD {
 		//res = DoPost(request)
 		fmt.Println("there should not exist any post request")
@@ -74,14 +74,15 @@ func SendRequest(request Request) {
 	}
 }
 
-func DoGet(request Request) *resty.Response {
+func DoGet(request Request, ip string) *resty.Response {
 	client := resty.New()
 	res := client.R()
 	res.SetHeaders(request.Headers)
 	fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
-		Log = Log.WithFields(logrus.Fields{"url": request.Url})
+		Log = Log.WithFields(logrus.Fields{"url": request.Url,
+			"ip": ip})
 		Log.Error(err)
 		return nil
 	}

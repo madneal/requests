@@ -16,7 +16,7 @@ func TestDoGet(t *testing.T) {
 		Timestamp: 0,
 		Postdata:  "",
 	}
-	res := DoGet(request)
+	res := DoGet(request, "1.1.1.1")
 	assert.Equal(t, 200, res.StatusCode(), "the status code should be 200")
 }
 

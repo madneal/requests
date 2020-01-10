@@ -6,14 +6,30 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis/v7"
 	kafka "github.com/segmentio/kafka-go"
 	"net/url"
 	"reflect"
 	"strings"
+	"time"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
+var rdb *redis.Client
+
+func init() {
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", CONFIG.Redis.Host, CONFIG.Redis.Port), // use default Addr
+		Password: CONFIG.Redis.Password,                                      // no password set
+		DB:       CONFIG.Redis.Db,                                            // use default DB
+	})
+	_, err := rdb.Ping().Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	rdb.Expire("url-set", 24*time.Hour)
+}
 
 func ReadKafka(topic string, hosts []string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
@@ -70,6 +86,15 @@ func RunTask(msg string) {
 		return
 	} else {
 		fmt.Printf("handle for request %s\n", request.Url)
+		if rdb.SIsMember("url-set", request.Url).Val() == true {
+			return
+		}
+		err = rdb.SAdd("url-set", request.Url).Err()
+		if err != nil {
+			fmt.Println(err)
+		}
+		rdb.Do()
+		rdb.Exists()
 		InsertAsset(request)
 		SendRequest(request)
 		if strings.Contains(request.Url, "https") {

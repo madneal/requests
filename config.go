@@ -19,4 +19,10 @@ type Config struct {
 		Threads int
 		Debug   bool
 	}
+	Redis struct {
+		Host     string
+		Port     int
+		Db       int
+		Password string
+	}
 }

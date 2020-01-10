@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"github.com/go-redis/redis/v7"
+	"testing"
+	"time"
+)
 import "github.com/stretchr/testify/assert"
 
 func TestReadKafka(t *testing.T) {
@@ -150,4 +155,25 @@ func TestInsertAsset(t *testing.T) {
 }`
 	request, _ := ParseJson(data)
 	InsertAsset(request)
+}
+
+func TestRedis(t *testing.T) {
+	rdb = redis.NewClient(&redis.Options{
+		Addr: "127.0.0.1:6379", // use default Addr
+		DB:   0,                // use default DB
+	})
+	pong, err := rdb.Ping().Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(pong)
+	rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
+	url := "wwww.baidu.com"
+	err = rdb.SAdd(CONFIG.Redis.Set, url).Err()
+	if err != nil {
+		fmt.Println(err)
+	}
+	assert.Equal(t, true, rdb.SIsMember(CONFIG.Redis.Set, url).Val(), "the url should exists")
+	assert.Equal(t, false, rdb.SIsMember(CONFIG.Redis.Set, "25542352345").Val(), "the data "+
+		"should not exists")
 }

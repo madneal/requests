@@ -28,7 +28,7 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	rdb.Expire("url-set", 24*time.Hour)
+	rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 }
 
 func ReadKafka(topic string, hosts []string) {
@@ -86,10 +86,10 @@ func RunTask(msg string) {
 		return
 	} else {
 		fmt.Printf("handle for request %s\n", request.Url)
-		if rdb.SIsMember("url-set", request.Url).Val() == true {
+		if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
 			return
 		}
-		err = rdb.SAdd("url-set", request.Url).Err()
+		err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()
 		if err != nil {
 			fmt.Println(err)
 		}

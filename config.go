@@ -24,5 +24,6 @@ type Config struct {
 		Port     int
 		Db       int
 		Password string
+		Set      string
 	}
 }

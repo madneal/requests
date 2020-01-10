@@ -19,16 +19,18 @@ var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie"
 var rdb *redis.Client
 
 func init() {
-	rdb = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", CONFIG.Redis.Host, CONFIG.Redis.Port), // use default Addr
-		Password: CONFIG.Redis.Password,                                      // no password set
-		DB:       CONFIG.Redis.Db,                                            // use default DB
-	})
-	_, err := rdb.Ping().Result()
-	if err != nil {
-		fmt.Println(err)
+	if CONFIG.Run.Redis == true {
+		rdb = redis.NewClient(&redis.Options{
+			Addr:     fmt.Sprintf("%s:%d", CONFIG.Redis.Host, CONFIG.Redis.Port), // use default Addr
+			Password: CONFIG.Redis.Password,                                      // no password set
+			DB:       CONFIG.Redis.Db,                                            // use default DB
+		})
+		_, err := rdb.Ping().Result()
+		if err != nil {
+			fmt.Println(err)
+		}
+		rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 	}
-	rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 }
 
 func ReadKafka(topic string, hosts []string) {
@@ -86,15 +88,16 @@ func RunTask(msg string) {
 		return
 	} else {
 		fmt.Printf("handle for request %s\n", request.Url)
-		if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
-			return
+		if CONFIG.Run.Redis == true {
+			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
+				return
+			}
+			err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
-		err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()
-		if err != nil {
-			fmt.Println(err)
-		}
-		rdb.Do()
-		rdb.Exists()
+
 		InsertAsset(request)
 		SendRequest(request)
 		if strings.Contains(request.Url, "https") {

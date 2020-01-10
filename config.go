@@ -18,6 +18,7 @@ type Config struct {
 	Run struct {
 		Threads int
 		Debug   bool
+		Redis   bool
 	}
 	Redis struct {
 		Host     string

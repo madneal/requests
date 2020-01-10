@@ -81,8 +81,8 @@ func DoGet(request Request) *resty.Response {
 	fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
+		Log = Log.WithFields(logrus.Fields{"url": request.Url})
 		Log.Error(err)
-		Log.WithFields(logrus.Fields{"url": request.Url})
 		return nil
 	}
 	fmt.Println(response.StatusCode())
@@ -144,6 +144,7 @@ func CreateResourceByRequest(request Request, ip string) *Resource {
 func GetIp(host string) []net.IP {
 	ip, err := net.LookupIP(host)
 	if err != nil {
+		Log = Log.WithFields(logrus.Fields{"host": host})
 		Log.Error(err)
 		return []net.IP{}
 	}

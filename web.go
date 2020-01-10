@@ -22,7 +22,7 @@ type Request struct {
 
 func SendRequest(request Request) {
 	if IsValidReferer(request) {
-		resource := CreateResourceByRequest(request)
+		resource := CreateResourceByRequest(request, "")
 		err := NewResouce(*resource)
 		if err != nil {
 			Log.Error(err)
@@ -53,7 +53,8 @@ func SendRequest(request Request) {
 			return
 		}
 	}
-	if IsNeedReplay(request.Host) == false {
+	isNeedReplay, ip := IsNeedReplay(request.Host)
+	if isNeedReplay == false {
 		return
 	}
 	var res *resty.Response
@@ -70,7 +71,7 @@ func SendRequest(request Request) {
 	}
 	statusCode := res.StatusCode()
 	if statusCode == 200 {
-		resource := CreateResourceByRequest(request)
+		resource := CreateResourceByRequest(request, ip)
 		err := NewResouce(*resource)
 		if err != nil {
 			Log.Error(err)
@@ -115,7 +116,7 @@ func IsValidReferer(request Request) bool {
 	return false
 }
 
-func CreateResourceByRequest(request Request) *Resource {
+func CreateResourceByRequest(request Request, ip string) *Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
 		fmt.Println(nil)
@@ -127,6 +128,7 @@ func CreateResourceByRequest(request Request) *Resource {
 		Protocol:  u.Scheme,
 		Method:    request.Method,
 		Firstpath: u.Host + path,
+		Ip:        ip,
 	}
 }
 
@@ -159,24 +161,25 @@ func MatchIp(ip string) (result bool) {
 }
 
 // judge if url need to replay
-func IsNeedReplay(host string) bool {
+func IsNeedReplay(host string) (bool, string) {
 	// judge the ip of host if matches network
 	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
 	if err != nil {
 		Log.Error(err)
 	}
 	if isIp == true {
-		return MatchIp(GetIpFromHost(host))
+		ip := GetIpFromHost(host)
+		return MatchIp(ip), ip
 	} else {
 		ips := GetIp(host)
 		for ip := range ips {
 			ipStr := string(ip)
 			if MatchIp(ipStr) == true {
-				return true
+				return true, ipStr
 			}
 		}
 	}
-	return false
+	return false, ""
 }
 
 // obtain the ip from host

@@ -21,6 +21,7 @@ type Resource struct {
 	Protocol  string `gorm:"type:varchar(10);column:protocol"`
 	Method    string `gorm:"type:varchar(5);column:method"`
 	Firstpath string `gorm:"type:varchar(100);column:firstpath"`
+	Ip        string `gorm:"type:varchar(20);column:ip"`
 }
 
 var db *gorm.DB

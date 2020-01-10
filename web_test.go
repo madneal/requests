@@ -83,7 +83,7 @@ func TestCreateResourceByRequest(t *testing.T) {
 		Timestamp: 0,
 		Postdata:  "",
 	}
-	resource := CreateResourceByRequest(request)
+	resource := CreateResourceByRequest(request, "1.1.1.1")
 	assert.Equal(t, "www.baidu.com/abc/def", resource.Url, "the url should be the same")
 	assert.Equal(t, "www.baidu.com/abc", resource.Firstpath, "the fisrtpath should be the same")
 	assert.Equal(t, "GET", resource.Method, "the method should be the same")
@@ -131,4 +131,15 @@ func TestGetIpFromHost(t *testing.T) {
 	assert.Equal(t, "192.168.192.1", GetIpFromHost(host), "the host should be the same")
 	host1 := "192.168.1.1"
 	assert.Equal(t, "192.168.1.1", GetIpFromHost(host1), "the host should be the same")
+}
+
+func TestIsNeedReplay(t *testing.T) {
+	host := "192.168.0.1:9090"
+	result, ip := IsNeedReplay(host)
+	assert.Equal(t, false, result, "the result should be false")
+	assert.Equal(t, "192.168.0.1", ip, "the ip should be the same")
+	host1 := "193.62.75.65:8080"
+	result1, ip1 := IsNeedReplay(host1)
+	assert.Equal(t, true, result1, "the result should be true")
+	assert.Equal(t, "193.62.75.65", ip1, "the ip should be the same")
 }

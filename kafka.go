@@ -98,6 +98,9 @@ func RunTask(msg string) {
 			}
 		}
 
+		if len(request.Method) > 5 {
+			Log.Warnf("The method %s is too long", request.Method)
+		}
 		InsertAsset(request)
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
@@ -140,7 +143,7 @@ func ParseJson(msg string) (Request, error) {
 		headersType = reflect.TypeOf(data["headers"]).String()
 	}
 
-	request.Host = data["host"].(string)
+	request.Host = data["Host"].(string)
 	request.AgentId = data["agentId"].(string)
 	request.Timestamp = int64(data["t"].(float64))
 	request.Method = data["method"].(string)

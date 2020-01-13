@@ -82,7 +82,7 @@ func DoGet(request Request, ip string) *resty.Response {
 	client := resty.New()
 	res := client.R()
 	res.SetHeaders(request.Headers)
-	fmt.Printf("Request to %s\n", request.Url)
+	//fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
 		Log = Log.WithFields(logrus.Fields{"url": request.Url,
@@ -91,6 +91,7 @@ func DoGet(request Request, ip string) *resty.Response {
 		return nil
 	}
 	Log = Log.WithFields(logrus.Fields{"url": request.Url, "ip": ip, "status_code": response.StatusCode()})
+	Log.Info()
 	return response
 }
 

@@ -46,6 +46,10 @@ func SendRequest(request Request) {
 			return
 		}
 	}
+	// the host is invalid
+	if request.Host == "-" {
+		return
+	}
 	isNeedReplay, ip := IsNeedReplay(request.Host)
 	if isNeedReplay == false {
 		return
@@ -86,7 +90,7 @@ func DoGet(request Request, ip string) *resty.Response {
 		Log.Error(err)
 		return nil
 	}
-	fmt.Println(response.StatusCode())
+	Log = Log.WithFields(logrus.Fields{"url": request.Url, "ip": ip, "status_code": response.StatusCode()})
 	return response
 }
 

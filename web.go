@@ -36,7 +36,7 @@ func SendRequest(request Request) {
 						Url:       u.Host + u.Path,
 						Protocol:  result.Protocol,
 						Method:    POST_METHOD,
-						Firstpath: "/" + strings.Split(u.Path, "/")[1],
+						Firstpath: u.Host + "/" + strings.Split(u.Path, "/")[1],
 					}
 					err := NewResouce(resource)
 					if err != nil {

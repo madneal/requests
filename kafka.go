@@ -11,27 +11,11 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
-	"time"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 var rdb *redis.Client
-
-func init() {
-	if CONFIG.Run.Redis == true {
-		rdb = redis.NewClient(&redis.Options{
-			Addr:     fmt.Sprintf("%s:%d", CONFIG.Redis.Host, CONFIG.Redis.Port), // use default Addr
-			Password: CONFIG.Redis.Password,                                      // no password set
-			DB:       CONFIG.Redis.Db,                                            // use default DB
-		})
-		_, err := rdb.Ping().Result()
-		if err != nil {
-			fmt.Println(err)
-		}
-		rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
-	}
-}
 
 func ReadKafka(topic string, hosts []string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
@@ -89,6 +73,8 @@ func RunTask(msg string) {
 	} else {
 		fmt.Printf("handle for request %s\n", request.Url)
 		if CONFIG.Run.Redis == true {
+			//fmt.Println(rdb)
+			//fmt.Println(rdb.SIsMember(CONFIG.Redis.Set, request.Url))
 			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
 				return
 			}
@@ -105,8 +91,13 @@ func RunTask(msg string) {
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
 		if isValidReferer == true {
-			request.Url = SetUrlByScheme(scheme, request.Url)
-			SendRequest(request)
+			url, err := SetUrlByScheme(scheme, request.Url)
+			if err != nil {
+				Log.Errorf("obtain url for %s by referer failed", request.Url)
+			} else {
+				request.Url = url
+				SendRequest(request)
+			}
 			return
 		}
 		SendRequest(request)
@@ -119,14 +110,10 @@ func RunTask(msg string) {
 	}
 }
 
-func SetUrlByScheme(scheme, urlStr string) string {
+func SetUrlByScheme(scheme, urlStr string) (string, error) {
 	u, err := url.Parse(urlStr)
-	if err != nil {
-		Log.Error(err)
-		return urlStr
-	}
 	u.Scheme = scheme
-	return u.String()
+	return u.String(), err
 }
 
 func ParseJson(msg string) (Request, error) {

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-redis/redis/v7"
 	"github.com/jinzhu/gorm"
 	"net/url"
 	"strings"
+	"time"
 )
 import _ "github.com/jinzhu/gorm/dialects/mysql"
 
@@ -46,6 +48,18 @@ func init() {
 		db.AutoMigrate(&Resource{})
 	}
 	//defer db.Close()
+	if CONFIG.Run.Redis == true {
+		rdb = redis.NewClient(&redis.Options{
+			Addr:     fmt.Sprintf("%s:%d", CONFIG.Redis.Host, CONFIG.Redis.Port), // use default Addr
+			Password: CONFIG.Redis.Password,                                      // no password set
+			DB:       CONFIG.Redis.Db,                                            // use default DB
+		})
+		_, err := rdb.Ping().Result()
+		if err != nil {
+			fmt.Println(err)
+		}
+		rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
+	}
 }
 
 func NewAsset(asset Asset) error {

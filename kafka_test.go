@@ -179,7 +179,7 @@ func TestRedis(t *testing.T) {
 }
 
 func TestSetUrlByScheme(t *testing.T) {
-	url := SetUrlByScheme("http", "https://play.golang.org/")
+	url, _ := SetUrlByScheme("http", "https://play.golang.org/")
 	fmt.Println(url)
 	assert.Equal(t, "http://play.golang.org/", url, "the url shoule be http")
 }

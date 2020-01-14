@@ -14,6 +14,7 @@ type Config struct {
 	}
 	Network struct {
 		Network [5]string
+		Proxy   string
 	}
 	Run struct {
 		Threads int

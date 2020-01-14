@@ -80,6 +80,7 @@ func SendRequest(request Request) {
 
 func DoGet(request Request, ip string) *resty.Response {
 	client := resty.New()
+	client.SetProxy(CONFIG.Network.Proxy)
 	res := client.R()
 	res.SetHeaders(request.Headers)
 	//fmt.Printf("Request to %s\n", request.Url)
@@ -187,6 +188,7 @@ func IsNeedReplay(host string) (bool, string) {
 		ip := GetIpFromHost(host)
 		return MatchIp(ip), ip
 	} else {
+		host = GetIpFromHost(host)
 		ips := GetIp(host)
 		for ip := range ips {
 			ipStr := string(ip)

@@ -52,6 +52,7 @@ func SendRequest(request Request) {
 	}
 	isNeedReplay, ip := IsNeedReplay(request.Host)
 	if isNeedReplay == false {
+		Log.Infof("Requst to %s will not replay,ip: %s", request.Url, ip)
 		return
 	}
 	var res *resty.Response

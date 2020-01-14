@@ -71,7 +71,7 @@ func RunTask(msg string) {
 		fmt.Println("parse request failed")
 		return
 	} else {
-		fmt.Printf("handle for request %s\n", request.Url)
+		//fmt.Printf("handle for request %s\n", request.Url)
 		if CONFIG.Run.Redis == true {
 			//fmt.Println(rdb)
 			//fmt.Println(rdb.SIsMember(CONFIG.Redis.Set, request.Url))

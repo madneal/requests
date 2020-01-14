@@ -13,7 +13,7 @@ type Config struct {
 		Name string
 	}
 	Network struct {
-		Network [5]string
+		Network [3]string
 		Proxy   string
 	}
 	Run struct {

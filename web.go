@@ -52,7 +52,7 @@ func SendRequest(request Request) {
 	}
 	isNeedReplay, ip := IsNeedReplay(request.Host)
 	if isNeedReplay == false {
-		Log.Infof("Requst to %s will not replay,ip: %s", request.Url, ip)
+		Log.Infof("Requst to %s will not replay,host: %s\n", request.Url, request.Host)
 		return
 	}
 	var res *resty.Response
@@ -168,6 +168,8 @@ func MatchIp(ip string) (result bool) {
 	for _, network := range CONFIG.Network.Network {
 		_, subnet, err := net.ParseCIDR(network)
 		if err != nil {
+			fmt.Println(network)
+			fmt.Println(subnet)
 			Log.Error(err)
 		}
 		if subnet.Contains(net.ParseIP(ip)) {

@@ -193,8 +193,8 @@ func IsNeedReplay(host string) (bool, string) {
 	} else {
 		host = GetIpFromHost(host)
 		ips := GetIp(host)
-		for ip := range ips {
-			ipStr := string(ip)
+		for _, ip := range ips {
+			ipStr := ip.String()
 			if MatchIp(ipStr) == true {
 				return true, ipStr
 			}

@@ -84,9 +84,9 @@ func RunTask(msg string) {
 			}
 		}
 
-		if len(request.Method) > 5 {
-			Log.Warnf("The method %s is too long", request.Method)
-		}
+		//if len(request.Method) > 5 {
+		//	Log.Warnf("The method %s is too long", request.Method)
+		//}
 		InsertAsset(request)
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)

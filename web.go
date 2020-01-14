@@ -91,8 +91,8 @@ func DoGet(request Request, ip string) *resty.Response {
 		Log.Error(err)
 		return nil
 	}
-	Log = Log.WithFields(logrus.Fields{"url": request.Url, "ip": ip, "status_code": response.StatusCode()})
-	Log.Info()
+	Log = Log.WithFields(logrus.Fields{"ip": ip})
+	Log.Infof("Request to %s: %d\n", request.Url, response.StatusCode())
 	return response
 }
 

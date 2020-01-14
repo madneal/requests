@@ -21,8 +21,10 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
-
 	if request.Method == POST_METHOD {
+		if MatchUrl(request.Url) == nil {
+			return
+		}
 		results := *MatchUrl(request.Url)
 		if len(results) > 0 {
 			u, err := url.Parse(request.Url)

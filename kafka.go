@@ -130,7 +130,6 @@ func ParseJson(msg string) (Request, error) {
 		headersType = reflect.TypeOf(data["headers"]).String()
 	}
 
-	request.Host = data["Host"].(string)
 	request.AgentId = data["agentId"].(string)
 	request.Timestamp = int64(data["t"].(float64))
 	request.Method = data["method"].(string)
@@ -148,10 +147,14 @@ func ParseJson(msg string) (Request, error) {
 			headers[k] = v.(string)
 		}
 	} else {
+		request.Host = data["Host"].(string)
 		for _, msg := range zeekMsg {
 			//fmt.Println(msg)
 			if data[msg].(string) != "-" {
 				headers[msg] = data[msg].(string)
+			}
+			if msg == "User-Agent" {
+				headers[msg] = UA
 			}
 		}
 		port := data["resp_p"].(string)

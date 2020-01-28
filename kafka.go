@@ -71,10 +71,7 @@ func RunTask(msg string) {
 		fmt.Println("parse request failed")
 		return
 	} else {
-		//fmt.Printf("handle for request %s\n", request.Url)
 		if CONFIG.Run.Redis == true {
-			//fmt.Println(rdb)
-			//fmt.Println(rdb.SIsMember(CONFIG.Redis.Set, request.Url))
 			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
 				return
 			}
@@ -84,9 +81,6 @@ func RunTask(msg string) {
 			}
 		}
 
-		//if len(request.Method) > 5 {
-		//	Log.Warnf("The method %s is too long", request.Method)
-		//}
 		InsertAsset(request)
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
@@ -169,7 +163,6 @@ func ParseJson(msg string) (Request, error) {
 			schema = "http://"
 		}
 		request.Url = schema + headers["Host"] + data["uri"].(string)
-		//fmt.Println(request.Url)
 	}
 	if request.Url == "" {
 		request.Url = data["url"].(string)

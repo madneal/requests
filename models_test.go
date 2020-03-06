@@ -45,3 +45,11 @@ func TestNewResouce(t *testing.T) {
 		fmt.Println(err)
 	}
 }
+
+func TestQueryAllServices(t *testing.T) {
+	resources, err := QueryAllServices()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(len(*resources))
+}

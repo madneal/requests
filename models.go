@@ -91,6 +91,12 @@ func ResourceExists(url, protocol, method string) bool {
 		First(&reource).RecordNotFound()
 }
 
+func QueryAllServices() (*[]Resource, error) {
+	resources := make([]Resource, 0)
+	err := db.Find(&resources).Error
+	return &resources, err
+}
+
 func MatchUrl(postUrl string) *[]Resource {
 	resources := make([]Resource, 0)
 	uPost, err := url.Parse(postUrl)

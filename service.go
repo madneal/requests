@@ -14,7 +14,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment;filename=resources.csv")
-	wr.Write([]string{"ID", "url", "protocol", "method", "firstpath", "ip"})
+	wr.Write([]string{"id", "url", "protocol", "method", "firstpath", "ip"})
 	for i := range *resources {
 		resource := (*resources)[i]
 		record := []string{strconv.Itoa(int(resource.Id)), resource.Url, resource.Protocol, resource.Method,

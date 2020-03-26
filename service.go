@@ -30,5 +30,5 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
-	Log.Fatal(http.ListenAndServe(":80", nil))
+	Log.Info(http.ListenAndServe(":80", nil))
 }

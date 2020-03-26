@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
 )
 
 func init() {
@@ -20,14 +21,18 @@ func init() {
 }
 
 func main() {
-	if CONFIG.Kafka.Topic == "" {
-		fmt.Println("Please set the topic")
-	}
-	if len(CONFIG.Kafka.Brokers) == 0 {
-		fmt.Println("Please set the brokers")
-	}
 	fmt.Println("*********Begin the Assets detect*************")
-	fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
-	SetDownloadService()
-	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers, CONFIG.Kafka.GroupId)
+	cmd := os.Args[1]
+	if cmd == "kafka" {
+		if CONFIG.Kafka.Topic == "" {
+			fmt.Println("Please set the topic")
+		}
+		if len(CONFIG.Kafka.Brokers) == 0 {
+			fmt.Println("Please set the brokers")
+		}
+		fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
+		ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers, CONFIG.Kafka.GroupId)
+	} else if cmd == "web" {
+		SetDownloadService()
+	}
 }

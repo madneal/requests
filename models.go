@@ -88,7 +88,13 @@ func NewResouce(resource Resource) error {
 	}
 }
 
-func CheckResourceOutofdate(hours float64, startTime, endTime time.Time) bool {
+func CheckIfOutofdate(hours float64, lastUpdated time.Time) bool {
+	return ComputeDuration(float64(10*24), time.Now(), lastUpdated)
+}
+
+// ComputeDuration is utilized to compute the duration between startTime and endTime
+// id larger than the hours
+func ComputeDuration(hours float64, startTime, endTime time.Time) bool {
 	diff := endTime.Sub(startTime).Hours()
 	return math.Abs(diff) > hours
 }

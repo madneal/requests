@@ -84,11 +84,34 @@ func NewResouce(resource Resource) error {
 	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
 		return db.Create(&resource).Error
 	} else {
+		if CheckIfResourceOutofdate(resource) {
+			ip := resource.Ip
+			updated := resource.UpdatedTime
+			db.First(&resource)
+			resource.Ip = ip
+			resource.UpdatedTime = updated
+			return db.Save(&resource).Error
+		}
 		return nil
 	}
 }
 
-func CheckIfOutofdate(hours float64, lastUpdated time.Time) bool {
+func CheckIfResourceOutofdate(resource Resource) bool {
+	lastUpdated := getLastUpdatedTime(resource)
+	return CheckIfOutofdate(lastUpdated)
+}
+
+func getLastUpdatedTime(resource Resource) time.Time {
+	err := db.First(&resource).Error
+	if err != nil {
+		Log.Error(err)
+	}
+	return resource.UpdatedTime
+}
+
+// CheckIfOutofdate is utilized to check if the last updated time
+// larger than 10 days
+func CheckIfOutofdate(lastUpdated time.Time) bool {
 	return ComputeDuration(float64(10*24), time.Now(), lastUpdated)
 }
 

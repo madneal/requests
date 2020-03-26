@@ -39,7 +39,7 @@ func TestNewResouce(t *testing.T) {
 		Protocol:    "",
 		Method:      "",
 		Firstpath:   "",
-		Ip:          "1.1.1.1",
+		Ip:          "2.1.1.1",
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
@@ -70,9 +70,45 @@ func TestCheckResourceOutofdate(t *testing.T) {
 
 func TestCheckIfOutofdate(t *testing.T) {
 	lastUpdated := time.Date(2020, 3, 25, 0, 0, 0, 0, time.Local)
-	result := CheckIfOutofdate(float64(10*24), lastUpdated)
+	result := CheckIfOutofdate(lastUpdated)
 	assert.Equal(t, false, result, "The last updated time is less than 10 days")
 	lastUpdated1 := time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local)
-	result1 := CheckIfOutofdate(float64(10*24), lastUpdated1)
+	result1 := CheckIfOutofdate(lastUpdated1)
 	assert.Equal(t, true, result1, "The last updated time is larger than 10 days")
+}
+
+func TestCheckIfResourceOutofdate(t *testing.T) {
+	testTime := time.Date(2020, 2, 1, 0, 0, 0, 0, time.Local)
+	testResource := Resource{
+		Url:         "www.test.com",
+		Protocol:    "http",
+		Method:      "GET",
+		Firstpath:   "aaaa",
+		CreatedTime: testTime,
+		UpdatedTime: testTime,
+	}
+	err := NewResouce(testResource)
+	if err != nil {
+		Log.Error(err)
+	}
+	result := CheckIfResourceOutofdate(testResource)
+	db.Delete(testResource)
+	assert.Equal(t, true, result, "The resource should be out of date")
+
+	testTime1 := time.Date(2020, 3, 25, 0, 0, 0, 0, time.Local)
+	resource := Resource{
+		Url:         "www.test.com.aaa",
+		Protocol:    "http",
+		Method:      "GET",
+		Firstpath:   "SS",
+		CreatedTime: testTime1,
+		UpdatedTime: testTime1,
+	}
+	err1 := NewResouce(resource)
+	if err1 != nil {
+		Log.Error(err)
+	}
+	result1 := CheckIfResourceOutofdate(resource)
+	db.Delete(resource)
+	assert.Equal(t, false, result1, "The resource should not be out of date")
 }

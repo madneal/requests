@@ -12,7 +12,7 @@ func TestReadKafka(t *testing.T) {
 	var localhost []string
 	topic := "test"
 	localhost = append(localhost, "localhost:9092")
-	ReadKafka(topic, localhost)
+	ReadKafka(topic, localhost, "test")
 }
 
 func TestParseJson(t *testing.T) {

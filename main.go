@@ -29,5 +29,5 @@ func main() {
 	fmt.Println("*********Begin the Assets detect*************")
 	fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
 	SetDownloadService()
-	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers)
+	ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers, CONFIG.Kafka.GroupId)
 }

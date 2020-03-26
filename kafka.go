@@ -17,11 +17,11 @@ var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie"
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 var rdb *redis.Client
 
-func ReadKafka(topic string, hosts []string) {
+func ReadKafka(topic string, hosts []string, groupId string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  hosts,
 		Topic:    topic,
-		GroupID:  "consumer-group-pvs",
+		GroupID:  groupId,
 		MinBytes: 1,
 		MaxBytes: 1000,
 	})

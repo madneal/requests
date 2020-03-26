@@ -4,6 +4,7 @@ type Config struct {
 	Kafka struct {
 		Brokers []string
 		Topic   string
+		GroupId string
 	}
 	Database struct {
 		Host string

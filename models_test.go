@@ -33,6 +33,20 @@ func TestMatchUrl(t *testing.T) {
 	assert.Equal(t, false, len(*MatchUrl(postUrl1)) == 1, "there shoud not mathch one")
 }
 
+func TestResourceExists(t *testing.T) {
+	resource := Resource{
+		Url:         "www.fff.com",
+		Protocol:    "",
+		Method:      "",
+		Firstpath:   "",
+		Ip:          "2.1.1.1",
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
+	}
+	assert.Equal(t, true, ResourceExists(resource.Url, resource.Protocol, resource.Method),
+		"The resource should exist")
+}
+
 func TestNewResouce(t *testing.T) {
 	resource := Resource{
 		Url:         "www.fff.com",
@@ -111,4 +125,21 @@ func TestCheckIfResourceOutofdate(t *testing.T) {
 	result1 := CheckIfResourceOutofdate(resource)
 	db.Delete(resource)
 	assert.Equal(t, false, result1, "The resource should not be out of date")
+}
+
+func TestDeleteIfExists(t *testing.T) {
+	resource := Resource{
+		Url:         "www.fff.com",
+		Protocol:    "",
+		Method:      "",
+		Firstpath:   "",
+		Ip:          "2.1.1.1",
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
+	}
+	err := DeleteIfExists(resource)
+	if err != nil {
+		Log.Error(err)
+	}
+	db.First(&resource)
 }

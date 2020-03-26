@@ -80,6 +80,13 @@ func Exists(md5 string) bool {
 	return !db.Where("md5 = ?", md5).First(&asset).RecordNotFound()
 }
 
+func DeleteIfExists(resource Resource) error {
+	if ResourceExists(resource.Url, resource.Protocol, resource.Method) {
+		return db.Delete(resource).Error
+	}
+	return nil
+}
+
 func NewResouce(resource Resource) error {
 	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
 		return db.Create(&resource).Error

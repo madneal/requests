@@ -70,13 +70,17 @@ func SendRequest(request Request) {
 		return
 	}
 	statusCode := res.StatusCode()
+	resource := CreateResourceByRequest(request, ip)
 	if statusCode == 200 {
-		resource := CreateResourceByRequest(request, ip)
 		err := NewResouce(*resource)
 		if err != nil {
 			Log.Error(err)
 		}
 	} else {
+		err := DeleteIfExists(*resource)
+		if err != nil {
+			Log.Error(err)
+		}
 		return
 	}
 }

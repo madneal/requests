@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v7"
 	"github.com/jinzhu/gorm"
+	"math"
 	"net/url"
 	"strings"
 	"time"
@@ -18,12 +19,14 @@ type Asset struct {
 }
 
 type Resource struct {
-	Id        int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url       string `gorm:"type:varchar(1000);column:url"`
-	Protocol  string `gorm:"type:varchar(10);column:protocol"`
-	Method    string `gorm:"type:varchar(10);column:method"`
-	Firstpath string `gorm:"type:varchar(100);column:firstpath"`
-	Ip        string `gorm:"type:varchar(20);column:ip"`
+	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url         string    `gorm:"type:varchar(1000);column:url"`
+	Protocol    string    `gorm:"type:varchar(10);column:protocol"`
+	Method      string    `gorm:"type:varchar(10);column:method"`
+	Firstpath   string    `gorm:"type:varchar(100);column:firstpath"`
+	Ip          string    `gorm:"type:varchar(20);column:ip"`
+	CreatedTime time.Time `gorm:"created"`
+	UpdatedTime time.Time `gorm:"updated"`
 }
 
 var db *gorm.DB
@@ -83,6 +86,11 @@ func NewResouce(resource Resource) error {
 	} else {
 		return nil
 	}
+}
+
+func CheckResourceOutofdate(hours float64, startTime, endTime time.Time) bool {
+	diff := endTime.Sub(startTime).Hours()
+	return math.Abs(diff) > hours
 }
 
 func ResourceExists(url, protocol, method string) bool {

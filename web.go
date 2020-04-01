@@ -77,10 +77,10 @@ func SendRequest(request Request) {
 			Log.Error(err)
 		}
 	} else {
-		err := DeleteIfExists(*resource)
-		if err != nil {
-			Log.Error(err)
-		}
+		//err := DeleteIfExists(*resource)
+		//if err != nil {
+		//	Log.Error(err)
+		//}
 		return
 	}
 }

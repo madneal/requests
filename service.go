@@ -14,11 +14,12 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment;filename=resources.csv")
-	wr.Write([]string{"id", "url", "protocol", "method", "firstpath", "ip"})
+	wr.Write([]string{"id", "url", "protocol", "method", "firstpath", "ip", "created_time", "updated_time"})
 	for i := range *resources {
 		resource := (*resources)[i]
 		record := []string{strconv.Itoa(int(resource.Id)), resource.Url, resource.Protocol, resource.Method,
-			resource.Firstpath, resource.Ip}
+			resource.Firstpath, resource.Ip, resource.CreatedTime.Format("2006-01-02 15:04:05"),
+			resource.UpdatedTime.Format("2006-01-02 15:04:05")}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)

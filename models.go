@@ -141,6 +141,12 @@ func QueryAllServices() (*[]Resource, error) {
 	return &resources, err
 }
 
+func QueryAllAssets() (*[]Asset, error) {
+	assets := make([]Asset, 0)
+	err := db.Find(&assets).Error
+	return &assets, err
+}
+
 func MatchUrl(postUrl string) *[]Resource {
 	resources := make([]Resource, 0)
 	uPost, err := url.Parse(postUrl)

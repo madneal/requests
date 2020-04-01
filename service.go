@@ -29,7 +29,29 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
+func AssetsHandler(w http.ResponseWriter, r *http.Request) {
+	assets, err := QueryAllAssets()
+	if err != nil {
+		Log.Error(err)
+	}
+	wr := csv.NewWriter(w)
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment;filename=resources.csv")
+	wr.Write([]string{"id", "url", "method"})
+	for i := range *assets {
+		asset := (*assets)[i]
+		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Method}
+		err := wr.Write(record)
+		if err != nil {
+			Log.Error(err)
+			return
+		}
+	}
+	wr.Flush()
+}
+
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
+	http.HandleFunc("/download-assets", AssetsHandler)
 	Log.Info(http.ListenAndServe(":80", nil))
 }

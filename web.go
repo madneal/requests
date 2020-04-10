@@ -72,6 +72,7 @@ func SendRequest(request Request) {
 	statusCode := res.StatusCode()
 	resource := CreateResourceByRequest(request, ip)
 	if statusCode == 200 {
+		Log.Infof("Request to %s successful", request.Url)
 		err := NewResouce(*resource)
 		if err != nil {
 			Log.Error(err)

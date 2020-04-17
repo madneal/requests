@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Request struct {
@@ -33,10 +34,12 @@ func SendRequest(request Request) {
 			} else {
 				for _, result := range results {
 					resource := Resource{
-						Url:       u.Host + u.Path,
-						Protocol:  result.Protocol,
-						Method:    POST_METHOD,
-						Firstpath: u.Host + "/" + strings.Split(u.Path, "/")[1],
+						Url:         u.Host + u.Path,
+						Protocol:    result.Protocol,
+						Method:      POST_METHOD,
+						Firstpath:   u.Host + "/" + strings.Split(u.Path, "/")[1],
+						CreatedTime: time.Now(),
+						UpdatedTime: time.Now(),
 					}
 					err := NewResouce(resource)
 					if err != nil {
@@ -148,11 +151,13 @@ func CreateResourceByRequest(request Request, ip string) *Resource {
 	}
 	path := "/" + strings.Split(u.Path, "/")[1]
 	return &Resource{
-		Url:       u.Host + u.Path,
-		Protocol:  u.Scheme,
-		Method:    request.Method,
-		Firstpath: u.Host + path,
-		Ip:        ip,
+		Url:         u.Host + u.Path,
+		Protocol:    u.Scheme,
+		Method:      request.Method,
+		Firstpath:   u.Host + path,
+		Ip:          ip,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
 	}
 }
 

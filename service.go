@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"net/http"
 	"strconv"
 )
@@ -10,6 +11,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	resources, err := QueryAllServices()
 	if err != nil {
 		Log.Error(err)
+		return
 	}
 	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
@@ -27,6 +29,21 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	wr.Flush()
+}
+
+func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
+	resources, err := QueryAllServices()
+	if err != nil {
+		Log.Error(err)
+		return
+	}
+	data, err := json.Marshal(resources)
+	if err != nil {
+		Log.Error(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
 func AssetsHandler(w http.ResponseWriter, r *http.Request) {
@@ -53,5 +70,6 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
 	http.HandleFunc("/download-assets", AssetsHandler)
+	http.HandleFunc("/get-resources", ResourcesHandler)
 	Log.Info(http.ListenAndServe(":80", nil))
 }

@@ -16,6 +16,7 @@ type Asset struct {
 	Url    string `gorm:"type:varchar(1000);column:url"`
 	Method string `gorm:"type:varchar(10);column:method"`
 	Md5    string `gorm:"type:varchar(100);column:md5"`
+	Params string `gorm:"type:varchar(1000);column:params"`
 }
 
 type Resource struct {

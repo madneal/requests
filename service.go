@@ -50,6 +50,21 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 	assets, err := QueryAllAssets()
 	if err != nil {
 		Log.Error(err)
+		return
+	}
+	data, err := json.Marshal(assets)
+	if err != nil {
+		Log.Error(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+func DownloadResources(w http.ResponseWriter, r *http.Request) {
+	assets, err := QueryAllAssets()
+	if err != nil {
+		Log.Error(err)
 	}
 	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
@@ -69,7 +84,8 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
-	http.HandleFunc("/download-assets", AssetsHandler)
+	http.HandleFunc("/download-assets", DownloadResources)
 	http.HandleFunc("/get-resources", ResourcesHandler)
+	http.HandleFunc("/get-assets", AssetsHandler)
 	Log.Info(http.ListenAndServe(":80", nil))
 }

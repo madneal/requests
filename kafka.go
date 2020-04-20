@@ -190,18 +190,14 @@ func ParseJson(msg string) (Request, error) {
 // ObtainUrl is utilized to obtain url from data
 func ObtainUrl(data map[string]interface{}) string {
 	var host string
-	var port string
 	var uri string
 	if data["host"] != nil {
 		host = data["host"].(string)
 	}
-	if data["resp_p"] != nil {
-		port = data["resp_p"].(string)
-	}
 	if data["uri"] != nil {
 		uri = data["uri"].(string)
 	}
-	return "http://" + host + ":" + port + uri
+	return "http://" + host + ":" + uri
 }
 
 func InsertAsset(request Request) {

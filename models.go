@@ -15,7 +15,6 @@ type Asset struct {
 	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
 	Url         string    `gorm:"type:varchar(1000);column:url"`
 	Method      string    `gorm:"type:varchar(10);column:method"`
-	Md5         string    `gorm:"type:varchar(100);column:md5"`
 	Params      string    `gorm:"type:varchar(1000);column:params"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`

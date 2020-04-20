@@ -146,3 +146,10 @@ func TestSetUrlByScheme(t *testing.T) {
 	fmt.Println(url)
 	assert.Equal(t, "http://play.golang.org/", url, "the url shoule be http")
 }
+
+func TestCreateAssetByUrl(t *testing.T) {
+	urlStr := "http://gitlab.com/pa/edf/aa?name=134&bcd=34&ff=aaaa"
+	asset := CreateAssetByUrl(urlStr)
+	assert.Equal(t, "http://gitlab.com/pa/edf/aa", asset.Url, "the url should be the same")
+	assert.Equal(t, "ff,name,bcd", asset.Params, "the params should be the same")
+}

@@ -188,7 +188,6 @@ func InsertAsset(request Request) {
 	}
 	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
 	md5Str := fmt.Sprintf("%x", md5.Sum([]byte(str)))
-	fmt.Println(md5Str)
 	asset := Asset{
 		Url:    request.Url,
 		Method: request.Method,
@@ -198,4 +197,27 @@ func InsertAsset(request Request) {
 	if err != nil {
 		Log.Error(err)
 	}
+}
+
+func CreateAssetByUrl(urlStr string) *Asset {
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		Log.Error(err)
+		return nil
+	}
+	params := ObtainQueryKeys(u)
+	return &Asset{
+		Url:    fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
+		Params: params,
+	}
+}
+
+// ObtainQueryKeys is utilized to obtain query keys
+func ObtainQueryKeys(u *url.URL) string {
+	q := u.Query()
+	var result string
+	for k, _ := range q {
+		result += k + ","
+	}
+	return result
 }

@@ -124,9 +124,12 @@ func ParseJson(msg string) (Request, error) {
 		//fmt.Println(val)
 		headersType = reflect.TypeOf(data["headers"]).String()
 	}
-
-	request.AgentId = data["agentId"].(string)
-	request.Timestamp = int64(data["t"].(float64))
+	if data["agentId"] != nil {
+		request.AgentId = data["agentId"].(string)
+	}
+	if data["t"] != nil {
+		request.Timestamp = int64(data["t"].(float64))
+	}
 	request.Method = data["method"].(string)
 	headers := make(map[string]string)
 	// headers is array
@@ -141,10 +144,14 @@ func ParseJson(msg string) (Request, error) {
 		for k, v := range headers1 {
 			headers[k] = v.(string)
 		}
+	} else if data["agentId"] == nil {
+		request.Url = ObtainUrl(data)
 	} else {
 		request.Host = data["Host"].(string)
 		for _, msg := range zeekMsg {
-			//fmt.Println(msg)
+			if data[msg] == nil {
+				continue
+			}
 			if data[msg].(string) != "-" {
 				headers[msg] = data[msg].(string)
 			}
@@ -177,6 +184,23 @@ func ParseJson(msg string) (Request, error) {
 	}
 	request.Headers = headers
 	return request, err
+}
+
+// ObtainUrl is utilized to obtain url from data
+func ObtainUrl(data map[string]interface{}) string {
+	var host string
+	var port string
+	var uri string
+	if data["host"] != nil {
+		host = data["host"].(string)
+	}
+	if data["resp_p"] != nil {
+		port = data["resp_p"].(string)
+	}
+	if data["uri"] != nil {
+		uri = data["uri"].(string)
+	}
+	return "http://" + host + ":" + port + uri
 }
 
 func InsertAsset(request Request) {

@@ -68,19 +68,37 @@ func init() {
 }
 
 func NewAsset(asset *Asset) error {
-	if !Exists(asset.Url, "url") {
+	if !AssetExists(asset.Method, asset.Url) {
 		return db.Create(&asset).Error
 	} else {
-		AppendMethod(asset)
-		return nil
+		newParams := asset.Params
+		oldParams := GetParams(asset)
+		asset.UpdatedTime = time.Now()
+		asset.Params = UpdateParams(oldParams, newParams)
+		return db.Save(&asset).Error
 	}
+}
+
+func GetParams(asset *Asset) string {
+	err := db.First(&asset).Error
+	if err != nil {
+		Log.Error(err)
+		return ""
+	}
+	return asset.Params
 }
 
 // check if record exists
 func Exists(field, fieldName string) bool {
 	var asset Asset
-	query := fmt.Sprintf("%s LIKE ?", fieldName)
+	query := fmt.Sprintf("%s = ?", fieldName)
 	return !db.Where(query, field).First(&asset).RecordNotFound()
+}
+
+// check if record exists
+func AssetExists(method, url string) bool {
+	var asset Asset
+	return !db.Where("method = ? and url = ?", method, url).First(&asset).RecordNotFound()
 }
 
 // check if record exists by like
@@ -88,6 +106,24 @@ func ExistsByLike(field, fieldName string) bool {
 	var asset Asset
 	query := fmt.Sprintf("%s LIKE ?", fieldName)
 	return !db.Where(query, "%"+field+"%").First(&asset).RecordNotFound()
+}
+
+// UpdateParams is utilized to update the params according to the new asset
+func UpdateParams(oldParams, newParams string) string {
+	f := func(c rune) bool {
+		return c == ','
+	}
+	oldParamsArr := strings.FieldsFunc(oldParams, f)
+	newParamsArr := strings.Split(newParams, ",")
+	for _, param := range newParamsArr {
+		if strings.Contains(oldParams, param) {
+			continue
+		} else {
+			oldParamsArr = append(oldParamsArr, param)
+		}
+	}
+	return strings.Join(oldParamsArr, ",")
+
 }
 
 // check if method exists, if method doesn't exist, append

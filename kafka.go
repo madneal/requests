@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"time"
 )
 
 var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
@@ -220,8 +221,10 @@ func CreateAssetByUrl(urlStr string) *Asset {
 	}
 	params := ObtainQueryKeys(u)
 	return &Asset{
-		Url:    fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
-		Params: params,
+		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
+		Params:      params,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
 	}
 }
 

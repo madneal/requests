@@ -12,11 +12,13 @@ import (
 import _ "github.com/jinzhu/gorm/dialects/mysql"
 
 type Asset struct {
-	Id     int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url    string `gorm:"type:varchar(1000);column:url"`
-	Method string `gorm:"type:varchar(10);column:method"`
-	Md5    string `gorm:"type:varchar(100);column:md5"`
-	Params string `gorm:"type:varchar(1000);column:params"`
+	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url         string    `gorm:"type:varchar(1000);column:url"`
+	Method      string    `gorm:"type:varchar(10);column:method"`
+	Md5         string    `gorm:"type:varchar(100);column:md5"`
+	Params      string    `gorm:"type:varchar(1000);column:params"`
+	CreatedTime time.Time `gorm:"created"`
+	UpdatedTime time.Time `gorm:"updated"`
 }
 
 type Resource struct {
@@ -95,6 +97,7 @@ func AppendMethod(asset *Asset) {
 		method := asset.Method
 		method += "," + QueryAssetMethod(asset)
 		asset.Method = method
+		asset.UpdatedTime = time.Now()
 		err := db.Save(asset).Error
 		if err != nil {
 			Log.Error(err)

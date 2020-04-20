@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	md5 "crypto/md5"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -181,19 +180,9 @@ func ParseJson(msg string) (Request, error) {
 }
 
 func InsertAsset(request Request) {
-	u, err := url.Parse(request.Url)
-	if err != nil {
-		Log.Error(err)
-		return
-	}
-	str := fmt.Sprintf("%s%s%s", u.Scheme, u.Host, u.Path)
-	md5Str := fmt.Sprintf("%x", md5.Sum([]byte(str)))
-	asset := Asset{
-		Url:    request.Url,
-		Method: request.Method,
-		Md5:    md5Str,
-	}
-	err = NewAsset(asset)
+	asset := CreateAssetByUrl(request.Url)
+	asset.Method = request.Method
+	err := NewAsset(asset)
 	if err != nil {
 		Log.Error(err)
 	}

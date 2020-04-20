@@ -66,19 +66,51 @@ func init() {
 	}
 }
 
-func NewAsset(asset Asset) error {
-	if !Exists(asset.Md5) {
+func NewAsset(asset *Asset) error {
+	if !Exists(asset.Url, "url") {
 		return db.Create(&asset).Error
 	} else {
-		fmt.Println("asset exists!")
+		AppendMethod(asset)
 		return nil
 	}
 }
 
-// check if record exists by md5
-func Exists(md5 string) bool {
+// check if record exists
+func Exists(field, fieldName string) bool {
 	var asset Asset
-	return !db.Where("md5 = ?", md5).First(&asset).RecordNotFound()
+	query := fmt.Sprintf("%s LIKE ?", fieldName)
+	return !db.Where(query, field).First(&asset).RecordNotFound()
+}
+
+// check if record exists by like
+func ExistsByLike(field, fieldName string) bool {
+	var asset Asset
+	query := fmt.Sprintf("%s LIKE ?", fieldName)
+	return !db.Where(query, "%"+field+"%").First(&asset).RecordNotFound()
+}
+
+// check if method exists, if method doesn't exist, append
+func AppendMethod(asset *Asset) {
+	if !ExistsByLike(asset.Method, "method") {
+		method := asset.Method
+		method += "," + QueryAssetMethod(asset)
+		asset.Method = method
+		err := db.Save(asset).Error
+		if err != nil {
+			Log.Error(err)
+		}
+	} else {
+		fmt.Println("method exists!")
+	}
+}
+
+func QueryAssetMethod(asset *Asset) string {
+	err := db.First(&asset).Error
+	if err != nil {
+		Log.Error(err)
+		return ""
+	}
+	return asset.Method
 }
 
 func DeleteIfExists(resource Resource) error {

@@ -13,7 +13,7 @@ func TestNewAsset(t *testing.T) {
 		Url:    "www.baidu.com",
 		Method: "GET",
 	}
-	err := NewAsset(asset)
+	err := NewAsset(&asset)
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -21,8 +21,8 @@ func TestNewAsset(t *testing.T) {
 }
 
 func TestExists(t *testing.T) {
-	md5 := "123"
-	exists := Exists(md5)
+	url := "123"
+	exists := Exists(url, "url")
 	fmt.Println(exists)
 }
 

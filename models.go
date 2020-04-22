@@ -16,6 +16,7 @@ type Asset struct {
 	Url         string    `gorm:"type:varchar(1000);column:url"`
 	Method      string    `gorm:"type:varchar(10);column:method"`
 	Params      string    `gorm:"type:varchar(1000);column:params"`
+	Host        string    `gorm:"type:varchar(100);column:host"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`
 }

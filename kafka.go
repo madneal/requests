@@ -219,6 +219,7 @@ func CreateAssetByUrl(urlStr string) *Asset {
 	return &Asset{
 		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
 		Params:      params,
+		Host:        u.Host,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}

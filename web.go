@@ -222,6 +222,26 @@ func GetIpFromHost(host string) string {
 	}
 }
 
+func GetIpFromHost1(host string) *[]string {
+	ips := make([]string, 0)
+	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
+	if err != nil {
+		Log.Error(err)
+	}
+	if strings.Contains(host, ":") {
+		host = strings.Split(host, ":")[0]
+	}
+	if isIp {
+		ips = append(ips, host)
+	} else {
+		ipArr := GetIp(host)
+		for _, ip := range ipArr {
+			ips = append(ips, ip.String())
+		}
+	}
+	return &ips
+}
+
 // judge if urls match, host + only one path
 func IsCommonUrl(url1, url2 string) bool {
 	if strings.Contains(url1, "/") == false || strings.Contains(url2, "/") == false {

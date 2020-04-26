@@ -100,7 +100,7 @@ func IsIpNeedUpdate(host string) (bool, string) {
 	freshIp := GetIpStr(host)
 	isNeedUpdate := !(CompareStringArr(QueryIp(host), freshIp))
 	if isNeedUpdate {
-		return isNeedUpdate, ip
+		return isNeedUpdate, freshIp
 	} else {
 		return isNeedUpdate, ""
 	}

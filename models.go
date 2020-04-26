@@ -97,8 +97,8 @@ func UpdateIp(host, ip string) error {
 }
 
 func IsIpNeedUpdate(host string) (bool, string) {
-	ip := GetIpStr(host)
-	isNeedUpdate := !(CompareStringArr(ip, QueryIp(host)))
+	freshIp := GetIpStr(host)
+	isNeedUpdate := !(CompareStringArr(QueryIp(host), freshIp))
 	if isNeedUpdate {
 		return isNeedUpdate, ip
 	} else {

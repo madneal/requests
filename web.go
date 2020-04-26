@@ -192,37 +192,21 @@ func MatchIp(ip string) (result bool) {
 
 // judge if url need to replay
 func IsNeedReplay(host string) (bool, string) {
-	// judge the ip of host if matches network
-	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
-	if err != nil {
-		Log.Error(err)
+	ips := *GetIpFromHost(host)
+	if len(ips) == 0 {
+		Log.Warnf("Cannot obtain ip of host: %s", host)
+		return false, ""
 	}
-	if isIp == true {
-		ip := GetIpFromHost(host)
-		return MatchIp(ip), ip
-	} else {
-		host = GetIpFromHost(host)
-		ips := GetIp(host)
-		for _, ip := range ips {
-			ipStr := ip.String()
-			if MatchIp(ipStr) == true {
-				return true, ipStr
-			}
+	for _, ip := range ips {
+		if MatchIp(ip) {
+			return true, ip
 		}
 	}
-	return false, ""
+	return false, ips[0]
 }
 
-// obtain the ip from host
-func GetIpFromHost(host string) string {
-	if strings.Contains(host, ":") {
-		return strings.Split(host, ":")[0]
-	} else {
-		return host
-	}
-}
-
-func GetIpFromHost1(host string) *[]string {
+// GetIpFromHost is utilized to parse IP from host
+func GetIpFromHost(host string) *[]string {
 	ips := make([]string, 0)
 	isIp, err := regexp.MatchString("^[0-9]+\\.", host)
 	if err != nil {

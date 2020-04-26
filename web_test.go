@@ -127,11 +127,11 @@ func TestIsValidReferer(t *testing.T) {
 
 func TestGetIpFromHost(t *testing.T) {
 	host := "192.168.192.1:8080"
-	assert.Equal(t, "192.168.192.1", (*GetIpFromHost1(host))[0], "the host should be the same")
+	assert.Equal(t, "192.168.192.1", (*GetIpFromHost(host))[0], "the host should be the same")
 	host1 := "192.168.1.1"
-	assert.Equal(t, "192.168.1.1", (*GetIpFromHost1(host1))[0], "the host should be the same")
+	assert.Equal(t, "192.168.1.1", (*GetIpFromHost(host1))[0], "the host should be the same")
 	host2 := "baidu.com"
-	assert.Equal(t, "220.181.38.148", (*GetIpFromHost1(host2))[0], "the host should be the same")
+	assert.Equal(t, "220.181.38.148", (*GetIpFromHost(host2))[0], "the host should be the same")
 }
 
 func TestIsNeedReplay(t *testing.T) {
@@ -139,8 +139,8 @@ func TestIsNeedReplay(t *testing.T) {
 	result, ip := IsNeedReplay(host)
 	assert.Equal(t, false, result, "the result should be false")
 	assert.Equal(t, "192.168.0.1", ip, "the ip should be the same")
-	host1 := "193.62.75.65:8080"
+	host1 := "113.98.55.192:8080"
 	result1, ip1 := IsNeedReplay(host1)
 	assert.Equal(t, true, result1, "the result should be true")
-	assert.Equal(t, "193.62.75.65", ip1, "the ip should be the same")
+	assert.Equal(t, "113.98.55.192", ip1, "the ip should be the same")
 }

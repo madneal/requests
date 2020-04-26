@@ -17,6 +17,7 @@ type Asset struct {
 	Method      string    `gorm:"type:varchar(10);column:method"`
 	Params      string    `gorm:"type:varchar(1000);column:params"`
 	Host        string    `gorm:"type:varchar(100);column:host"`
+	Ip          string    `gorm:"type:varchar(100);column:ip"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`
 }
@@ -72,12 +73,55 @@ func NewAsset(asset *Asset) error {
 	if !AssetExists(asset.Method, asset.Url) {
 		return db.Create(&asset).Error
 	} else {
+		// if asset out of date, try to update the ip of host
+		if CheckIfAssetOutofDate(*asset) {
+			isNeedUpdateIp, ip := IsIpNeedUpdate((*asset).Host)
+			if isNeedUpdateIp {
+				err := UpdateIp((*asset).Host, ip)
+				if err != nil {
+					Log.Error(err)
+				}
+			}
+		}
 		newParams := asset.Params
 		oldParams := GetParams(asset)
 		asset.UpdatedTime = time.Now()
 		asset.Params = UpdateParams(oldParams, newParams)
 		return db.Save(&asset).Error
 	}
+}
+
+func UpdateIp(host, ip string) error {
+	err := db.Table("assets").Where("host = ?", host).Update(Asset{Ip: ip, UpdatedTime: time.Now()}).Error
+	return err
+}
+
+func IsIpNeedUpdate(host string) (bool, string) {
+	ip := GetIpStr(host)
+	isNeedUpdate := !(CompareStringArr(ip, QueryIp(host)))
+	if isNeedUpdate {
+		return isNeedUpdate, ip
+	} else {
+		return isNeedUpdate, ""
+	}
+}
+
+// CompareStringArr compares two string consists of ele with ","
+// "a,b,c" == "c,a,b"
+func CompareStringArr(a, b string) bool {
+	if a == "" && b == "" {
+		return true
+	}
+	if a == "" && b != "" {
+		return false
+	}
+	arr := strings.Split(a, ",")
+	for _, ele := range arr {
+		if !strings.Contains(b, ele) {
+			return false
+		}
+	}
+	return true
 }
 
 func GetParams(asset *Asset) string {
@@ -100,6 +144,20 @@ func Exists(field, fieldName string) bool {
 func AssetExists(method, url string) bool {
 	var asset Asset
 	return !db.Where("method = ? and url = ?", method, url).First(&asset).RecordNotFound()
+}
+
+func QueryIp(host string) string {
+	var ip string
+	var asset Asset
+	err := db.Where("host = ?", host).First(&asset).Error
+	if err != nil {
+		Log.Error(err)
+		return ""
+	}
+	if asset.Ip != "" {
+		ip = asset.Ip
+	}
+	return ip
 }
 
 // check if record exists by like
@@ -180,12 +238,25 @@ func CheckIfResourceOutofdate(resource Resource) bool {
 	return CheckIfOutofdate(lastUpdated)
 }
 
+func CheckIfAssetOutofDate(asset Asset) bool {
+	lastUpdated := getLastUpdatedTimeOfAsset(asset)
+	return CheckIfOutofdate(lastUpdated)
+}
+
 func getLastUpdatedTime(resource Resource) time.Time {
 	err := db.First(&resource).Error
 	if err != nil {
 		Log.Error(err)
 	}
 	return resource.UpdatedTime
+}
+
+func getLastUpdatedTimeOfAsset(asset Asset) time.Time {
+	err := db.First(&asset).Error
+	if err != nil {
+		Log.Error(err)
+	}
+	return asset.UpdatedTime
 }
 
 // CheckIfOutofdate is utilized to check if the last updated time

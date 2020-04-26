@@ -154,3 +154,30 @@ func TestDeleteIfExists(t *testing.T) {
 	}
 	db.First(&resource)
 }
+
+func TestGetIps(t *testing.T) {
+	ip := QueryIp("www.baidu.com")
+	assert.Equal(t, "1.1.1.1", ip, "the ip shoule be the same")
+	ip1 := QueryIp("google.com")
+	assert.Equal(t, "", ip1, "the ip should not exist")
+}
+
+func TestIsIpNeedUpdate(t *testing.T) {
+	host := "www.baidu.com"
+	isneedUpdate, _ := IsIpNeedUpdate(host)
+	assert.Equal(t, true, isneedUpdate, "The host need to be updated")
+	host1 := "taobao.com"
+	isNeedUpdate, _ := IsIpNeedUpdate(host1)
+	assert.Equal(t, false, isNeedUpdate, "The host doesn't need to be updated")
+}
+
+func TestCompareStringArr(t *testing.T) {
+	assert.Equal(t, true, CompareStringArr("", ""), "The empty string should be the same")
+	assert.Equal(t, true, CompareStringArr("a", "a"), "The two words shoult be the same")
+	assert.Equal(t, false, CompareStringArr("a", "b"), "The two words should not be the same")
+	assert.Equal(t, true, CompareStringArr("a,b,c", "a,c,b"), "The two string should be the same")
+}
+
+func TestUpdateIp(t *testing.T) {
+	UpdateIp("www.baidu.com", "2.2.2.2")
+}

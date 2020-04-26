@@ -171,6 +171,15 @@ func GetIp(host string) []net.IP {
 	return ip
 }
 
+func GetIpStr(host string) string {
+	ips := GetIp(host)
+	var result string
+	for _, ip := range ips {
+		result += ip.String() + ","
+	}
+	return result
+}
+
 // check if ip in the given networks
 func MatchIp(ip string) (result bool) {
 	result = false

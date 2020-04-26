@@ -166,3 +166,10 @@ func TestCreateAssetByUrl(t *testing.T) {
 	assert.Equal(t, "http://gitlab.com/pa/edf/aa", asset.Url, "the url should be the same")
 	assert.Equal(t, "ff,name,bcd", asset.Params, "the params should be the same")
 }
+
+func TestObtainIp(t *testing.T) {
+	ip := ObtainIp("wwww.baidu.com")
+	assert.Equal(t, "1.1.1.1", ip, "the ip should be the same")
+	ip1 := ObtainIp("taobao.com")
+	assert.Equal(t, "140.205.94.189", ip1, "the ip should be looked up by dns")
+}

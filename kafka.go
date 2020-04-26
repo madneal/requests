@@ -220,6 +220,7 @@ func CreateAssetByUrl(urlStr string) *Asset {
 		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
 		Params:      params,
 		Host:        u.Host,
+		Ip:          ObtainIp(u.Host),
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
@@ -233,4 +234,15 @@ func ObtainQueryKeys(u *url.URL) string {
 		result += k + ","
 	}
 	return result
+}
+
+func ObtainIp(host string) string {
+	ip := QueryIp(host)
+	if ip == "" {
+		ips := GetIp(host)
+		for _, ipEle := range ips {
+			ip += ipEle.String() + ","
+		}
+	}
+	return ip
 }

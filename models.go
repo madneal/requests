@@ -185,22 +185,6 @@ func UpdateParams(oldParams, newParams string) string {
 
 }
 
-// check if method exists, if method doesn't exist, append
-func AppendMethod(asset *Asset) {
-	if !ExistsByLike(asset.Method, "method") {
-		method := asset.Method
-		method += "," + QueryAssetMethod(asset)
-		asset.Method = method
-		asset.UpdatedTime = time.Now()
-		err := db.Save(asset).Error
-		if err != nil {
-			Log.Error(err)
-		}
-	} else {
-		fmt.Println("method exists!")
-	}
-}
-
 func QueryAssetMethod(asset *Asset) string {
 	err := db.First(&asset).Error
 	if err != nil {
@@ -308,5 +292,4 @@ func MatchUrl(postUrl string) *[]Resource {
 		return nil
 	}
 	return &resources
-
 }

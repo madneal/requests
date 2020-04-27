@@ -181,3 +181,11 @@ func TestCompareStringArr(t *testing.T) {
 func TestUpdateIp(t *testing.T) {
 	UpdateIp("www.baidu.com", "2.2.2.2")
 }
+
+func TestUpdateHostIfEmpty(t *testing.T) {
+	asset := Asset{
+		Url:    "http://www.baidu.com",
+		Method: "GET",
+	}
+	UpdateHostIfEmpty(asset)
+}

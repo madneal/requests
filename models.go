@@ -91,6 +91,22 @@ func NewAsset(asset *Asset) error {
 	}
 }
 
+// UpdateHostIfEmpty is utilized to fix for history data where host is empty
+func UpdateHostIfEmpty(asset Asset) error {
+	err := db.Where("url = ? and method = ?", asset.Url, asset.Method).First(&asset).Error
+	if err != nil {
+		return err
+	}
+	if asset.Host == "" {
+		u, err := url.Parse(asset.Url)
+		if err != nil {
+			return nil
+		}
+		asset.Host = u.Host
+	}
+	return db.Save(&asset).Error
+}
+
 func UpdateIp(host, ip string) error {
 	err := db.Table("assets").Where("host = ?", host).Update(Asset{Ip: ip, UpdatedTime: time.Now()}).Error
 	return err

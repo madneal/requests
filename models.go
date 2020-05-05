@@ -33,6 +33,11 @@ type Resource struct {
 	UpdatedTime time.Time `gorm:"updated"`
 }
 
+type BlackDomain struct {
+	Id   int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Host string `gorm:"type:varchar(100);column:host"`
+}
+
 var db *gorm.DB
 
 func init() {
@@ -89,6 +94,10 @@ func NewAsset(asset *Asset) error {
 		asset.Params = UpdateParams(oldParams, newParams)
 		return db.Save(&asset).Error
 	}
+}
+
+func NewDomain(domain *Domain) {
+
 }
 
 // UpdateHostIfEmpty is utilized to fix for history data where host is empty

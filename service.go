@@ -37,6 +37,10 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, "Access denied", http.StatusForbidden)
+		return
+	}
 	resources, err := QueryAllServices()
 	if err != nil {
 		Log.Error(err)
@@ -52,6 +56,10 @@ func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AssetsHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, "Access denied", http.StatusForbidden)
+		return
+	}
 	assets, err := QueryAllAssets()
 	if err != nil {
 		Log.Error(err)
@@ -90,6 +98,10 @@ func DownloadResources(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, "Access denied", http.StatusForbidden)
+		return
+	}
 	if r.Method == "POST" {
 		err := r.ParseForm()
 		if err != nil {

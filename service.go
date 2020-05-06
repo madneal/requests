@@ -60,7 +60,14 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
-	assets, err := QueryAllAssets()
+	host, isParse := r.URL.Query()["host"]
+	var assets *[]Asset
+	var err error
+	if isParse {
+		assets, err = QueryAllAssets(host[0])
+	} else {
+		assets, err = QueryAllAssets("")
+	}
 	if err != nil {
 		Log.Error(err)
 		return
@@ -74,8 +81,8 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func DownloadResources(w http.ResponseWriter, r *http.Request) {
-	assets, err := QueryAllAssets()
+func DownloadAssets(w http.ResponseWriter, r *http.Request) {
+	assets, err := QueryAllAssets("")
 	if err != nil {
 		Log.Error(err)
 	}
@@ -146,7 +153,7 @@ func IsTokenValid(token string) bool {
 
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
-	http.HandleFunc("/download-assets", DownloadResources)
+	http.HandleFunc("/download-assets", DownloadAssets)
 	http.HandleFunc("/get-resources", ResourcesHandler)
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)

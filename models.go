@@ -308,10 +308,24 @@ func QueryAllServices() (*[]Resource, error) {
 	return &resources, err
 }
 
-func QueryAllAssets() (*[]Asset, error) {
+func QueryAllAssets(host string) (*[]Asset, error) {
 	assets := make([]Asset, 0)
-	err := db.Find(&assets).Error
+	hosts, err := QueryAllHosts()
+	if err != nil {
+		return nil, err
+	}
+	if "" == host {
+		err = db.Not("host", *hosts).Find(&assets).Error
+	} else {
+		err = db.Not("host", *hosts).Where("host = ?", host).Find(&assets).Error
+	}
 	return &assets, err
+}
+
+func QueryAllHosts() (*[]string, error) {
+	var result []string
+	err := db.Model(&BlackDomain{}).Pluck("host", &result).Error
+	return &result, err
 }
 
 func MatchUrl(postUrl string) *[]Resource {

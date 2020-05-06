@@ -82,6 +82,23 @@ func TestQueryAllServices(t *testing.T) {
 	fmt.Println(len(*resources))
 }
 
+func TestQueryAllAssets(t *testing.T) {
+	assets, err := QueryAllAssets("www")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(len(*assets))
+	fmt.Printf("%v", assets)
+}
+
+func TestQueryAllHosts(t *testing.T) {
+	domains, err := QueryAllHosts()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%v", domains)
+}
+
 func TestCheckResourceOutofdate(t *testing.T) {
 	startTime := time.Date(2020, 3, 8, 1, 0, 0, 0, time.UTC)
 	endTime := time.Date(2020, 3, 20, 8, 0, 0, 0, time.UTC)

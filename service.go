@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -87,10 +88,46 @@ func DownloadResources(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
+func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		err := r.ParseForm()
+		if err != nil {
+			Log.Error(err)
+			return
+		}
+		domain := r.Form.Get("host")
+		domains := parseDomains(domain)
+		for _, blackDomain := range *domains {
+			err = NewDomain(&blackDomain)
+			if err != nil {
+				Log.Error(err)
+				return
+			}
+		}
+		fmt.Fprint(w, "Add host Success")
+	} else {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+// host string is splited by ,
+func parseDomains(host string) *[]BlackDomain {
+	domains := make([]BlackDomain, 0)
+	hostArr := strings.Split(host, ",")
+	for _, domain := range hostArr {
+		blackDomain := BlackDomain{
+			Host: domain,
+		}
+		domains = append(domains, blackDomain)
+	}
+	return &domains
+}
+
 func SetDownloadService() {
 	http.HandleFunc("/download-resources", DownloadHandler)
 	http.HandleFunc("/download-assets", DownloadResources)
 	http.HandleFunc("/get-resources", ResourcesHandler)
 	http.HandleFunc("/get-assets", AssetsHandler)
+	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	Log.Info(http.ListenAndServe(":80", nil))
 }

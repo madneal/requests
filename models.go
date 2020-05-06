@@ -59,6 +59,11 @@ func init() {
 	} else {
 		db.AutoMigrate(&Resource{})
 	}
+	if !db.HasTable(&BlackDomain{}) {
+		db.CreateTable(&BlackDomain{})
+	} else {
+		db.AutoMigrate(&BlackDomain{})
+	}
 	//defer db.Close()
 	if CONFIG.Run.Redis == true {
 		rdb = redis.NewClient(&redis.Options{
@@ -96,8 +101,13 @@ func NewAsset(asset *Asset) error {
 	}
 }
 
-func NewDomain(domain *Domain) {
-
+func NewDomain(domain *BlackDomain) error {
+	if !DomainExists(domain.Host) {
+		return db.Create(&domain).Error
+	} else {
+		Log.Warnf("Domain %s exists!!", domain.Host)
+		return nil
+	}
 }
 
 // UpdateHostIfEmpty is utilized to fix for history data where host is empty
@@ -169,6 +179,11 @@ func Exists(field, fieldName string) bool {
 func AssetExists(method, url string) bool {
 	var asset Asset
 	return !db.Where("method = ? and url = ?", method, url).First(&asset).RecordNotFound()
+}
+
+func DomainExists(host string) bool {
+	var domain BlackDomain
+	return !db.Where("host = ?", host).First(&domain).RecordNotFound()
 }
 
 func QueryIp(host string) string {

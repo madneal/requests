@@ -315,9 +315,17 @@ func QueryAllAssets(host string) (*[]Asset, error) {
 		return nil, err
 	}
 	if "" == host {
-		err = db.Not("host", *hosts).Find(&assets).Error
+		if len(*hosts) > 0 {
+			err = db.Not("host", *hosts).Find(&assets).Error
+		} else {
+			err = db.Find(&assets).Error
+		}
 	} else {
-		err = db.Not("host", *hosts).Where("host = ?", host).Find(&assets).Error
+		if len(*hosts) > 0 {
+			err = db.Not("host", *hosts).Where("host = ?", host).Find(&assets).Error
+		} else {
+			err = db.Where("host = ?", host).Find(&assets).Error
+		}
 	}
 	return &assets, err
 }

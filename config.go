@@ -18,9 +18,10 @@ type Config struct {
 		Proxy   string
 	}
 	Run struct {
-		Threads int
-		Debug   bool
-		Redis   bool
+		Threads      int
+		Debug        bool
+		Redis        bool
+		IsProduction bool
 	}
 	Redis struct {
 		Host     string

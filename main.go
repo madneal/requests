@@ -22,6 +22,9 @@ func init() {
 
 func main() {
 	fmt.Println("*********Begin the Assets detect*************")
+	if len(os.Args) < 2 {
+		fmt.Println("Please speficy the option")
+	}
 	cmd := os.Args[1]
 	if cmd == "kafka" {
 		if CONFIG.Kafka.Topic == "" {

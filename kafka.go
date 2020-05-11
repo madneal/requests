@@ -82,6 +82,9 @@ func RunTask(msg string) {
 		}
 
 		InsertAsset(request)
+		if CONFIG.Run.IsProduction {
+			return
+		}
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
 		if isValidReferer == true {

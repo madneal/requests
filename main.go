@@ -26,6 +26,7 @@ func main() {
 		fmt.Println("Please speficy the option")
 	}
 	cmd := os.Args[1]
+	fmt.Println(cmd)
 	if cmd == "kafka" {
 		if CONFIG.Kafka.Topic == "" {
 			fmt.Println("Please set the topic")
@@ -37,5 +38,9 @@ func main() {
 		ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers, CONFIG.Kafka.GroupId)
 	} else if cmd == "web" {
 		SetDownloadService()
+	} else if cmd == "e" {
+		fmt.Println(Encrypt(os.Args[2], "requests2019"))
+	} else if cmd == "d" {
+		fmt.Println(Decrypt(os.Args[2], "requests2019"))
 	}
 }

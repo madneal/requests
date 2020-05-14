@@ -1,9 +1,16 @@
 package main
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"github.com/go-redis/redis/v7"
 	"github.com/jinzhu/gorm"
+	"io"
 	"math"
 	"net/url"
 	"strings"
@@ -41,8 +48,9 @@ type BlackDomain struct {
 var db *gorm.DB
 
 func init() {
-	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", CONFIG.Database.User, CONFIG.Database.Pass,
-		CONFIG.Database.Host, CONFIG.Database.Port, CONFIG.Database.Name)
+	passDecrypted := Decrypt(CONFIG.Database.Pass, "requests2019")
+	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", CONFIG.Database.User,
+		passDecrypted, CONFIG.Database.Host, CONFIG.Database.Port, CONFIG.Database.Name)
 	//fmt.Println(conStr)
 	var err error
 	db, err = gorm.Open("mysql", conStr)
@@ -77,6 +85,47 @@ func init() {
 		}
 		rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 	}
+}
+
+func createHash(key string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(key))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func Encrypt(data, passphrase string) string {
+	data1 := []byte(data)
+	block, _ := aes.NewCipher([]byte(createHash(passphrase)))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		Log.Error(err)
+	}
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		Log.Error(err)
+	}
+	ciphertext := gcm.Seal(nonce, nonce, data1, nil)
+	return base64.StdEncoding.EncodeToString(ciphertext)
+}
+
+func Decrypt(data, passphrase string) string {
+	data1, err := base64.StdEncoding.DecodeString(data)
+	key := []byte(createHash(passphrase))
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		Log.Error(err)
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		Log.Error(err)
+	}
+	nonceSize := gcm.NonceSize()
+	nonce, ciphertext := data1[:nonceSize], data1[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		Log.Error(err)
+	}
+	return string(plaintext)
 }
 
 func NewAsset(asset *Asset) error {

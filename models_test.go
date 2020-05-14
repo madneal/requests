@@ -206,3 +206,10 @@ func TestUpdateHostIfEmpty(t *testing.T) {
 	}
 	UpdateHostIfEmpty(asset)
 }
+
+func TestDecryptPass(t *testing.T) {
+	cryped := Encrypt("res++2019", "requests2019")
+	fmt.Println(cryped)
+	decyped := Decrypt(cryped, "requests2019")
+	assert.Equal(t, "res++2019", decyped, "the password should be decrypted")
+}

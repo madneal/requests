@@ -48,8 +48,9 @@ type BlackDomain struct {
 var db *gorm.DB
 
 func init() {
+	userDecrypted := Decrypt(CONFIG.Database.User, "requests2019")
 	passDecrypted := Decrypt(CONFIG.Database.Pass, "requests2019")
-	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", CONFIG.Database.User,
+	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", userDecrypted,
 		passDecrypted, CONFIG.Database.Host, CONFIG.Database.Port, CONFIG.Database.Name)
 	//fmt.Println(conStr)
 	var err error

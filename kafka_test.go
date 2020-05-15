@@ -179,6 +179,6 @@ func TestObtainIp(t *testing.T) {
 }
 
 func TestRunTask(t *testing.T) {
-	msg := "{\"id.resp_p\": 80, \"method\": \"GET\", \"host\": \"ebank.sdb.com.cn\", \"uri\": \"/corporbank/scripts/money.js\"}"
+	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"ebank.sdb.com.cn\", \"uri\": \"/corporbank/scripts/money.js\"}"
 	RunTask(msg)
 }

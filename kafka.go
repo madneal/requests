@@ -82,7 +82,7 @@ func RunTask(msg string) {
 		}
 
 		InsertAsset(request)
-		if CONFIG.Run.IsProduction {
+		if CONFIG.Run.Production {
 			return
 		}
 		// obtain scheme from referer and send request
@@ -183,7 +183,7 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = data["url"].(string)
 	}
 	// todo there is not post asset handle for post now
-	if !CONFIG.Run.IsProduction && request.Method == "POST" && data["postdata"].(string) != "" {
+	if !CONFIG.Run.Production && request.Method == "POST" && data["postdata"].(string) != "" {
 		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 		if err != nil {
 			Log.Error(err)

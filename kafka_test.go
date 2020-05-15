@@ -89,6 +89,7 @@ func TestParseJson(t *testing.T) {
 	"method": "GET"
 }
 `
+	data5 := "{\"resp_p\": \"80\"}"
 	request1, _ := ParseJson(data1)
 	assert.Equal(t, request1.Url, "http://testasp.vulnweb.com/showthread.asp?id=0")
 	assert.Equal(t, request1.Headers["DNT"], "1", "the header should be the same")
@@ -105,6 +106,9 @@ func TestParseJson(t *testing.T) {
 
 	request4, _ := ParseJson(data4)
 	assert.Equal(t, "http://www.baidu.com:80/abc/def?name=134", request4.Url, "the url should be the same")
+
+	request5, _ := ParseJson(data5)
+	fmt.Println(request5)
 }
 
 func TestInsertAsset(t *testing.T) {

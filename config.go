@@ -22,6 +22,7 @@ type Config struct {
 		Debug        bool
 		Redis        bool
 		IsProduction bool
+		Encrypt      bool
 	}
 	Redis struct {
 		Host     string

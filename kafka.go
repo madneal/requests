@@ -134,7 +134,9 @@ func ParseJson(msg string) (Request, error) {
 	if data["t"] != nil {
 		request.Timestamp = int64(data["t"].(float64))
 	}
-	request.Method = data["method"].(string)
+	if data["method"] != nil {
+		request.Method = data["method"].(string)
+	}
 	headers := make(map[string]string)
 	// headers is array
 	if headersType == "[]interface {}" {

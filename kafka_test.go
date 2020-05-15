@@ -177,3 +177,8 @@ func TestObtainIp(t *testing.T) {
 	ip1 := ObtainIp("taobao.com")
 	assert.Equal(t, "140.205.94.189", ip1, "the ip should be looked up by dns")
 }
+
+func TestRunTask(t *testing.T) {
+	msg := "{\"id.resp_p\": 80, \"method\": \"GET\", \"host\": \"ebank.sdb.com.cn\", \"uri\": \"/corporbank/scripts/money.js\"}"
+	RunTask(msg)
+}

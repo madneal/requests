@@ -151,6 +151,9 @@ func ParseJson(msg string) (Request, error) {
 			headers[k] = v.(string)
 		}
 	} else if data["agentId"] == nil {
+		if data["host"] != nil {
+			request.Host = data["host"].(string)
+		}
 		request.Url = ObtainUrl(data)
 	} else {
 		request.Host = data["Host"].(string)
@@ -179,8 +182,8 @@ func ParseJson(msg string) (Request, error) {
 	if request.Url == "" {
 		request.Url = data["url"].(string)
 	}
-
-	if request.Method == "POST" && data["postdata"].(string) != "" {
+	// todo there is not post asset handle for post now
+	if !CONFIG.Run.IsProduction && request.Method == "POST" && data["postdata"].(string) != "" {
 		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 		if err != nil {
 			Log.Error(err)
@@ -202,7 +205,7 @@ func ObtainUrl(data map[string]interface{}) string {
 	if data["uri"] != nil {
 		uri = data["uri"].(string)
 	}
-	return "http://" + host + ":" + uri
+	return "http://" + host + uri
 }
 
 func InsertAsset(request Request) {

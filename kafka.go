@@ -108,7 +108,7 @@ func RunTask(msg string) {
 	}
 }
 
-func SetUrlByScheme(scheme, urlStr string) (string, error) {
+func SetUrlByScheme(urlStr string) (string, error) {
 	u, err := url.Parse(urlStr)
 	if nil != err {
 		return "", err

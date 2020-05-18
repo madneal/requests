@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v7"
-	kafka "github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go"
 	"net/url"
 	"reflect"
 	"strings"
@@ -77,7 +77,7 @@ func RunTask(msg string) {
 			}
 			err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()
 			if err != nil {
-				fmt.Println(err)
+				Log.Error(err)
 			}
 		}
 
@@ -98,6 +98,7 @@ func RunTask(msg string) {
 			return
 		}
 		SendRequest(request)
+		// repeat the request, for http and https respectively
 		if strings.Contains(request.Url, "https") {
 			request.Url = strings.Replace(request.Url, "https", "http", 1)
 		} else {
@@ -125,7 +126,6 @@ func ParseJson(msg string) (Request, error) {
 	}
 	var headersType string
 	if _, ok := data["headers"]; ok {
-		//fmt.Println(val)
 		headersType = reflect.TypeOf(data["headers"]).String()
 	}
 	if data["agentId"] != nil {

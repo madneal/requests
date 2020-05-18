@@ -108,11 +108,12 @@ func RunTask(msg string) {
 	}
 }
 
-func SetUrlByScheme(urlStr string) (string, error) {
+func SetUrlByScheme(scheme, urlStr string) (string, error) {
 	u, err := url.Parse(urlStr)
 	if nil != err {
 		return "", err
 	}
+	u.Scheme = scheme
 	return u.String(), err
 }
 

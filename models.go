@@ -257,13 +257,6 @@ func QueryIp(host string) string {
 	return ip
 }
 
-// check if record exists by like
-func ExistsByLike(field, fieldName string) bool {
-	var asset Asset
-	query := fmt.Sprintf("%s LIKE ?", fieldName)
-	return !db.Where(query, "%"+field+"%").First(&asset).RecordNotFound()
-}
-
 // UpdateParams is utilized to update the params according to the new asset
 func UpdateParams(oldParams, newParams string) string {
 	f := func(c rune) bool {
@@ -280,15 +273,6 @@ func UpdateParams(oldParams, newParams string) string {
 	}
 	return strings.Join(oldParamsArr, ",")
 
-}
-
-func QueryAssetMethod(asset *Asset) string {
-	err := db.First(&asset).Error
-	if err != nil {
-		Log.Error(err)
-		return ""
-	}
-	return asset.Method
 }
 
 func DeleteIfExists(resource Resource) error {

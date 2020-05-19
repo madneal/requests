@@ -6,4 +6,6 @@ var POST_METHOD = "POST"
 var REFERER = "Referer"
 var UA = "PABank Application Security Team"
 
+const ENCRYPT_KEY = "requests2019"
+
 var NETWORKS [5]string

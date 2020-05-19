@@ -39,8 +39,8 @@ func main() {
 	} else if cmd == "web" {
 		SetDownloadService()
 	} else if cmd == "e" {
-		fmt.Println(Encrypt(os.Args[2], "requests2019"))
+		fmt.Println(Encrypt(os.Args[2], ENCRYPT_KEY))
 	} else if cmd == "d" {
-		fmt.Println(Decrypt(os.Args[2], "requests2019"))
+		fmt.Println(Decrypt(os.Args[2], ENCRYPT_KEY))
 	}
 }

@@ -51,8 +51,8 @@ func init() {
 	var userDecrypted string
 	var passDecrypted string
 	if CONFIG.Run.Encrypt {
-		userDecrypted = Decrypt(CONFIG.Database.User, "requests2019")
-		passDecrypted = Decrypt(CONFIG.Database.Pass, "requests2019")
+		userDecrypted = Decrypt(CONFIG.Database.User, ENCRYPT_KEY)
+		passDecrypted = Decrypt(CONFIG.Database.Pass, ENCRYPT_KEY)
 	} else {
 		userDecrypted = CONFIG.Database.User
 		passDecrypted = CONFIG.Database.Pass

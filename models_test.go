@@ -208,8 +208,8 @@ func TestUpdateHostIfEmpty(t *testing.T) {
 }
 
 func TestDecryptPass(t *testing.T) {
-	cryped := Encrypt("res", "requests2019")
+	cryped := Encrypt("res", ENCRYPT_KEY)
 	fmt.Println(cryped)
-	decyped := Decrypt(cryped, "requests2019")
+	decyped := Decrypt(cryped, ENCRYPT_KEY)
 	assert.Equal(t, "res", decyped, "the password should be decrypted")
 }

@@ -90,10 +90,11 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/csv")
 	filename := fmt.Sprintf("attachment;filename=assets-%s.csv", time.Now().Format("2006-01-02 15:04:05"))
 	w.Header().Set("Content-Disposition", filename)
-	wr.Write([]string{"id", "url", "method", "params", "created_time", "updated_time"})
+	wr.Write([]string{"id", "url", "host", "ip", "method", "params", "created_time", "updated_time"})
 	for i := range *assets {
 		asset := (*assets)[i]
-		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Method, asset.Params, asset.CreatedTime.Format("2006-01-02 15:04:05"),
+		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Host, asset.Ip, asset.Method, asset.Params,
+			asset.CreatedTime.Format("2006-01-02 15:04:05"),
 			asset.UpdatedTime.Format("2006-01-02 15:04:05")}
 		err := wr.Write(record)
 		if err != nil {

@@ -199,7 +199,7 @@ func IsIpNeedUpdate(host string) (bool, string) {
 }
 
 // CompareStringArr compares two string consists of ele with ","
-// "a,b,c" == "c,a,b"
+// "a,b,c" == "c,a,b" is true
 func CompareStringArr(a, b string) bool {
 	if a == "" && b == "" {
 		return true

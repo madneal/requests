@@ -183,3 +183,12 @@ func TestRunTask(t *testing.T) {
 		"\"uri\": \"\"}"
 	RunTask(msg)
 }
+
+func TestCheckIfBlackExtension(t *testing.T) {
+	url := "http://wwww.baidu.com"
+	result := CheckIfBlackExtension(url)
+	assert.Equal(t, false, result, "the url does not contain the black extension")
+	url1 := "http://www.baidu.com/1341234.png"
+	result1 := CheckIfBlackExtension(url1)
+	assert.Equal(t, true, result1, "the url contains the black extension")
+}

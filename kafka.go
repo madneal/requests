@@ -221,6 +221,16 @@ func InsertAsset(request Request) {
 	}
 }
 
+func CheckIfBlackExtension(url string) bool {
+	lowerUrl := strings.ToLower(url)
+	for _, extension := range BLACK_EXTENSIONS {
+		if strings.HasSuffix(lowerUrl, extension) {
+			return true
+		}
+	}
+	return false
+}
+
 func CreateAssetByUrl(urlStr string) *Asset {
 	u, err := url.Parse(urlStr)
 	if err != nil {

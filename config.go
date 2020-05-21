@@ -5,6 +5,8 @@ type Config struct {
 		Brokers []string
 		Topic   string
 		GroupId string
+		Min     int
+		Max     int
 	}
 	Database struct {
 		Host string

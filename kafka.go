@@ -22,8 +22,8 @@ func ReadKafka(topic string, hosts []string, groupId string) {
 		Brokers:  hosts,
 		Topic:    topic,
 		GroupID:  groupId,
-		MinBytes: 1,
-		MaxBytes: 1000,
+		MinBytes: CONFIG.Kafka.Min,
+		MaxBytes: CONFIG.Kafka.Max,
 	})
 
 	//messages := make([]string, 0)

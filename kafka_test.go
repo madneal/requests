@@ -165,7 +165,7 @@ func TestSetUrlByScheme(t *testing.T) {
 }
 
 func TestCreateAssetByUrl(t *testing.T) {
-	urlStr := "http://gitlab.com/pa/edf/aa?name=134&bcd=34&ff=aaaa"
+	urlStr := "http://bill.sdb.com.cn/bill/bcs?parameterStr=QHJ1QFsv9lfqKC4Krjwh8S0tI4gnmYNDSs19xJXD6WxyeR0krZYeeb6RnoQeIalbyzcqjY7u/Muv\nLh44sm5pRA==\u0026paflag=ggw6\u0026picid=http://bill.sdb.com.cn/picbill/1509345215835.jpg\u0026url=https://creditcard.pingan.com/youhuihuodong/jwfx.shtml"
 	asset := CreateAssetByUrl(urlStr)
 	assert.Equal(t, "http://gitlab.com/pa/edf/aa", asset.Url, "the url should be the same")
 	assert.Equal(t, "ff,name,bcd", asset.Params, "the params should be the same")
@@ -179,6 +179,7 @@ func TestObtainIp(t *testing.T) {
 }
 
 func TestRunTask(t *testing.T) {
-	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"ebank.sdb.com.cn\", \"uri\": \"/corporbank/scripts/money.js\"}"
+	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"bill.sdb.com.cn\", " +
+		"\"uri\": \"/bill/bcs?parameterStr=QHJ1QFsv9lfqKC4Krjwh8S0tI4gnmYNDSs19xJXD6WxyeR0krZYeeb6RnoQeIalbyzcqjY7u/Muv\nLh44sm5pRA==\u0026paflag=ggw6\u0026picid=http://bill.sdb.com.cn/picbill/1509345215835.jpg\u0026url=https://creditcard.pingan.com/youhuihuodong/jwfx.shtml\"}"
 	RunTask(msg)
 }

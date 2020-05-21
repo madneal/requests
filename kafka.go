@@ -211,6 +211,9 @@ func ObtainUrl(data map[string]interface{}) string {
 
 func InsertAsset(request Request) {
 	asset := CreateAssetByUrl(request.Url)
+	if asset == nil {
+		return
+	}
 	asset.Method = request.Method
 	err := NewAsset(asset)
 	if err != nil {

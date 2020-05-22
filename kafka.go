@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/md5"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v7"
@@ -279,10 +281,23 @@ func InsertAsset(request Request) {
 		return
 	}
 	asset.Method = request.Method
+	asset.Md5 = ComputeHash(asset.Url + asset.Method)
 	err := NewAsset(asset)
 	if err != nil {
 		Log.Error(err)
 	}
+}
+
+func ComputeHash(urlAndMethod string) string {
+	h := md5.New()
+	h.Write([]byte(urlAndMethod))
+	result := hex.EncodeToString(h.Sum(nil))
+	if len(result) < 20 {
+		result += strings.Repeat("0", 20-len(result))
+	} else {
+		result = result[:19]
+	}
+	return result
 }
 
 func CheckIfBlackExtension(url string) bool {

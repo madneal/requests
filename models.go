@@ -25,6 +25,7 @@ type Asset struct {
 	Params      string    `gorm:"type:varchar(1000);column:params"`
 	Host        string    `gorm:"type:varchar(100);column:host"`
 	Ip          string    `gorm:"type:varchar(100);column:ip"`
+	Md5         string    `gorm:"type:varchar(20);column:md5"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`
 }
@@ -137,7 +138,7 @@ func Decrypt(data, passphrase string) string {
 }
 
 func NewAsset(asset *Asset) error {
-	if !AssetExists(asset.Method, asset.Url) {
+	if !Exists(asset.Md5, "md5") {
 		return db.Create(&asset).Error
 	} else {
 		// if asset out of date, try to update the ip of host

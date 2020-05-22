@@ -189,3 +189,9 @@ func TestCheckIfBlackExtension(t *testing.T) {
 	result1 := CheckIfBlackExtension(url1)
 	assert.Equal(t, true, result1, "the url contains the black extension")
 }
+
+func TestComputeHash(t *testing.T) {
+	hash := ComputeHash("http://www.baidu.comGET")
+	fmt.Println(hash)
+	assert.True(t, true, 20 == len(hash), "the length should be 20")
+}

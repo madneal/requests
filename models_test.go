@@ -32,8 +32,8 @@ func TestNewAsset(t *testing.T) {
 }
 
 func TestExists(t *testing.T) {
-	url := "123"
-	exists := Exists(url, "url")
+	url := "7c031d9efda97b77a7d6"
+	exists := Exists(url, "md5")
 	fmt.Println(exists)
 }
 

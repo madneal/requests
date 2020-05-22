@@ -141,21 +141,23 @@ func NewAsset(asset *Asset) error {
 	if !Exists(asset.Md5, "md5") {
 		return db.Create(&asset).Error
 	} else {
+		// temporal remove the logic
 		// if asset out of date, try to update the ip of host
-		if CheckIfAssetOutofDate(*asset) {
-			isNeedUpdateIp, ip := IsIpNeedUpdate((*asset).Host)
-			if isNeedUpdateIp {
-				err := UpdateIp((*asset).Host, ip)
-				if err != nil {
-					Log.Error(err)
-				}
-			}
-		}
-		newParams := asset.Params
-		oldParams := GetParams(asset)
-		asset.UpdatedTime = time.Now()
-		asset.Params = UpdateParams(oldParams, newParams)
-		return db.Save(&asset).Error
+		//if CheckIfAssetOutofDate(*asset) {
+		//	isNeedUpdateIp, ip := IsIpNeedUpdate((*asset).Host)
+		//	if isNeedUpdateIp {
+		//		err := UpdateIp((*asset).Host, ip)
+		//		if err != nil {
+		//			Log.Error(err)
+		//		}
+		//	}
+		//}
+		//newParams := asset.Params
+		//oldParams := GetParams(asset)
+		//asset.UpdatedTime = time.Now()
+		//asset.Params = UpdateParams(oldParams, newParams)
+		//return db.Save(&asset).Error
+		Log.Infof("The asset %s exists", asset.Url)
 	}
 }
 

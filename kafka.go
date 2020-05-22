@@ -292,11 +292,6 @@ func ComputeHash(urlAndMethod string) string {
 	h := md5.New()
 	h.Write([]byte(urlAndMethod))
 	result := hex.EncodeToString(h.Sum(nil))
-	if len(result) < 20 {
-		result += strings.Repeat("0", 20-len(result))
-	} else {
-		result = result[:19]
-	}
 	return result
 }
 

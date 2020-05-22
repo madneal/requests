@@ -158,6 +158,7 @@ func NewAsset(asset *Asset) error {
 		//asset.Params = UpdateParams(oldParams, newParams)
 		//return db.Save(&asset).Error
 		Log.Infof("The asset %s exists", asset.Url)
+		return nil
 	}
 }
 

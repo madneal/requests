@@ -35,7 +35,7 @@ func main() {
 			fmt.Println("Please set the brokers")
 		}
 		fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
-		ReadKafka(CONFIG.Kafka.Topic, CONFIG.Kafka.Brokers, CONFIG.Kafka.GroupId)
+		ReadKafka()
 	} else if cmd == "web" {
 		SetDownloadService()
 	} else if cmd == "e" {

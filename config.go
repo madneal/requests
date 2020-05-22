@@ -20,11 +20,12 @@ type Config struct {
 		Proxy   string
 	}
 	Run struct {
-		Threads    int
-		Debug      bool
-		Redis      bool
-		Production bool
-		Encrypt    bool
+		Threads     int
+		Debug       bool
+		Redis       bool
+		Production  bool
+		Encrypt     bool
+		MultiThread bool `yaml:"multithread"`
 	}
 	Redis struct {
 		Host     string

@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
 	"net/url"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -17,16 +18,24 @@ var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie"
 	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 var rdb *redis.Client
 
-func ReadKafka(topic string, hosts []string, groupId string) {
+func ReadKafka() {
+	if CONFIG.Run.MultiThread {
+		fmt.Println("Read kafka as multi thread")
+		MultiThreadKafka()
+	} else {
+		fmt.Println("Read kafka as single thread")
+		SingleThreadKafka()
+	}
+}
+
+func SingleThreadKafka() {
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:  hosts,
-		Topic:    topic,
-		GroupID:  groupId,
+		Brokers:  CONFIG.Kafka.Brokers,
+		Topic:    CONFIG.Kafka.Topic,
+		GroupID:  CONFIG.Kafka.GroupId,
 		MinBytes: CONFIG.Kafka.Min,
 		MaxBytes: CONFIG.Kafka.Max,
 	})
-
-	//messages := make([]string, 0)
 
 	for {
 		m, err := r.ReadMessage(context.Background())
@@ -60,6 +69,61 @@ func ReadKafka(topic string, hosts []string, groupId string) {
 		//messages = nil
 
 		RunTask(string(m.Value))
+	}
+}
+
+func MultiThreadKafka() {
+	group, err := kafka.NewConsumerGroup(kafka.ConsumerGroupConfig{
+		ID:      CONFIG.Kafka.GroupId,
+		Brokers: CONFIG.Kafka.Brokers,
+		Topics:  []string{CONFIG.Kafka.Topic},
+	})
+	if err != nil {
+		Log.Errorf("error creating consumer group: %+v\n", err)
+		os.Exit(1)
+	}
+	defer group.Close()
+
+	for {
+		gen, err := group.Next(context.TODO())
+		if err != nil {
+			break
+		}
+
+		assignments := gen.Assignments[CONFIG.Kafka.Topic]
+		for _, assignment := range assignments {
+			partition, offset := assignment.ID, assignment.Offset
+			gen.Start(func(ctx context.Context) {
+				// create reader for this partition.
+				reader := kafka.NewReader(kafka.ReaderConfig{
+					Brokers:   CONFIG.Kafka.Brokers,
+					Topic:     CONFIG.Kafka.Topic,
+					Partition: partition,
+				})
+				defer reader.Close()
+
+				// seek to the last committed offset for this partition.
+				reader.SetOffset(offset)
+				for {
+					msg, err := reader.ReadMessage(ctx)
+					switch err {
+					case kafka.ErrGenerationEnded:
+						// generation has ended.  commit offsets.  in a real app,
+						// offsets would be committed periodically.
+						gen.CommitOffsets(map[string]map[int]int64{"my-topic": {partition: offset}})
+						return
+					case nil:
+						if CONFIG.Run.Debug == true {
+							fmt.Printf("message at offset %d: %s = %s\n", msg.Offset, string(msg.Key), string(msg.Value))
+						}
+						RunTask(string(msg.Value))
+						offset = msg.Offset
+					default:
+						Log.Errorf("error reading message: %+v\n", err)
+					}
+				}
+			})
+		}
 	}
 }
 

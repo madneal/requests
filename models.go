@@ -63,6 +63,9 @@ func init() {
 	//fmt.Println(conStr)
 	var err error
 	db, err = gorm.Open("mysql", conStr)
+	db.DB().SetConnMaxLifetime(time.Minute * 5)
+	db.DB().SetMaxIdleConns(5)
+	db.DB().SetMaxOpenConns(5)
 	if err != nil {
 		Log.Error(err)
 	}

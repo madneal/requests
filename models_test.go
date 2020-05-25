@@ -39,9 +39,10 @@ func TestExists(t *testing.T) {
 
 func TestMatchUrl(t *testing.T) {
 	postUrl := "http://www.baidu.com/abc"
+	fmt.Println(*MatchUrl(postUrl))
 	assert.Equal(t, true, len(*MatchUrl(postUrl)) == 1, "there shoud mathch one")
 	postUrl1 := "http://www.baidu.com"
-	assert.Equal(t, false, len(*MatchUrl(postUrl1)) == 1, "there shoud not mathch one")
+	assert.Equal(t, false, len(*(MatchUrl(postUrl1))) == 1, "there shoud not mathch one")
 }
 
 func TestResourceExists(t *testing.T) {

@@ -386,10 +386,10 @@ func MatchUrl(postUrl string) *[]Resource {
 	uPost, err := url.Parse(postUrl)
 	if err != nil {
 		Log.Error(err)
-		return nil
+		return &resources
 	}
 	if uPost.Path == "" {
-		return nil
+		return &resources
 	}
 	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
 	firstUrl := uPost.Host + pathPost

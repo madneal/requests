@@ -157,9 +157,8 @@ func NewAsset(asset *Asset) error {
 		//}
 		//newParams := asset.Params
 		//oldParams := GetParams(asset)
-		//asset.UpdatedTime = time.Now()
-		//asset.Params = UpdateParams(oldParams, newParams)
-		//return db.Save(&asset).Error
+		//params := GetFreshParams(oldParams, newParams)
+		//return UpdateParams(asset.Md5, params)
 		Log.Infof("The asset %s exists", asset.Url)
 		return nil
 	}
@@ -192,6 +191,11 @@ func UpdateHostIfEmpty(asset Asset) error {
 
 func UpdateIp(host, ip string) error {
 	err := db.Table("assets").Where("host = ?", host).Update(Asset{Ip: ip, UpdatedTime: time.Now()}).Error
+	return err
+}
+
+func UpdateParams(md5, params string) error {
+	err := db.Table("assets").Where("md5 = ?", md5).Update(Asset{Params: params, UpdatedTime: time.Now()}).Error
 	return err
 }
 
@@ -264,8 +268,8 @@ func QueryIp(host string) string {
 	return ip
 }
 
-// UpdateParams is utilized to update the params according to the new asset
-func UpdateParams(oldParams, newParams string) string {
+// GetFreshParams is utilized to update the params according to the new asset
+func GetFreshParams(oldParams, newParams string) string {
 	f := func(c rune) bool {
 		return c == ','
 	}

@@ -214,3 +214,8 @@ func TestDecryptPass(t *testing.T) {
 	decyped := Decrypt(cryped, ENCRYPT_KEY)
 	assert.Equal(t, "res", decyped, "the password should be decrypted")
 }
+
+func TestUpdateParams(t *testing.T) {
+	md5 := "836642ca442d7d145900"
+	UpdateParams(md5, "aaaaa")
+}

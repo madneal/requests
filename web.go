@@ -26,7 +26,7 @@ func SendRequest(request Request) {
 		if MatchUrl(request.Url) == nil {
 			return
 		}
-		results := *MatchUrl(request.Url)
+		results := *(MatchUrl(request.Url))
 		if len(results) > 0 {
 			u, err := url.Parse(request.Url)
 			if err != nil {

@@ -7,11 +7,13 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/carlescere/scheduler"
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
 	"net/url"
 	"os"
 	"reflect"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -80,6 +82,7 @@ func MultiThreadKafka() {
 		Brokers: CONFIG.Kafka.Brokers,
 		Topics:  []string{CONFIG.Kafka.Topic},
 	})
+
 	if err != nil {
 		Log.Errorf("error creating consumer group: %+v\n", err)
 		os.Exit(1)
@@ -89,6 +92,7 @@ func MultiThreadKafka() {
 	for {
 		gen, err := group.Next(context.TODO())
 		if err != nil {
+			Log.Error(err)
 			break
 		}
 
@@ -112,12 +116,17 @@ func MultiThreadKafka() {
 					case kafka.ErrGenerationEnded:
 						// generation has ended.  commit offsets.  in a real app,
 						// offsets would be committed periodically.
-						gen.CommitOffsets(map[string]map[int]int64{"my-topic": {partition: offset}})
+						gen.CommitOffsets(map[string]map[int]int64{CONFIG.Kafka.Topic: {partition: offset}})
 						return
 					case nil:
-						if CONFIG.Run.Debug == true {
+						if CONFIG.Run.Debug {
 							fmt.Printf("message at offset %d: %s = %s\n", msg.Offset, string(msg.Key), string(msg.Value))
 						}
+						job := func() {
+							Log.Infof("The current partition is %d, and the offset is %d", partition, msg.Offset)
+						}
+						scheduler.Every(CONFIG.Run.Mins).Minutes().Run(job)
+						runtime.Goexit()
 						RunTask(string(msg.Value))
 						offset = msg.Offset
 					default:

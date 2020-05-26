@@ -51,7 +51,7 @@ func init() {
 	})
 	logger.AddHook(&WriterHook{
 		Writer:    os.Stdout,
-		LogLevels: []logrus.Level{logrus.InfoLevel, logrus.DebugLevel},
+		LogLevels: []logrus.Level{logrus.InfoLevel, logrus.DebugLevel, logrus.ErrorLevel},
 	})
 	Log = logger.WithFields(logrus.Fields{"prefix": "pvs"})
 }

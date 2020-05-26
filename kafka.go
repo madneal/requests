@@ -7,13 +7,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/carlescere/scheduler"
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
 	"net/url"
 	"os"
 	"reflect"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -121,12 +119,9 @@ func MultiThreadKafka() {
 					case nil:
 						if CONFIG.Run.Debug {
 							fmt.Printf("message at offset %d: %s = %s\n", msg.Offset, string(msg.Key), string(msg.Value))
-						}
-						job := func() {
 							Log.Infof("The current partition is %d, and the offset is %d", partition, msg.Offset)
 						}
-						scheduler.Every(CONFIG.Run.Mins).Minutes().Run(job)
-						runtime.Goexit()
+						gen.CommitOffsets(map[string]map[int]int64{CONFIG.Kafka.Topic: {partition: offset}})
 						RunTask(string(msg.Value))
 						offset = msg.Offset
 					default:

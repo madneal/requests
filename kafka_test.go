@@ -195,3 +195,12 @@ func TestComputeHash(t *testing.T) {
 	fmt.Println(hash)
 	assert.True(t, true, 20 == len(hash), "the length should be 20")
 }
+
+func TestValidateHost(t *testing.T) {
+	host := "wwww.baidu.com"
+	assert.Equal(t, true, ValidateHost(host), "the host should be valid")
+	host1 := "d12:243:134"
+	assert.Equal(t, false, ValidateHost(host1), "the host should be invalid")
+	host2 := "192.168.1.1"
+	assert.Equal(t, true, ValidateHost(host2), "the host should be valid")
+}

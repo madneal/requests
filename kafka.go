@@ -6,12 +6,14 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
 	"net/url"
 	"os"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -228,6 +230,9 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = ObtainUrl(data)
 	} else {
 		request.Host = data["Host"].(string)
+		if !ValidateHost(request.Host) {
+			return request, errors.New(fmt.Sprintf("The host is invalid, msg: %s", msg))
+		}
 		for _, msg := range zeekMsg {
 			if data[msg] == nil {
 				continue
@@ -264,6 +269,14 @@ func ParseJson(msg string) (Request, error) {
 	}
 	request.Headers = headers
 	return request, err
+}
+
+func ValidateHost(host string) bool {
+	matched, err := regexp.MatchString(`(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$)|(^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)`, host)
+	if err != nil {
+		Log.Error(err)
+	}
+	return matched
 }
 
 // ObtainUrl is utilized to obtain url from data

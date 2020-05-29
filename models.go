@@ -388,6 +388,12 @@ func QueryAllHosts() (*[]string, error) {
 	return &result, err
 }
 
+func QueryAssetHosts() (*[]string, error) {
+	var result []string
+	err := db.Model(&Asset{}).Group("host").Pluck("host", &result).Error
+	return &result, err
+}
+
 func MatchUrl(postUrl string) *[]Resource {
 	resources := make([]Resource, 0)
 	uPost, err := url.Parse(postUrl)

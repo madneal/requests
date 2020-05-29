@@ -219,3 +219,8 @@ func TestUpdateParams(t *testing.T) {
 	md5 := "836642ca442d7d145900"
 	UpdateParams(md5, "aaaaa")
 }
+
+func TestQueryAssetHosts(t *testing.T) {
+	hosts, _ := QueryAssetHosts()
+	fmt.Println(*hosts)
+}

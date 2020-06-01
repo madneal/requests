@@ -272,7 +272,15 @@ func ParseJson(msg string) (Request, error) {
 }
 
 func ValidateHost(host string) bool {
+	host = strings.ToLower(host)
+	isIp, err := regexp.MatchString(`^\d{1,3}\.`, host)
 	if !strings.Contains(host, ".") {
+		return false
+	}
+	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") {
+		return false
+	}
+	if !(strings.HasSuffix(host, ".com") || strings.HasSuffix(host, ".cn")) && !isIp {
 		return false
 	}
 	matched, err := regexp.MatchString(`(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$)|(^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)`, host)

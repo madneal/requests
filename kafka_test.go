@@ -204,5 +204,7 @@ func TestValidateHost(t *testing.T) {
 	host2 := "192.168.1.1"
 	assert.Equal(t, true, ValidateHost(host2), "the host should be valid")
 	host3 := "abc"
-	assert.Equal(t, true, ValidateHost(host3), "the host should be valid")
+	assert.Equal(t, false, ValidateHost(host3), "the host should not be valid")
+	host4 := "www.baidu.com.net"
+	assert.Equal(t, false, ValidateHost(host4), "the host should not be valid")
 }

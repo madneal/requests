@@ -37,7 +37,7 @@ func main() {
 		fmt.Printf("kafka topic:%s\n", CONFIG.Kafka.Topic)
 		ReadKafka()
 	} else if cmd == "web" {
-		SetDownloadService()
+		SetupServices()
 	} else if cmd == "e" {
 		fmt.Println(Encrypt(os.Args[2], ENCRYPT_KEY))
 	} else if cmd == "d" {

@@ -6,7 +6,7 @@ import (
 )
 
 func TestSetDownloadService(t *testing.T) {
-	SetDownloadService()
+	SetupServices()
 }
 
 func TestIsTokenValid(t *testing.T) {

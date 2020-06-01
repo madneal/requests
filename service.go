@@ -181,7 +181,7 @@ func IsTokenValid(token string) bool {
 	return fmt.Sprintf("%x", md5Sum) == token
 }
 
-func SetDownloadService() {
+func SetupServices() {
 	http.HandleFunc("/download-resources", DownloadHandler)
 	http.HandleFunc("/download-assets", DownloadAssets)
 	http.HandleFunc("/get-resources", ResourcesHandler)

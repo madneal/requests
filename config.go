@@ -26,7 +26,7 @@ type Config struct {
 		Production  bool
 		Encrypt     bool
 		MultiThread bool `yaml:"multithread"`
-		Mins        int
+		Port        int
 	}
 	Redis struct {
 		Host     string

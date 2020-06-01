@@ -188,5 +188,6 @@ func SetDownloadService() {
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
-	Log.Info(http.ListenAndServe(":80", nil))
+	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
+	Log.Info(http.ListenAndServe(port, nil))
 }

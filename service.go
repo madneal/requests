@@ -107,7 +107,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 
 func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 	if !IsTokenValid(r.Header.Get("tkzeek")) {
-		http.Error(w, "Access denied", http.StatusForbidden)
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
 	if r.Method == "POST" {
@@ -129,6 +129,35 @@ func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+func HostsHandler(w http.ResponseWriter, r *http.Request) {
+	//if !IsTokenValid(r.Header.Get("tkzeek")) {
+	//	http.Error(w, DENY_WORDS, http.StatusForbidden)
+	//}
+	hosts, err := QueryAssetHosts()
+	if err != nil {
+		Log.Error(err)
+		http.Error(w, "Query host failed", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/csv")
+	filename := getFilename("hosts")
+	w.Header().Set("Content-Disposition", filename)
+	wr := csv.NewWriter(w)
+	wr.Write([]string{"host"})
+	for _, host := range *hosts {
+		err := wr.Write([]string{host})
+		if err != nil {
+			Log.Error(err)
+			http.Error(w, "Write to csv failed", http.StatusInternalServerError)
+		}
+	}
+	wr.Flush()
+}
+
+func getFilename(prefix string) string {
+	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
 }
 
 // host string is splited by ,
@@ -158,5 +187,6 @@ func SetDownloadService() {
 	http.HandleFunc("/get-resources", ResourcesHandler)
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
+	http.HandleFunc("/get-assethosts", HostsHandler)
 	Log.Info(http.ListenAndServe(":80", nil))
 }

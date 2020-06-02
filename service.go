@@ -17,10 +17,10 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
-	filename := fmt.Sprintf("attachment;filename=resources-%s.csv", time.Now().Format("2006-01-02 15:04:05"))
+	filename := getFilename("resources")
 	w.Header().Set("Content-Disposition", filename)
+	wr := csv.NewWriter(w)
 	wr.Write([]string{"id", "url", "protocol", "method", "firstpath", "ip", "created_time", "updated_time"})
 	for i := range *resources {
 		resource := (*resources)[i]
@@ -88,7 +88,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 	}
 	wr := csv.NewWriter(w)
 	w.Header().Set("Content-Type", "text/csv")
-	filename := fmt.Sprintf("attachment;filename=assets-%s.csv", time.Now().Format("2006-01-02 15:04:05"))
+	filename := getFilename("assets")
 	w.Header().Set("Content-Disposition", filename)
 	wr.Write([]string{"id", "url", "host", "ip", "method", "params", "created_time", "updated_time"})
 	for i := range *assets {

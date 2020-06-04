@@ -130,6 +130,8 @@ func ParseJson(msg string) {
 	}
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
+	} else {
+		return
 	}
 	//headers := make(map[string]string)
 	if data["agentId"] == nil {
@@ -172,7 +174,7 @@ func CheckWeakPass(data string) (string, bool) {
 	if len(result) == 0 {
 		return pass, false
 	}
-	return result[len(result) - 1], true
+	return result[len(result)-1], true
 }
 
 func CreateCred(request *Request, pass string) {

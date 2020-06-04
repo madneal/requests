@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"time"
 )
 
 type Request struct {
@@ -19,74 +18,6 @@ type Request struct {
 	AgentId   string
 	Timestamp int64
 	Postdata  string
-}
-
-func SendRequest(request Request) {
-	if request.Method == POST_METHOD {
-		if MatchUrl(request.Url) == nil {
-			return
-		}
-		results := *(MatchUrl(request.Url))
-		if len(results) > 0 {
-			u, err := url.Parse(request.Url)
-			if err != nil {
-				Log.Error(err)
-			} else {
-				for _, result := range results {
-					resource := Resource{
-						Url:         u.Host + u.Path,
-						Protocol:    result.Protocol,
-						Method:      POST_METHOD,
-						Firstpath:   u.Host + "/" + strings.Split(u.Path, "/")[1],
-						CreatedTime: time.Now(),
-						UpdatedTime: time.Now(),
-					}
-					err := NewResouce(resource)
-					if err != nil {
-						Log.Error(err)
-					}
-				}
-			}
-		} else {
-			return
-		}
-	}
-	// the host is invalid
-	if request.Host == "-" {
-		return
-	}
-	isNeedReplay, ip := IsNeedReplay(request.Host)
-	if isNeedReplay == false {
-		Log.Infof("Requst to %s will not replay,host: %s\n", request.Url, request.Host)
-		return
-	}
-	var res *resty.Response
-	if request.Method == GET_METHOD {
-		res = DoGet(request, ip)
-	} else if request.Method == POST_METHOD {
-		//res = DoPost(request)
-		fmt.Println("there should not exist any post request")
-	} else {
-		fmt.Print("method does not support")
-	}
-	if res == nil {
-		return
-	}
-	statusCode := res.StatusCode()
-	resource := CreateResourceByRequest(request, ip)
-	if statusCode == 200 {
-		Log.Infof("Request to %s successful", request.Url)
-		err := NewResouce(*resource)
-		if err != nil {
-			Log.Error(err)
-		}
-	} else {
-		//err := DeleteIfExists(*resource)
-		//if err != nil {
-		//	Log.Error(err)
-		//}
-		return
-	}
 }
 
 func DoGet(request Request, ip string) *resty.Response {
@@ -143,23 +74,6 @@ func GetScheme(urlStr string) (string, error) {
 	return u.Scheme, err
 }
 
-func CreateResourceByRequest(request Request, ip string) *Resource {
-	u, err := url.Parse(request.Url)
-	if err != nil {
-		fmt.Println(nil)
-		return nil
-	}
-	path := "/" + strings.Split(u.Path, "/")[1]
-	return &Resource{
-		Url:         u.Host + u.Path,
-		Protocol:    u.Scheme,
-		Method:      request.Method,
-		Firstpath:   u.Host + path,
-		Ip:          ip,
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-}
 
 func GetIp(host string) []net.IP {
 	ip, err := net.LookupIP(host)

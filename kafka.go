@@ -2,19 +2,12 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
-	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
-	"net/url"
 	"os"
-	"reflect"
 	"regexp"
-	"strings"
 	"time"
 )
 
@@ -51,26 +44,6 @@ func SingleThreadKafka() {
 		if CONFIG.Run.Debug == true {
 			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 		}
-		//var i int
-
-		//if len(messages) <= CONFIG.Run.Threads {
-		//	messages = append(messages, string(m.Value))
-		//	continue
-		//}
-		//
-		//var wg sync.WaitGroup
-		//for j := 0; j < CONFIG.Run.Threads; j++ {
-		//	//fmt.Println("Main:Starting worker")
-		//	wg.Add(1)
-		//	go func(msg string) {
-		//		//fmt.Printf("Worker %v: Started\n", j)
-		//		RunTask(msg)
-		//		wg.Done()
-		//		//fmt.Printf("Worker %v: Finished\n", j)
-		//	}(messages[j])
-		//	wg.Wait()
-		//}
-		//messages = nil
 
 		RunTask(string(m.Value))
 	}
@@ -137,70 +110,18 @@ func MultiThreadKafka() {
 
 func RunTask(msg string) {
 	//fmt.Printf("process msg: %s\n", msg)
-	request, err := ParseJson(msg)
-	if err != nil {
-		Log.Error(err)
-		fmt.Println("parse request failed")
-		return
-	} else {
-		if CONFIG.Run.Redis == true {
-			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
-				return
-			}
-			err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()
-			if err != nil {
-				Log.Error(err)
-			}
-		}
-
-		InsertAsset(request)
-		if CONFIG.Run.Production {
-			return
-		}
-		// obtain scheme from referer and send request
-		isValidReferer, scheme := IsValidReferer(request)
-		if isValidReferer == true {
-			url, err := SetUrlByScheme(scheme, request.Url)
-			if err != nil {
-				Log.Errorf("obtain url for %s by referer failed", request.Url)
-			} else {
-				request.Url = url
-				SendRequest(request)
-			}
-			return
-		}
-		SendRequest(request)
-		// repeat the request, for http and https respectively
-		if strings.Contains(request.Url, "https") {
-			request.Url = strings.Replace(request.Url, "https", "http", 1)
-		} else {
-			request.Url = strings.Replace(request.Url, "http", "https", 1)
-		}
-		SendRequest(request)
-	}
+	ParseJson(msg)
 }
 
-func SetUrlByScheme(scheme, urlStr string) (string, error) {
-	u, err := url.Parse(urlStr)
-	if nil != err {
-		return "", err
-	}
-	u.Scheme = scheme
-	return u.String(), err
-}
-
-func ParseJson(msg string) (Request, error) {
+func ParseJson(msg string) {
 	var request Request
 	var data map[string]interface{}
 	var err error
 	if err = json.Unmarshal([]byte(msg), &data); err != nil {
 		Log.Error(err)
-		return request, err
+		return
 	}
-	var headersType string
-	if _, ok := data["headers"]; ok {
-		headersType = reflect.TypeOf(data["headers"]).String()
-	}
+
 	if data["agentId"] != nil {
 		request.AgentId = data["agentId"].(string)
 	}
@@ -210,84 +131,25 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
-	headers := make(map[string]string)
-	// headers is array
-	if headersType == "[]interface {}" {
-		headers1 := data["headers"].([]interface{})
-		for _, header := range headers1 {
-			headerMap := header.(map[string]interface{})
-			headers[headerMap["name"].(string)] = headerMap["value"].(string)
-		}
-	} else if headersType == "map[string]interface {}" {
-		headers1 := data["headers"].(map[string]interface{})
-		for k, v := range headers1 {
-			headers[k] = v.(string)
-		}
-	} else if data["agentId"] == nil {
+	//headers := make(map[string]string)
+	if data["agentId"] == nil {
 		if data["host"] != nil {
 			request.Host = data["host"].(string)
 		}
 		request.Url = ObtainUrl(data)
-	} else {
-		request.Host = data["Host"].(string)
-		if !ValidateHost(request.Host) {
-			return request, errors.New(fmt.Sprintf("The host is invalid, msg: %s", msg))
-		}
-		for _, msg := range zeekMsg {
-			if data[msg] == nil {
-				continue
-			}
-			if data[msg].(string) != "-" {
-				headers[msg] = data[msg].(string)
-			}
-			if msg == "User-Agent" {
-				headers[msg] = UA
-			}
-		}
-		port := data["resp_p"].(string)
-		var schema string
-		if port == "443" {
-			schema = "https://"
-		} else if port == "-" {
-			return request, nil
-		} else {
-			schema = "http://"
-		}
-		request.Url = schema + headers["Host"] + data["uri"].(string)
 	}
-	if request.Url == "" {
-		request.Url = data["url"].(string)
-	}
-	// todo there is not post asset handle for post now
-	if !CONFIG.Run.Production && request.Method == "POST" && data["postdata"].(string) != "" {
-		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+
+	if request.Method == "POST" && data["postdata"].(string) != "" {
 		if err != nil {
 			Log.Error(err)
 		} else {
-			request.Postdata = string(body)
+			request.Postdata = data["postdata"].(string)
+		}
+		pass, result := CheckWeakPass(request.Postdata)
+		if result {
+			CreateCred(&request, pass)
 		}
 	}
-	request.Headers = headers
-	return request, err
-}
-
-func ValidateHost(host string) bool {
-	host = strings.ToLower(host)
-	isIp, err := regexp.MatchString(`^\d{1,3}\.`, host)
-	if !strings.Contains(host, ".") {
-		return false
-	}
-	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") {
-		return false
-	}
-	if !(strings.HasSuffix(host, ".com") || strings.HasSuffix(host, ".cn")) && !isIp {
-		return false
-	}
-	matched, err := regexp.MatchString(`(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$)|(^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)`, host)
-	if err != nil {
-		Log.Error(err)
-	}
-	return matched
 }
 
 // ObtainUrl is utilized to obtain url from data
@@ -303,70 +165,26 @@ func ObtainUrl(data map[string]interface{}) string {
 	return "http://" + host + uri
 }
 
-func InsertAsset(request Request) {
-	asset := CreateAssetByUrl(request.Url)
-	if asset == nil {
-		return
+func CheckWeakPass(data string) (string, bool) {
+	var pass string
+	re := regexp.MustCompile(`(?i)p(ass)?(word|wd)?"?\s?(=|:)+\s?("|')?([0-9a-zA-Z]{1,10})`)
+	result := re.FindStringSubmatch(data)
+	if len(result) == 0 {
+		return pass, false
 	}
-	asset.Method = request.Method
-	asset.Md5 = ComputeHash(asset.Url + asset.Method)
-	err := NewAsset(asset)
-	if err != nil {
-		Log.Error(err)
-	}
+	return result[len(result) - 1], true
 }
 
-func ComputeHash(urlAndMethod string) string {
-	h := md5.New()
-	h.Write([]byte(urlAndMethod))
-	result := hex.EncodeToString(h.Sum(nil))
-	return result
-}
-
-func CheckIfBlackExtension(url string) bool {
-	lowerUrl := strings.ToLower(url)
-	for _, extension := range BLACK_EXTENSIONS {
-		if strings.HasSuffix(lowerUrl, extension) {
-			return true
-		}
-	}
-	return false
-}
-
-func CreateAssetByUrl(urlStr string) *Asset {
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		Log.Error(err)
-		return nil
-	}
-	params := ObtainQueryKeys(u)
-	return &Asset{
-		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
-		Params:      params,
-		Host:        u.Host,
-		Ip:          ObtainIp(u.Host),
+func CreateCred(request *Request, pass string) {
+	cred := Cred{
+		Url:         request.Url,
+		Password:    pass,
+		Postdata:    request.Postdata,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
-}
-
-// ObtainQueryKeys is utilized to obtain query keys
-func ObtainQueryKeys(u *url.URL) string {
-	q := u.Query()
-	var result string
-	for k, _ := range q {
-		result += k + ","
+	err := NewCred(&cred)
+	if err != nil {
+		Log.Error(err)
 	}
-	return result
-}
-
-func ObtainIp(host string) string {
-	ip := QueryIp(host)
-	if ip == "" {
-		ips := GetIp(host)
-		for _, ipEle := range ips {
-			ip += ipEle.String() + ","
-		}
-	}
-	return ip
 }

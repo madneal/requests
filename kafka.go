@@ -230,9 +230,6 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = ObtainUrl(data)
 	} else {
 		request.Host = data["Host"].(string)
-		if !ValidateHost(request.Host) {
-			return request, errors.New(fmt.Sprintf("The host is invalid, msg: %s", msg))
-		}
 		for _, msg := range zeekMsg {
 			if data[msg] == nil {
 				continue
@@ -254,6 +251,9 @@ func ParseJson(msg string) (Request, error) {
 			schema = "http://"
 		}
 		request.Url = schema + headers["Host"] + data["uri"].(string)
+	}
+	if !ValidateHost(request.Host) {
+		return request, errors.New(fmt.Sprintf("The host is invalid, msg: %s", msg))
 	}
 	if request.Url == "" {
 		request.Url = data["url"].(string)

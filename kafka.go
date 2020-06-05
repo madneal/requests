@@ -142,10 +142,10 @@ func ParseJson(msg string) {
 	}
 
 	if request.Method == "POST" && data["postdata"].(string) != "" {
-		if err != nil {
-			Log.Error(err)
-		} else {
+		if data["postdata"] != nil {
 			request.Postdata = data["postdata"].(string)
+		} else {
+			return
 		}
 		pass, result := CheckWeakPass(request.Postdata)
 		if result {

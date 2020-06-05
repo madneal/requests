@@ -277,7 +277,7 @@ func ValidateHost(host string) bool {
 	if !strings.Contains(host, ".") {
 		return false
 	}
-	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") {
+	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") || strings.HasPrefix(host, "127.") {
 		return false
 	}
 	if !(strings.HasSuffix(host, ".com") || strings.HasSuffix(host, ".cn")) && !isIp {

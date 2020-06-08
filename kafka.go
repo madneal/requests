@@ -136,7 +136,6 @@ func MultiThreadKafka() {
 }
 
 func RunTask(msg string) {
-	//fmt.Printf("process msg: %s\n", msg)
 	request, err := ParseJson(msg)
 	if err != nil {
 		Log.Error(err)

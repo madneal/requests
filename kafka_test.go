@@ -80,7 +80,7 @@ func TestParseJson(t *testing.T) {
 `
 	data4 := `
 {
-	"host": "www.baidu.com",
+	"host": "www.baidu.comhttp:",
 	"uri": "/abc/def?name=134",
 	"resp_p": "80",
 	"method": "GET"
@@ -101,7 +101,8 @@ func TestParseJson(t *testing.T) {
 	request3, _ := ParseJson(data3)
 	assert.Equal(t, request3.Postdata, "abc=123", "the post data should be the same")
 
-	request4, _ := ParseJson(data4)
+	request4, err := ParseJson(data4)
+	fmt.Println(err)
 	assert.Equal(t, "http://www.baidu.com:80/abc/def?name=134", request4.Url, "the url should be the same")
 
 	request5, _ := ParseJson(data5)
@@ -207,4 +208,9 @@ func TestValidateHost(t *testing.T) {
 	assert.Equal(t, false, ValidateHost(host3), "the host should not be valid")
 	host4 := "www.baidu.com.net"
 	assert.Equal(t, false, ValidateHost(host4), "the host should not be valid")
+	host5 := "baidu.comhttp:"
+	assert.Equal(t, false, ValidateHost(host5), "the host shoudl not be valid")
+	if !false {
+		fmt.Println(ValidateHost(host5))
+	}
 }

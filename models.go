@@ -46,6 +46,15 @@ type BlackDomain struct {
 	Host string `gorm:"type:varchar(100);column:host"`
 }
 
+type Cred struct {
+	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Url         string    `gorm:"type:varchar(1000);column:url"`
+	Password    string    `gorm:"type:varchar(100);column:password"`
+	Postdata    string    `gorm:"type:varchar(1000);column:postdata"`
+	CreatedTime time.Time `gorm:"created"`
+	UpdatedTime time.Time `gorm:"updated"`
+}
+
 var db *gorm.DB
 
 func init() {
@@ -391,6 +400,12 @@ func QueryAllHosts() (*[]string, error) {
 func QueryAssetHosts() (*[]string, error) {
 	var result []string
 	err := db.Model(&Asset{}).Group("host").Pluck("host", &result).Error
+	return &result, err
+}
+
+func QueryAllCreds() (*[]Cred, error) {
+	var result []Cred
+	err := db.Group("url").Find(&result).Error
 	return &result, err
 }
 

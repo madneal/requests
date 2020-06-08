@@ -156,6 +156,31 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
+func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
+	result, err := QueryAllCreds()
+	if err != nil {
+		Log.Error(err)
+		http.Error(w, "Query cred falied", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/csv")
+	filename := getFilename("creds")
+	w.Header().Set("Content-Disposition", filename)
+	wr := csv.NewWriter(w)
+	wr.Write([]string{"id", "url", "password", "postdata", "created_time", "updated_time"})
+	for _, result := range *result {
+		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
+			result.CreatedTime.Format("2006-01-02 15:04:05"),
+			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+		err := wr.Write(record)
+		if err != nil {
+			Log.Error(err)
+			return
+		}
+	}
+	wr.Flush()
+}
+
 func getFilename(prefix string) string {
 	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
 }
@@ -188,6 +213,7 @@ func SetupServices() {
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
+	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))
 }

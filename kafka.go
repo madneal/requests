@@ -169,7 +169,7 @@ func ObtainUrl(data map[string]interface{}) string {
 
 func CheckWeakPass(data string) (string, bool) {
 	var pass string
-	re := regexp.MustCompile(`(?i)p(ass)?(word|wd)?"?\s?(=|:)+\s?("|')?([0-9a-zA-Z]{1,10})`)
+	re := regexp.MustCompile(`(?i)(password|passwd|passwd|pass)"?\s?(=|:)+\s?("|')?([0-9a-zA-Z]{1,10})(\"|&|\<)`)
 	result := re.FindStringSubmatch(data)
 	if len(result) == 0 {
 		return pass, false

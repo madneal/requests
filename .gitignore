@@ -4,3 +4,4 @@ pvs.log
 vendor
 requests
 cred
+.DS_Store

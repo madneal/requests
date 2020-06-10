@@ -142,7 +142,7 @@ func TestRedis(t *testing.T) {
 	})
 	pong, err := rdb.Ping().Result()
 	if err != nil {
-		fmt.Println(err)
+		Log.Error(err)
 	}
 	fmt.Println(pong)
 	rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
@@ -209,8 +209,9 @@ func TestValidateHost(t *testing.T) {
 	host4 := "www.baidu.com.net"
 	assert.Equal(t, false, ValidateHost(host4), "the host should not be valid")
 	host5 := "baidu.comhttp:"
-	assert.Equal(t, false, ValidateHost(host5), "the host shoudl not be valid")
-	if !false {
-		fmt.Println(ValidateHost(host5))
-	}
+	assert.Equal(t, false, ValidateHost(host5), "the host should not be valid")
+
+	host6 := "219.133.104.74http:"
+	assert.Equal(t, false, ValidateHost(host6), "the host should not be valid")
+	fmt.Println(ValidateHost(host6))
 }

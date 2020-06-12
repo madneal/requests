@@ -14,6 +14,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -209,6 +210,11 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
+	var port string
+	if data["resp_p"] != nil {
+		port = data["resp_p"].(string)
+		request.Port, _ = strconv.Atoi(port)
+	}
 	headers := make(map[string]string)
 	// headers is array
 	if headersType == "[]interface {}" {
@@ -240,12 +246,10 @@ func ParseJson(msg string) (Request, error) {
 				headers[msg] = UA
 			}
 		}
-		port := data["resp_p"].(string)
+		//port := data["resp_p"].(string)
 		var schema string
-		if port == "443" {
-			schema = "https://"
-		} else if port == "-" {
-			return request, nil
+		if port == "-" {
+			return request, errors.New(fmt.Sprintf("thr port is -, msg: %s", msg))
 		} else {
 			schema = "http://"
 		}
@@ -304,6 +308,7 @@ func ObtainUrl(data map[string]interface{}) string {
 
 func InsertAsset(request Request) {
 	asset := CreateAssetByUrl(request.Url, request.Host)
+	asset.Port = request.Port
 	if asset == nil {
 		return
 	}

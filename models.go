@@ -414,6 +414,13 @@ func QueryAssetHosts() (*[]string, error) {
 	return &result, err
 }
 
+func QueryHostAndPort() (*[]Asset, error) {
+	var result []Asset
+	//db.LogMode(true)
+	err := db.Table("assets").Select("host, port").Scan(&result).Error
+	return &result, err
+}
+
 func QueryAllCreds() (*[]Cred, error) {
 	var result []Cred
 	err := db.Group("url").Find(&result).Error

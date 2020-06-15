@@ -233,3 +233,8 @@ func TestQueryAssetHosts(t *testing.T) {
 	hosts, _ := QueryAssetHosts()
 	fmt.Println(*hosts)
 }
+
+func TestQueryHostAndPort(t *testing.T) {
+	results, _ := QueryHostAndPort()
+	fmt.Println(*results)
+}

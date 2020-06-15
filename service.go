@@ -135,7 +135,7 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	//if !IsTokenValid(r.Header.Get("tkzeek")) {
 	//	http.Error(w, DENY_WORDS, http.StatusForbidden)
 	//}
-	hosts, err := QueryAssetHosts()
+	assets, err := QueryHostAndPort()
 	if err != nil {
 		Log.Error(err)
 		http.Error(w, "Query host failed", http.StatusInternalServerError)
@@ -145,9 +145,9 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	filename := getFilename("hosts")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
-	wr.Write([]string{"host"})
-	for _, host := range *hosts {
-		err := wr.Write([]string{host})
+	wr.Write([]string{"host", "port"})
+	for _, asset := range *assets {
+		err := wr.Write([]string{asset.Host, strconv.Itoa(asset.Port)})
 		if err != nil {
 			Log.Error(err)
 			http.Error(w, "Write to csv failed", http.StatusInternalServerError)

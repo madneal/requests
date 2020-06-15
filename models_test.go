@@ -8,27 +8,36 @@ import (
 )
 
 func TestNewAsset(t *testing.T) {
-	asset := Asset{
-		//Id: 1,
-		Url:         "www.baidu.com",
+	//asset := Asset{
+	//	//Id: 1,
+	//	Url:         "www.baidu.com",
+	//	Method:      "GET",
+	//	Params:      "na111",
+	//	CreatedTime: time.Now(),
+	//	UpdatedTime: time.Now(),
+	//}
+	//err := NewAsset(&asset)
+	//if err != nil {
+	//	fmt.Print(err)
+	//}
+	//asset1 := Asset{
+	//	Url:         "www.baidu.com",
+	//	Method:      "POST",
+	//	Params:      "age",
+	//	CreatedTime: time.Now(),
+	//	UpdatedTime: time.Now(),
+	//}
+	//NewAsset(&asset1)
+
+	asset2 := Asset{
+		Url:         "http://www.baidu.com",
 		Method:      "GET",
-		Params:      "na111",
+		Port:        8080,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
-	err := NewAsset(&asset)
-	if err != nil {
-		fmt.Print(err)
-	}
-	asset1 := Asset{
-		Url:         "www.baidu.com",
-		Method:      "POST",
-		Params:      "age",
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-	NewAsset(&asset1)
-	//fmt.Print(result)
+	asset2.Md5 = ComputeHash(asset2.Url + asset2.Method)
+	NewAsset(&asset2)
 }
 
 func TestExists(t *testing.T) {

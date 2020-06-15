@@ -169,6 +169,9 @@ func NewAsset(asset *Asset) error {
 		//oldParams := GetParams(asset)
 		//params := GetFreshParams(oldParams, newParams)
 		//return UpdateParams(asset.Md5, params)
+		if !ExistsByInt(asset.Port, "port") {
+			db.Model(&asset).Where("md5 = ?", asset.Md5).Update("port", asset.Port)
+		}
 		Log.Infof("The asset %s exists", asset.Url)
 		return nil
 	}
@@ -248,8 +251,15 @@ func GetParams(asset *Asset) string {
 
 // check if record exists
 func Exists(field, fieldName string) bool {
+	//db.LogMode(true)
 	var asset Asset
 	query := fmt.Sprintf("%s = ?", fieldName)
+	return !db.Where(query, field).First(&asset).RecordNotFound()
+}
+
+func ExistsByInt(field int, fieldname string) bool {
+	var asset Asset
+	query := fmt.Sprintf("%s = ?", fieldname)
 	return !db.Where(query, field).First(&asset).RecordNotFound()
 }
 

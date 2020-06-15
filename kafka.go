@@ -231,6 +231,8 @@ func ParseJson(msg string) (Request, error) {
 	} else if data["agentId"] == nil {
 		if data["host"] != nil {
 			request.Host = data["host"].(string)
+		} else {
+			return request, errors.New(fmt.Sprintf("There is no host in msg, msg: %s", msg))
 		}
 		request.Url = ObtainUrl(data)
 	} else {

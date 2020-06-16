@@ -49,30 +49,9 @@ func SingleThreadKafka() {
 			break
 		}
 
-		if CONFIG.Run.Debug == true {
+		if CONFIG.Run.Debug {
 			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 		}
-		//var i int
-
-		//if len(messages) <= CONFIG.Run.Threads {
-		//	messages = append(messages, string(m.Value))
-		//	continue
-		//}
-		//
-		//var wg sync.WaitGroup
-		//for j := 0; j < CONFIG.Run.Threads; j++ {
-		//	//fmt.Println("Main:Starting worker")
-		//	wg.Add(1)
-		//	go func(msg string) {
-		//		//fmt.Printf("Worker %v: Started\n", j)
-		//		RunTask(msg)
-		//		wg.Done()
-		//		//fmt.Printf("Worker %v: Finished\n", j)
-		//	}(messages[j])
-		//	wg.Wait()
-		//}
-		//messages = nil
-
 		RunTask(string(m.Value))
 	}
 }

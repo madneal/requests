@@ -140,11 +140,10 @@ func RunTask(msg string) {
 	request, err := ParseJson(msg)
 	if err != nil {
 		Log.Error(err)
-		fmt.Println("parse request failed")
 		return
 	} else {
-		if CONFIG.Run.Redis == true {
-			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() == true {
+		if CONFIG.Run.Redis {
+			if rdb.SIsMember(CONFIG.Redis.Set, request.Url).Val() {
 				return
 			}
 			err = rdb.SAdd(CONFIG.Redis.Set, request.Url).Err()

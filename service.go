@@ -181,6 +181,10 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
+func SetPostFilesHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func getFilename(prefix string) string {
 	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
 }

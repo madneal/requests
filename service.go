@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -182,30 +181,36 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
-func SetPostFilesHandler(w http.ResponseWriter, r *http.Request) {
-	reader := csv.NewReader(r.Body)
-	var assets *[]Asset
-	for {
-		record, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			Log.Error(err)
-			return
+func PostFileHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
+	}
+	file, _, err := r.FormFile("host")
+	reader := csv.NewReader(file)
+	if err != nil {
+		Log.Error(err)
+		http.Error(w, "post file failed", http.StatusServiceUnavailable)
+	}
+
+	lines, err := reader.ReadAll()
+	var assets []Asset
+	for i, record := range lines {
+		if i == 0 {
+			continue
 		}
 		port, err := strconv.Atoi(record[1])
 		if err != nil {
 			Log.Error(err)
 		}
-		*assets = append(*assets, Asset{
+		assets = append(assets, Asset{
 			Host:        record[0],
 			Port:        port,
 			CreatedTime: time.Now(),
 			UpdatedTime: time.Now(),
 		})
 	}
-	go HandleHosts(assets)
+	go HandleHosts(&assets)
 }
 
 func HandleHosts(assets *[]Asset) {
@@ -255,6 +260,7 @@ func SetupServices() {
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
 	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	http.HandleFunc("/post-hostandport", PostFileHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))
 }

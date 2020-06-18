@@ -421,8 +421,8 @@ func QueryAssetHosts() (*[]string, error) {
 
 func QueryHostAndPort() (*[]Asset, error) {
 	var result []Asset
-	//db.LogMode(true)
-	err := db.Table("assets").Group("host").Select("host, port").Scan(&result).Error
+	db.LogMode(true)
+	err := db.Debug().Table("assets").Group("host, port").Select("host, port").Scan(&result).Error
 	return &result, err
 }
 

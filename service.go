@@ -199,14 +199,18 @@ func SetPostFilesHandler(w http.ResponseWriter, r *http.Request) {
 			Log.Error(err)
 		}
 		*assets = append(*assets, Asset{
-			Host: record[0],
-			Port: port,
+			Host:        record[0],
+			Port:        port,
+			CreatedTime: time.Now(),
+			UpdatedTime: time.Now(),
 		})
 	}
+	go HandleHosts(assets)
 }
 
 func HandleHosts(assets *[]Asset) {
 	assets = BatchObtainIp(assets)
+	BatchInsertAssets(assets)
 }
 
 func BatchObtainIp(assets *[]Asset) *[]Asset {

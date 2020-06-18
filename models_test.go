@@ -238,3 +238,34 @@ func TestQueryHostAndPort(t *testing.T) {
 	results, _ := QueryHostAndPort()
 	fmt.Println(*results)
 }
+
+func TestBatchInsertAssets(t *testing.T) {
+	asset := Asset{
+		Host:        "www.google.com",
+		Port:        1234,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
+	}
+	asset1 := Asset{
+		Host:        "www.micro.com",
+		Port:        80,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
+	}
+	assets := make([]Asset, 0)
+	assets = append(assets, asset)
+	assets = append(assets, asset1)
+	BatchInsertAssets(&assets)
+	asset2 := Asset{
+		Host:        "www.google.com",
+		Port:        80,
+		CreatedTime: time.Now(),
+		UpdatedTime: time.Now(),
+	}
+	assets = append(assets, asset2)
+	BatchInsertAssets(&assets)
+	assert.Equal(t, true, ExistsByHostAndPort(asset2.Host, asset2.Port), "The host and port exists")
+	for _, asset := range assets {
+		db.Where("host = ? and port = ?", asset.Host, asset.Port).Delete(&asset)
+	}
+}

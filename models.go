@@ -263,6 +263,11 @@ func ExistsByInt(field int, fieldname string) bool {
 	return !db.Where(query, field).First(&asset).RecordNotFound()
 }
 
+func ExistsByHostAndPort(host string, port int) bool {
+	var asset Asset
+	return !db.Where("host = ? and port = ?", host, port).First(&asset).RecordNotFound()
+}
+
 // check if record exists
 func AssetExists(method, url string) bool {
 	var asset Asset
@@ -445,4 +450,17 @@ func MatchUrl(postUrl string) *[]Resource {
 		return nil
 	}
 	return &resources
+}
+
+// Batch insert asset, only include host and port
+// duplicate by host
+func BatchInsertAssets(assets *[]Asset) {
+	for _, asset := range *assets {
+		if !ExistsByHostAndPort(asset.Host, asset.Port) {
+			err := db.Create(&asset).Error
+			if err != nil {
+				Log.Error(err)
+			}
+		}
+	}
 }

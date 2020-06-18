@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -182,7 +183,39 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetPostFilesHandler(w http.ResponseWriter, r *http.Request) {
+	reader := csv.NewReader(r.Body)
+	var assets *[]Asset
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			Log.Error(err)
+			return
+		}
+		port, err := strconv.Atoi(record[1])
+		if err != nil {
+			Log.Error(err)
+		}
+		*assets = append(*assets, Asset{
+			Host: record[0],
+			Port: port,
+		})
+	}
+}
 
+func HandleHosts(assets *[]Asset) {
+	assets = BatchObtainIp(assets)
+}
+
+func BatchObtainIp(assets *[]Asset) *[]Asset {
+	for index, asset := range *assets {
+		host := asset.Host
+		ip := GetIpStr(host)
+		(*assets)[index].Ip = ip
+	}
+	return assets
 }
 
 func getFilename(prefix string) string {

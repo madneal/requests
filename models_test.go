@@ -269,3 +269,8 @@ func TestBatchInsertAssets(t *testing.T) {
 		db.Where("host = ? and port = ?", asset.Host, asset.Port).Delete(&asset)
 	}
 }
+
+func TestIsPortZero(t *testing.T) {
+	result := IsPortZero("7c031d9efda97b77a7d63dd0315e36fa")
+	assert.Equal(t, true, result, "the result should be true")
+}

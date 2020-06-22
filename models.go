@@ -169,7 +169,7 @@ func NewAsset(asset *Asset) error {
 		//oldParams := GetParams(asset)
 		//params := GetFreshParams(oldParams, newParams)
 		//return UpdateParams(asset.Md5, params)
-		if IsPortZero() {
+		if IsPortZero(asset.Md5) {
 			db.Model(&asset).Where("md5 = ?", asset.Md5).Update("port", asset.Port)
 		}
 		Log.Infof("The asset %s exists", asset.Url)
@@ -257,9 +257,9 @@ func Exists(field, fieldName string) bool {
 	return !db.Where(query, field).First(&asset).RecordNotFound()
 }
 
-func IsPortZero() bool {
+func IsPortZero(md5 string) bool {
 	var asset Asset
-	return !db.Where("port = 0").First(&asset).RecordNotFound()
+	return !db.Where("port = 0 and md5 = ?", md5).First(&asset).RecordNotFound()
 }
 
 func ExistsByHostAndPort(host string, port int) bool {

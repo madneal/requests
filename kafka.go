@@ -193,6 +193,9 @@ func ParseJson(msg string) (Request, error) {
 		port = data["resp_p"].(string)
 		request.Port, _ = strconv.Atoi(port)
 	}
+	if request.Port == 0 {
+		Log.Warnf("The request port is 0, the msg is %s", msg)
+	}
 	headers := make(map[string]string)
 	// headers is array
 	if headersType == "[]interface {}" {
@@ -327,7 +330,7 @@ func CreateAssetByUrl(urlStr, host string, port int) *Asset {
 		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
 		Params:      params,
 		Host:        host,
-		Ip:          ObtainIp(u.Host),
+		Ip:          "",
 		Port:        port,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),

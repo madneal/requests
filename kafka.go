@@ -188,10 +188,10 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
-	var port string
+	var port float64
 	if data["id.resp_p"] != nil {
-		port = data["id.resp_p"].(string)
-		request.Port, _ = strconv.Atoi(port)
+		port = data["id.resp_p"].(float64)
+		request.Port = int(port)
 	}
 	if request.Port == 0 {
 		Log.Warnf("The request port is 0, the msg is %s", msg)

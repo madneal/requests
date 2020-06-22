@@ -169,10 +169,11 @@ func NewAsset(asset *Asset) error {
 		//oldParams := GetParams(asset)
 		//params := GetFreshParams(oldParams, newParams)
 		//return UpdateParams(asset.Md5, params)
-		if IsPortZero(asset.Md5) {
+		if 0 != asset.Port && IsPortZero(asset.Md5) {
 			db.Model(&asset).Where("md5 = ?", asset.Md5).Update("port", asset.Port)
+		} else {
+			Log.Infof("The asset %s exists", asset.Url)
 		}
-		Log.Infof("The asset %s exists", asset.Url)
 		return nil
 	}
 }

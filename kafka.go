@@ -287,8 +287,7 @@ func ObtainUrl(data map[string]interface{}) string {
 }
 
 func InsertAsset(request Request) {
-	asset := CreateAssetByUrl(request.Url, request.Host)
-	asset.Port = request.Port
+	asset := CreateAssetByUrl(request.Url, request.Host, request.Port)
 	if asset == nil {
 		return
 	}
@@ -317,7 +316,7 @@ func CheckIfBlackExtension(url string) bool {
 	return false
 }
 
-func CreateAssetByUrl(urlStr, host string) *Asset {
+func CreateAssetByUrl(urlStr, host string, port int) *Asset {
 	u, err := url.Parse(urlStr)
 	if err != nil {
 		Log.Error(err)
@@ -329,6 +328,7 @@ func CreateAssetByUrl(urlStr, host string) *Asset {
 		Params:      params,
 		Host:        host,
 		Ip:          ObtainIp(u.Host),
+		Port:        port,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}

@@ -228,13 +228,6 @@ func ParseJson(msg string) (Request, error) {
 				headers[msg] = UA
 			}
 		}
-		//port := data["resp_p"].(string)
-		//var schema string
-		//if port == "-" {
-		//	return request, errors.New(fmt.Sprintf("thr port is -, msg: %s", msg))
-		//} else {
-		//	schema = "http://"
-		//}
 		schema := "http://"
 		request.Url = schema + headers["Host"] + data["uri"].(string)
 	}

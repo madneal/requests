@@ -173,6 +173,14 @@ func GetIp(host string) []net.IP {
 }
 
 func GetIpStr(host string) string {
+	isIp, err := regexp.MatchString(`^\d{1,3}\.`, host)
+	if err != nil {
+		Log.Error(err)
+		return ""
+	}
+	if isIp {
+		return host
+	}
 	ips := GetIp(host)
 	var result string
 	for _, ip := range ips {

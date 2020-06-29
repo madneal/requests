@@ -130,8 +130,8 @@ func RunTask(msg string) {
 			}
 		}
 
-		InsertAsset(request)
 		if CONFIG.Run.Production {
+			InsertAsset(request)
 			return
 		}
 		// obtain scheme from referer and send request
@@ -188,7 +188,7 @@ func ParseJson(msg string) (Request, error) {
 		request.Method = data["method"].(string)
 	}
 	var port float64
-	if data["id.resp_p"] != nil {
+	if CONFIG.Run.Production && data["id.resp_p"] != nil {
 		port = data["id.resp_p"].(float64)
 		request.Port = int(port)
 	}

@@ -39,6 +39,7 @@ func SendRequest(request Request) {
 						Protocol:    result.Protocol,
 						Method:      POST_METHOD,
 						Firstpath:   u.Host + "/" + strings.Split(u.Path, "/")[1],
+						Port:        request.Port,
 						CreatedTime: time.Now(),
 						UpdatedTime: time.Now(),
 					}

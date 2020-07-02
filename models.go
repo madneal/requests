@@ -38,6 +38,7 @@ type Resource struct {
 	Method      string    `gorm:"type:varchar(10);column:method"`
 	Firstpath   string    `gorm:"type:varchar(100);column:firstpath"`
 	Ip          string    `gorm:"type:varchar(20);column:ip"`
+	Port        int       `gorm:"type:int;column:port~~~"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`
 }

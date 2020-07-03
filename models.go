@@ -266,7 +266,7 @@ func IsPortZero(md5 string) bool {
 
 func ExistsByHostAndPort(host string, port int) bool {
 	var asset Asset
-	return !db.Where("host = ? and port = ?", host, port).First(&asset).RecordNotFound()
+	return !db.Where("host = ? and port = ? and ip != ''", host, port).First(&asset).RecordNotFound()
 }
 
 // check if record exists

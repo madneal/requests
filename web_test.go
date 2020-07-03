@@ -144,3 +144,8 @@ func TestIsNeedReplay(t *testing.T) {
 	assert.Equal(t, true, result1, "the result should be true")
 	assert.Equal(t, "113.98.55.192", ip1, "the ip should be the same")
 }
+
+func TestGetIpStr(t *testing.T) {
+	ipStr := GetIpStr("www.baidu.com")
+	fmt.Println(ipStr)
+}

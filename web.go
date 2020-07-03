@@ -187,7 +187,7 @@ func GetIpStr(host string) string {
 	for _, ip := range ips {
 		result += ip.String() + ","
 	}
-	return result
+	return strings.TrimRight(result, ",")
 }
 
 // check if ip in the given networks

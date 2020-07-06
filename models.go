@@ -323,7 +323,7 @@ func NewResouce(resource Resource) error {
 	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
 		return db.Create(&resource).Error
 	} else {
-		if resource.Port == 0 && CheckPortOfResource(resource) {
+		if resource.Port != 0 && CheckPortOfResource(resource) {
 			err := UpdatePort(resource)
 			if err != nil {
 				Log.Error(err)

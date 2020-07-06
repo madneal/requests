@@ -276,3 +276,19 @@ func TestIsPortZero(t *testing.T) {
 	assert.Equal(t, true, result, "the result should be true")
 	db.Model(&asset).Where("md5 = ?", "7c031d9efda97b77a7d63dd0315e36fa").Update("port", 1234)
 }
+
+func TestCheckPortOfResource(t *testing.T) {
+	resource := Resource{
+		Url: "www.baidu.com",
+	}
+	result := CheckPortOfResource(resource)
+	assert.Equal(t, true, result, "the result should be true")
+}
+
+func TestUpdatePort(t *testing.T) {
+	resource := Resource{
+		Url:  "www.baidu.com",
+		Port: 1234,
+	}
+	UpdatePort(resource)
+}

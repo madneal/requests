@@ -323,6 +323,12 @@ func NewResouce(resource Resource) error {
 	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
 		return db.Create(&resource).Error
 	} else {
+		if resource.Port == 0 && CheckPortOfResource(resource) {
+			err := UpdatePort(resource)
+			if err != nil {
+				Log.Error(err)
+			}
+		}
 		if CheckIfResourceOutofdate(resource) {
 			ip := resource.Ip
 			updated := resource.UpdatedTime
@@ -338,6 +344,17 @@ func NewResouce(resource Resource) error {
 func CheckIfResourceOutofdate(resource Resource) bool {
 	lastUpdated := getLastUpdatedTime(resource)
 	return CheckIfOutofdate(lastUpdated)
+}
+
+func UpdatePort(resource Resource) error {
+	err := db.Model(&resource).Where("url = ?", resource.Url).Update("port", resource.Port).Error
+	return err
+}
+
+// check if port of resource is 0
+func CheckPortOfResource(resource Resource) bool {
+	return !db.Where("url = ? and port = ?", resource.Url, 0).
+		First(&resource).RecordNotFound()
 }
 
 func CheckIfAssetOutofDate(asset Asset) bool {

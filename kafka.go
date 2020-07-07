@@ -192,6 +192,10 @@ func ParseJson(msg string) (Request, error) {
 		port = data["id.resp_p"].(float64)
 		request.Port = int(port)
 	}
+	if !CONFIG.Run.Production && data["resp_p"] != nil {
+		port = data["resp_p"].(float64)
+		request.Port = int(port)
+	}
 	if request.Port == 0 {
 		Log.Warnf("The request port is 0, the msg is %s", msg)
 	}

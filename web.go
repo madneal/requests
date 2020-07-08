@@ -158,6 +158,7 @@ func CreateResourceByRequest(request Request, ip string) *Resource {
 		Method:      request.Method,
 		Firstpath:   u.Host + path,
 		Ip:          ip,
+		Port:        request.Port,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}

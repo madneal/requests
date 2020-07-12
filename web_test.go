@@ -149,3 +149,13 @@ func TestGetIpStr(t *testing.T) {
 	ipStr := GetIpStr("www.baidu.com")
 	fmt.Println(ipStr)
 }
+
+func TestValidateUrl(t *testing.T) {
+	url := "http://www.baidu.com/<script>alet"
+	result := ValidateUrl(url)
+	assert.Equal(t, false, result, "the url should be invalid")
+	url1 := "http://www.baidu.com/;;;aaaa"
+	assert.Equal(t, false, ValidateUrl(url1), "the url should be invalid")
+	url2 := "https://www.baidu.com/Content-lenght=1234"
+	assert.Equal(t, false, ValidateUrl(url2), "the result should be invalid")
+}

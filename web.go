@@ -91,6 +91,14 @@ func SendRequest(request Request) {
 	}
 }
 
+func ValidateUrl(url string) bool {
+	matched, err := regexp.MatchString(`<|>|;|:`, url)
+	if err != nil {
+		Log.Error(err)
+	}
+	return !matched
+}
+
 func DoGet(request Request, ip string) *resty.Response {
 	client := resty.New()
 	client.SetProxy(CONFIG.Network.Proxy)

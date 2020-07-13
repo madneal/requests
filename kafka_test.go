@@ -213,9 +213,13 @@ func TestValidateHost(t *testing.T) {
 
 	host6 := "219.133.104.74http:"
 	assert.Equal(t, false, ValidateHost(host6), "the host should not be valid")
-	fmt.Println(ValidateHost(host6))
 
 	host7 := "www.pafacebank.com"
 	assert.Equal(t, true, ValidateHost(host7), "the host should be valid")
-	fmt.Println(ValidateHost(host7))
+
+	host8 := "www.baidu.com.cn:80"
+	assert.Equal(t, true, ValidateHost(host8), "the host should be valid")
+
+	host9 := "121.90.89.91:8000"
+	assert.Equal(t, true, ValidateHost(host9), "the host should be valid")
 }

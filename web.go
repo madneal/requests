@@ -23,6 +23,9 @@ type Request struct {
 }
 
 func SendRequest(request Request) {
+	if !ValidateUrl(request.Url) {
+		Log.Warnf("The url is invalid, %s", request.Url)
+	}
 	if request.Method == POST_METHOD {
 		if MatchUrl(request.Url) == nil {
 			return

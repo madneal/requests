@@ -96,7 +96,7 @@ func SendRequest(request Request) {
 }
 
 func ValidateUrl(url string) bool {
-	matched, err := regexp.MatchString(`<|>|;|:`, url)
+	matched, err := regexp.MatchString(`<|>|;`, url)
 	if err != nil {
 		Log.Error(err)
 	}

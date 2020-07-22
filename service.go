@@ -259,7 +259,7 @@ func SetupServices() {
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
-	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	//http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
 	http.HandleFunc("/post-hostandport", PostFileHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))

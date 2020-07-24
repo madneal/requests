@@ -1,0 +1,4 @@
+name: demo-rule
+rule:
+  method: GET
+  expression: postdata

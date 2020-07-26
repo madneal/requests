@@ -179,7 +179,6 @@ func CreateResourceByRequest(request Request, ip string) *Resource {
 func GetIp(host string) []net.IP {
 	ip, err := net.LookupIP(host)
 	if err != nil {
-		//Log = Log.WithFields(logrus.Fields{"host": host})
 		Log.Error(err)
 		return []net.IP{}
 	}

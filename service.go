@@ -157,6 +157,9 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+	}
 	result, err := QueryAllCreds()
 	if err != nil {
 		Log.Error(err)
@@ -259,7 +262,7 @@ func SetupServices() {
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
-	//http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
 	http.HandleFunc("/post-hostandport", PostFileHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))

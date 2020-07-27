@@ -169,12 +169,13 @@ func ObtainUrl(data map[string]interface{}) string {
 
 func CheckWeakPass(data string) (string, bool) {
 	var pass string
-	re := regexp.MustCompile(`(?i)(password|passwd|passwd|pass)"?\s?(=|:)+\s?("|')?([0-9a-zA-Z]{1,10})(\"|&|\<)`)
+	//re := regexp.MustCompile(`(?i)(password|passwd|passwd|pass)"?\s?(=|:)+\s?("|')?([0-9a-zA-Z]{1,10})(\"|&|\<)`)
+	re := regexp.MustCompile(`(?i)(password|passwd|pass|pwd)("|')?\s?(:|=)\s?("|'|)?([0-9a-zA-Z]{1,8})("|'|&?)`)
 	result := re.FindStringSubmatch(data)
 	if len(result) == 0 {
 		return pass, false
 	}
-	return result[len(result)-1], true
+	return result[5], true
 }
 
 func CreateCred(request *Request, pass string) {

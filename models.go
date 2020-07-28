@@ -57,6 +57,14 @@ type Cred struct {
 	UpdatedTime time.Time `gorm:"updated"`
 }
 
+type Vuln struct {
+	Id     int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Name   string `gorm:"type:varchar(25);column:name"`
+	Detail string `gorm:"type:varchar(300);column:detail"`
+	ReqStr string `gorm:"type:varchar(1000);column:req_str"`
+	Url    string `gorm:"type:varchat(250);column:url"`
+}
+
 var db *gorm.DB
 
 func init() {
@@ -94,6 +102,11 @@ func init() {
 		db.CreateTable(&BlackDomain{})
 	} else {
 		db.AutoMigrate(&BlackDomain{})
+	}
+	if !db.HasTable(&Vuln{}) {
+		db.CreateTable(&Vuln{})
+	} else {
+		db.AutoMigrate(&Vuln{})
 	}
 	//defer db.Close()
 	if CONFIG.Run.Redis == true {
@@ -149,6 +162,12 @@ func Decrypt(data, passphrase string) string {
 		Log.Error(err)
 	}
 	return string(plaintext)
+}
+
+func NewVuln(vuln *Vuln) error {
+	if !ExistsByMultiFields(vuln, vuln.Url, "url", vuln.Name, "name") {
+		return db.Create(&vuln).Error
+	}
 }
 
 func NewAsset(asset *Asset) error {
@@ -257,6 +276,11 @@ func Exists(field, fieldName string) bool {
 	var asset Asset
 	query := fmt.Sprintf("%s = ?", fieldName)
 	return !db.Where(query, field).First(&asset).RecordNotFound()
+}
+
+func ExistsByMultiFields(model interface{}, field, fieldName, field1, fieldName1 string) bool {
+	query := fmt.Sprintf("%s = ? and %s = ?", fieldName, fieldName1)
+	return !db.Where(query, field, field1).First(&model).RecordNotFound()
 }
 
 func IsPortZero(md5 string) bool {

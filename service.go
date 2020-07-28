@@ -184,7 +184,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
-func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request)  {
+func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 	if !IsTokenValid(r.Header.Get("tkzeek")) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 	}
@@ -201,8 +201,8 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request)  {
 	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "created_time", "updated_time"})
 	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url, result.ReqStr,
-			result.CreatedTime.Format("2006-01-02 15:04:05"),
-			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+			result.CreatedAt.Format("2006-01-02 15:04:05"),
+			result.UpdatedAt.Format("2006-01-02 15:04:05")}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)

@@ -160,7 +160,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	if !IsTokenValid(r.Header.Get("tkzeek")) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 	}
-	result, err := QueryAllCreds()
+	results, err := QueryAllCreds()
 	if err != nil {
 		Log.Error(err)
 		http.Error(w, "Query cred falied", http.StatusInternalServerError)
@@ -171,8 +171,36 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
 	wr.Write([]string{"id", "url", "password", "postdata", "created_time", "updated_time"})
-	for _, result := range *result {
+	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
+			result.CreatedTime.Format("2006-01-02 15:04:05"),
+			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+		err := wr.Write(record)
+		if err != nil {
+			Log.Error(err)
+			return
+		}
+	}
+	wr.Flush()
+}
+
+func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request)  {
+	if !IsTokenValid(r.Header.Get("tkzeek")) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+	}
+	results, err := QueryAllVulns()
+	if err != nil {
+		Log.Error(err)
+		http.Error(w, "Query cred falied", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/csv")
+	filename := getFilename("creds")
+	w.Header().Set("Content-Disposition", filename)
+	wr := csv.NewWriter(w)
+	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "created_time", "updated_time"})
+	for _, result := range *results {
+		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url, result.ReqStr,
 			result.CreatedTime.Format("2006-01-02 15:04:05"),
 			result.UpdatedTime.Format("2006-01-02 15:04:05")}
 		err := wr.Write(record)
@@ -263,6 +291,7 @@ func SetupServices() {
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
 	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	http.HandleFunc("/download-vulns", DownloadVulnHanlder)
 	http.HandleFunc("/post-hostandport", PostFileHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))

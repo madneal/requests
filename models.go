@@ -63,6 +63,8 @@ type Vuln struct {
 	Detail string `gorm:"type:varchar(300);column:detail"`
 	ReqStr string `gorm:"type:varchar(1000);column:req_str"`
 	Url    string `gorm:"type:varchar(250);column:url"`
+	CreatedTime time.Time `gorm:"created"`
+	UpdatedTime time.Time `gorm:"created"`
 }
 
 var db *gorm.DB
@@ -461,6 +463,12 @@ func QueryAllCreds() (*[]Cred, error) {
 	var result []Cred
 	err := db.Group("url").Find(&result).Error
 	return &result, err
+}
+
+func QueryAllVulns() (*[]Vuln, error) {
+	var result []Vuln
+	err := db.Find(&result).Error
+	return  &result, err
 }
 
 func MatchUrl(postUrl string) *[]Resource {

@@ -27,6 +27,9 @@ type Config struct {
 		Encrypt     bool
 		MultiThread bool `yaml:"multithread"`
 		Port        int
+		Asset       bool
+		Plugin      bool
+		Resource    bool
 	}
 	Redis struct {
 		Host     string

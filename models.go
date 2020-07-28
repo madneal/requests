@@ -165,7 +165,7 @@ func Decrypt(data, passphrase string) string {
 }
 
 func NewVuln(vuln *Vuln) error {
-	if !ExistsByMultiFields(*vuln, vuln.Url, "url", vuln.Name, "name") {
+	if !ExistsByMultiFields(vuln, vuln.Url, "url", vuln.Name, "name") {
 		return db.Create(&vuln).Error
 	} else {
 		return nil
@@ -281,6 +281,7 @@ func Exists(field, fieldName string) bool {
 }
 
 func ExistsByMultiFields(item interface{}, field, fieldName, field1, fieldName1 string) bool {
+	db.LogMode(true)
 	query := fmt.Sprintf("%s = ? and %s = ?", fieldName, fieldName1)
 	return !db.Where(query, field, field1).First(item).RecordNotFound()
 }

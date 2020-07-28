@@ -177,7 +177,7 @@ func TestObtainIp(t *testing.T) {
 }
 
 func TestRunTask(t *testing.T) {
-	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"bill.sdb.com.cn\", \"postdata\": \"password=123\"}"
+	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"bill.sdb.com\", \"postdata\": \"password=123\"}"
 	RunTask(msg)
 }
 

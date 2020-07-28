@@ -252,7 +252,7 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = data["url"].(string)
 	}
 
-	if request.Method == "POST" && data["postdata"].(string) != "" {
+	if request.Method == "POST" && data["postdata"] != nil {
 		request.Postdata = data["postdata"].(string)
 	}
 

@@ -12,14 +12,15 @@ import (
 )
 
 type Request struct {
-	Url       string
-	Headers   map[string]string
-	Method    string
-	Host      string
-	AgentId   string
-	Port      int
-	Timestamp int64
-	Postdata  string
+	Url        string
+	Headers    map[string]string
+	Method     string
+	Host       string
+	AgentId    string
+	Port       int
+	Timestamp  int64
+	Postdata   string
+	StatusCode int
 }
 
 func SendRequest(request Request) {

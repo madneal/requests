@@ -195,6 +195,9 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
+	if data["status_code"] != nil {
+		request.StatusCode = int(data["status_code"].(float64))
+	}
 	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {
 		port = data["id.resp_p"].(float64)

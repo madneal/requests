@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/md5"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -131,8 +130,16 @@ func RunTask(msg string) {
 			}
 		}
 
-		if CONFIG.Run.Production {
+		if CONFIG.Run.Production && CONFIG.Run.Asset {
 			InsertAsset(request)
+			return
+		}
+
+		if CONFIG.Run.Plugin {
+			CheckVulns(&request)
+		}
+
+		if !CONFIG.Run.Resource {
 			return
 		}
 		// obtain scheme from referer and send request
@@ -241,15 +248,19 @@ func ParseJson(msg string) (Request, error) {
 	if request.Url == "" {
 		request.Url = data["url"].(string)
 	}
-	// todo there is not post asset handle for post now
-	if !CONFIG.Run.Production && request.Method == "POST" && data["postdata"].(string) != "" {
-		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
-		if err != nil {
-			Log.Error(err)
-		} else {
-			request.Postdata = string(body)
-		}
+
+	if request.Method == "POST" && data["postdata"].(string) != "" {
+		request.Postdata = data["postdata"].(string)
 	}
+
+	//if !CONFIG.Run.Production && request.Method == "POST" && data["postdata"].(string) != "" {
+	//	body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+	//	if err != nil {
+	//		Log.Error(err)
+	//	} else {
+	//		request.Postdata = string(body)
+	//	}
+	//}
 	request.Headers = headers
 	return request, err
 }

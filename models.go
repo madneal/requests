@@ -62,7 +62,7 @@ type Vuln struct {
 	Name   string `gorm:"type:varchar(25);column:name"`
 	Detail string `gorm:"type:varchar(300);column:detail"`
 	ReqStr string `gorm:"type:varchar(1000);column:req_str"`
-	Url    string `gorm:"type:varchat(250);column:url"`
+	Url    string `gorm:"type:varchar(250);column:url"`
 }
 
 var db *gorm.DB
@@ -165,8 +165,10 @@ func Decrypt(data, passphrase string) string {
 }
 
 func NewVuln(vuln *Vuln) error {
-	if !ExistsByMultiFields(vuln, vuln.Url, "url", vuln.Name, "name") {
+	if !ExistsByMultiFields(*vuln, vuln.Url, "url", vuln.Name, "name") {
 		return db.Create(&vuln).Error
+	} else {
+		return nil
 	}
 }
 
@@ -278,9 +280,9 @@ func Exists(field, fieldName string) bool {
 	return !db.Where(query, field).First(&asset).RecordNotFound()
 }
 
-func ExistsByMultiFields(model interface{}, field, fieldName, field1, fieldName1 string) bool {
+func ExistsByMultiFields(item interface{}, field, fieldName, field1, fieldName1 string) bool {
 	query := fmt.Sprintf("%s = ? and %s = ?", fieldName, fieldName1)
-	return !db.Where(query, field, field1).First(&model).RecordNotFound()
+	return !db.Where(query, field, field1).First(item).RecordNotFound()
 }
 
 func IsPortZero(md5 string) bool {

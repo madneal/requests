@@ -28,7 +28,7 @@ func NewWeakPasswordPlugin() *Plugin {
 	}
 }
 
-func CheckVulns(req *Request) (bool, *Vuln) {
+func CheckVulns(req *Request) {
 	plugins := make([]*Plugin, 0)
 	WeackPasswordPlugin := NewWeakPasswordPlugin()
 	plugins = append(plugins, WeackPasswordPlugin)

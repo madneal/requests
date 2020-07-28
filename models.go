@@ -57,6 +57,14 @@ type Cred struct {
 	UpdatedTime time.Time `gorm:"updated"`
 }
 
+type Vuln struct {
+	Id     int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Name   string `gorm:"type:varchar(25);column:name"`
+	Detail string `gorm:"type:varchar(300);column:detail"`
+	ReqStr string `gorm:"type:varchar(1000);column:req_str"`
+	Url    string `gorm:"type:varchar(250);column:url"`
+}
+
 var db *gorm.DB
 
 func init() {
@@ -94,6 +102,11 @@ func init() {
 		db.CreateTable(&BlackDomain{})
 	} else {
 		db.AutoMigrate(&BlackDomain{})
+	}
+	if !db.HasTable(&Vuln{}) {
+		db.CreateTable(&Vuln{})
+	} else {
+		db.AutoMigrate(&Vuln{})
 	}
 	//defer db.Close()
 	if CONFIG.Run.Redis == true {

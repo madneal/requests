@@ -9,20 +9,22 @@ import (
 )
 
 const PreKey = "req_"
+
 var (
-	ErrNoExpr = errors.New("cel: no expresson")
-	ErrParsing = errors.New("cel: error parsing the expression")
+	ErrNoExpr   = errors.New("cel: no expresson")
+	ErrParsing  = errors.New("cel: error parsing the expression")
 	ErrChecking = errors.New("cel: error checking the expression and its param definition")
 )
 
 func defaultDeclarations() cel.EnvOption {
 	return cel.Declarations(
-		decls.NewVar(PreKey + "method", decls.String),
-		decls.NewVar(PreKey + "path", decls.String),
-		decls.NewVar(PreKey + "params", decls.NewMapType(decls.String, decls.String)),
-		decls.NewVar(PreKey + "headers", decls.NewMapType(decls.String, decls.NewListType(decls.String))),
-		decls.NewVar(PreKey + "querystring", decls.NewMapType(decls.String, decls.NewListType(decls.String))),
-		)
+		decls.NewVar(PreKey+"method", decls.String),
+		decls.NewVar(PreKey+"path", decls.String),
+		decls.NewVar(PreKey+"params", decls.NewMapType(decls.String, decls.String)),
+		decls.NewVar(PreKey+"headers", decls.NewMapType(decls.String, decls.NewListType(decls.String))),
+		decls.NewVar(PreKey+"querystring", decls.NewMapType(decls.String, decls.NewListType(decls.String))),
+		decls.NewVar(PreKey+"postdata", decls.String),
+	)
 }
 
 type InterpretableDefinition struct {
@@ -82,10 +84,9 @@ func (p ExParser) ParsePre(denitions []InterpretableDefinition) ([]cel.Program, 
 	return p.parseByKey(denitions, PreKey)
 }
 
-
 func newReqActivation(r *Request) map[string]interface{} {
 	return map[string]interface{}{
-		PreKey + "method": r.Method,
+		PreKey + "method":  r.Method,
 		PreKey + "headers": r.Headers,
 	}
 }

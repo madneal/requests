@@ -260,7 +260,8 @@ func ValidateHost(host string) bool {
 	if !strings.Contains(host, ".") || strings.Contains(host, "*") {
 		return false
 	}
-	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") || strings.HasPrefix(host, "127.") {
+	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") ||
+		strings.HasPrefix(host, "127.") || strings.HasPrefix(host, "29.") {
 		return false
 	}
 	hasPort, err := regexp.MatchString(`\w+:\d+`, host)

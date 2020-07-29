@@ -14,3 +14,15 @@ func TestNewWeakPasswordPlugin(t *testing.T) {
 	fmt.Println(isVuln)
 	fmt.Println(result)
 }
+
+func TestConvertReqToStr(t *testing.T) {
+	req := Request{
+		Url:    "https://www.baidu.com/abc/def?name=1341",
+		Method: "GET",
+		Headers: map[string]string{
+			"Content-Type": "Application/json",
+		},
+	}
+	result := ConvertReqToStr(&req)
+	fmt.Println(result)
+}

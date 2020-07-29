@@ -68,7 +68,7 @@ func ConvertReqToStr(req *Request) string {
 	for key, header := range req.Headers {
 		result += fmt.Sprintf("%s: %s\n", key, header)
 	}
-	if req.Method == "Post" {
+	if req.Method == POST_METHOD {
 		result += "\r\n"
 		result += req.Postdata + "\n"
 	}

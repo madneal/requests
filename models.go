@@ -63,6 +63,7 @@ type Vuln struct {
 	Detail    string    `gorm:"type:varchar(300);column:detail"`
 	ReqStr    string    `gorm:"type:varchar(1000);column:req_str"`
 	Url       string    `gorm:"type:varchar(250);column:url"`
+	RespStr   string    `gorm:"type:varchar(200);column:resp_str"`
 	CreatedAt time.Time `gorm:"created"`
 	UpdatedAt time.Time `gorm:"updated"`
 }

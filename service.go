@@ -195,14 +195,13 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/csv")
-	filename := getFilename("creds")
+	filename := getFilename("vulns")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
-	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "created_time", "updated_time"})
+	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "resp"})
 	for _, result := range *results {
-		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url, result.ReqStr,
-			result.CreatedAt.Format("2006-01-02 15:04:05"),
-			result.UpdatedAt.Format("2006-01-02 15:04:05")}
+		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url,
+			result.ReqStr, result.RespStr}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)

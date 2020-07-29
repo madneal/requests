@@ -1,4 +1,4 @@
-# build for linux
+#! /bin/bash
 function obtain_git_branch {
   br=`git branch | grep "*"`
   echo ${br/* /}
@@ -17,7 +17,7 @@ if [ "$result" == "master" ]
    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cel
    echo Finished building process
    git checkout master
-elif [ "result" == "cel" ]
+elif [ "$result" == "cel" ]
   then
    echo Building for the branch $result
    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cel

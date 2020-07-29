@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"regexp"
+	"strconv"
 )
 
 type Plugin struct {
@@ -46,10 +47,11 @@ func CheckVulns(req *Request) {
 
 func CreateVuln(name, detail string, req *Request) *Vuln {
 	return &Vuln{
-		Name:   name,
-		Detail: detail,
-		ReqStr: ConvertReqToStr(req),
-		Url:    req.Url,
+		Name:    name,
+		Detail:  detail,
+		ReqStr:  ConvertReqToStr(req),
+		Url:     req.Url,
+		RespStr: ObtainRespStr(req),
 	}
 }
 
@@ -69,6 +71,14 @@ func ConvertReqToStr(req *Request) string {
 	if req.Method == "Post" {
 		result += "\r\n"
 		result += req.Postdata + "\n"
+	}
+	return result
+}
+
+func ObtainRespStr(req *Request) string {
+	var result string
+	if req.StatusCode != 0 {
+		result += "Statu Code:" + strconv.Itoa(req.StatusCode)
 	}
 	return result
 }

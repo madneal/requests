@@ -10,6 +10,7 @@ result=`obtain_git_branch`
 echo Current git branch is $result
 if [ "$result" == "master" ]
  then
+   echo Building for the branch $result
    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 fi
 
@@ -18,6 +19,8 @@ result=`obtain_git_branch`
 echo Current git branch is $result
 if [ "$result" == "cel" ]
   then
+    echo Building for the branch $result
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cel
+    git checkout master
 fi
 

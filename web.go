@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/sirupsen/logrus"
 	"net"
 	"net/url"
 	"regexp"
@@ -111,12 +110,12 @@ func DoGet(request Request, ip string) *resty.Response {
 	//fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
-		Log = Log.WithFields(logrus.Fields{"url": request.Url,
-			"ip": ip})
+		//Log = Log.WithFields(logrus.Fields{"url": request.Url,
+		//	"ip": ip})
 		Log.Error(err)
 		return nil
 	}
-	Log = Log.WithFields(logrus.Fields{"ip": ip})
+	//Log = Log.WithFields(logrus.Fields{"ip": ip})
 	Log.Infof("Request to %s: %d\n", request.Url, response.StatusCode())
 	return response
 }

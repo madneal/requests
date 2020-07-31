@@ -37,7 +37,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
@@ -56,7 +56,7 @@ func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AssetsHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
@@ -106,7 +106,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
@@ -132,7 +132,7 @@ func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HostsHandler(w http.ResponseWriter, r *http.Request) {
-	//if !IsTokenValid(r.Header.Get("tkzeek")) {
+	//if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 	//	http.Error(w, DENY_WORDS, http.StatusForbidden)
 	//}
 	assets, err := QueryHostAndPort()
@@ -157,7 +157,7 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 	}
 	results, err := QueryAllCreds()
@@ -185,7 +185,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 	}
 	results, err := QueryAllVulns()
@@ -212,7 +212,7 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostFileHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}

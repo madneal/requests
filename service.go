@@ -110,7 +110,7 @@ func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
-	if r.Method == "POST" {
+	if r.Method == POST_METHOD {
 		err := r.ParseForm()
 		if err != nil {
 			Log.Error(err)

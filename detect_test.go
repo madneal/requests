@@ -18,7 +18,7 @@ func TestNewWeakPasswordPlugin(t *testing.T) {
 func TestConvertReqToStr(t *testing.T) {
 	req := Request{
 		Url:    "https://www.baidu.com/abc/def?name=1341",
-		Method: "GET",
+		Method: GET_METHOD,
 		Headers: map[string]string{
 			"Content-Type": "Application/json",
 		},

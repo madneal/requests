@@ -29,7 +29,7 @@ func TestParseJson(t *testing.T) {
         "Cookie": "ASPSESSIONIDQQBRQABB=FDKAKDNCHPAKFGGIMLNLFBLB"
     },
     "host": "testasp.vulnweb.com",
-    "method": "GET",
+    "method": GET_METHOD,
     "agentId": "b77f3736-8542-4626-a9aa-c0fd41d15b61",
     "postdata": "",
     "t": 1565079259
@@ -40,7 +40,7 @@ func TestParseJson(t *testing.T) {
 	"Content-Type": "json",
 	"Referer": "https://www.baidu.com",
 	"host": "www.baidu.com",
-	"method": "GET",
+	"method": GET_METHOD,
 	"agentId": "14143",
 	"Accept-Encoding": "utf-8", 
 	"Cookie": "name=1324", 
@@ -72,7 +72,7 @@ func TestParseJson(t *testing.T) {
         "Cookie": "ASPSESSIONIDQQBRQABB=FDKAKDNCHPAKFGGIMLNLFBLB"
     },
     "host": "testasp.vulnweb.com",
-    "method": "POST",
+    "method": POST_METHOD,
     "agentId": "b77f3736-8542-4626-a9aa-c0fd41d15b61",
     "postdata": "YWJjPTEyMw==",
     "t": 1565079259
@@ -83,14 +83,14 @@ func TestParseJson(t *testing.T) {
 	"host": "www.baidu.comhttp:",
 	"uri": "/abc/def?name=134",
 	"resp_p": "80",
-	"method": "GET"
+	"method": GET_METHOD
 }
 `
 	data5 := "{\"resp_p\": \"80\"}"
 	request1, _ := ParseJson(data1)
 	assert.Equal(t, request1.Url, "http://testasp.vulnweb.com/showthread.asp?id=0")
 	assert.Equal(t, request1.Headers["DNT"], "1", "the header should be the same")
-	assert.Equal(t, request1.Method, "GET", "the method should be the same")
+	assert.Equal(t, request1.Method, GET_METHOD, "the method should be the same")
 	assert.Equal(t, request1.Timestamp, int64(1565079259), "the t should be the same")
 
 	request2, _ := ParseJson(data2)
@@ -126,7 +126,7 @@ func TestInsertAsset(t *testing.T) {
         "Cookie": "ASPSESSIONIDQQBRQABB=FDKAKDNCHPAKFGGIMLNLFBLB"
     },
     "host": "testasp.vulnweb.com",
-    "method": "GET",
+    "method": GET_METHOD,
     "agentId": "b77f3736-8542-4626-a9aa-c0fd41d15b61",
     "postdata": "",
     "t": 1565079259

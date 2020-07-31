@@ -10,7 +10,7 @@ func TestDoGet(t *testing.T) {
 	request := Request{
 		Url:       "https://www.baidu.com",
 		Headers:   nil,
-		Method:    "GET",
+		Method:    GET_METHOD,
 		Host:      "www.baidu.com",
 		AgentId:   "test",
 		Timestamp: 0,
@@ -27,7 +27,7 @@ func TestDoPost(t *testing.T) {
 			"Cookie":       "MacaronSession=a3cf053cd0b2d457; user=admin",
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
-		Method:    "POST",
+		Method:    POST_METHOD,
 		Host:      "111.231.70.62:8000",
 		AgentId:   "TEST",
 		Timestamp: 0,
@@ -73,7 +73,7 @@ func TestCreateResourceByRequest(t *testing.T) {
 	request := Request{
 		Url:       "http://www.baidu.com/abc/def?name=123",
 		Headers:   nil,
-		Method:    "GET",
+		Method:    GET_METHOD,
 		Host:      "www.baidu.com",
 		AgentId:   "test",
 		Timestamp: 0,
@@ -82,7 +82,7 @@ func TestCreateResourceByRequest(t *testing.T) {
 	resource := CreateResourceByRequest(request, "1.1.1.1")
 	assert.Equal(t, "www.baidu.com/abc/def", resource.Url, "the url should be the same")
 	assert.Equal(t, "www.baidu.com/abc", resource.Firstpath, "the fisrtpath should be the same")
-	assert.Equal(t, "GET", resource.Method, "the method should be the same")
+	assert.Equal(t, GET_METHOD, resource.Method, "the method should be the same")
 }
 
 func TestIsValidReferer(t *testing.T) {
@@ -91,7 +91,7 @@ func TestIsValidReferer(t *testing.T) {
 		Headers: map[string]string{
 			"Referer": "https://www.baidu.com/abc",
 		},
-		Method:    "GET",
+		Method:    GET_METHOD,
 		Host:      "www.baidu.com",
 		AgentId:   "test",
 		Timestamp: 0,
@@ -104,7 +104,7 @@ func TestIsValidReferer(t *testing.T) {
 		Headers: map[string]string{
 			"Referer": "https://www.baidu.com/",
 		},
-		Method:    "GET",
+		Method:    GET_METHOD,
 		Host:      "www.baidu.com",
 		AgentId:   "test",
 		Timestamp: 0,
@@ -115,7 +115,7 @@ func TestIsValidReferer(t *testing.T) {
 	request2 := Request{
 		Url:       "https://www.baidu.com/abc",
 		Headers:   nil,
-		Method:    "GET",
+		Method:    GET_METHOD,
 		Host:      "www.baidu.com",
 		AgentId:   "test",
 		Timestamp: 0,

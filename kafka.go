@@ -252,11 +252,11 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = data["url"].(string)
 	}
 
-	if request.Method == "POST" && data["postdata"] != nil {
+	if request.Method == POST_METHOD && data["postdata"] != nil {
 		request.Postdata = data["postdata"].(string)
 	}
 
-	//if !CONFIG.Run.Production && request.Method == "POST" && data["postdata"].(string) != "" {
+	//if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
 	//	body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 	//	if err != nil {
 	//		Log.Error(err)

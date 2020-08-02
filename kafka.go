@@ -19,8 +19,6 @@ import (
 	"time"
 )
 
-var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
-	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 var rdb *redis.Client
 
 func ReadKafka() {

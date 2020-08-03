@@ -168,8 +168,7 @@ func SetUrlByScheme(scheme, urlStr string) (string, error) {
 func ParseJson(msg string) (Request, error) {
 	var request Request
 	var data map[string]interface{}
-	var err error
-	if err = json.Unmarshal([]byte(msg), &data); err != nil {
+	if err := json.Unmarshal([]byte(msg), &data); err != nil {
 		Log.Error(err)
 		return request, err
 	}

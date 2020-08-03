@@ -168,7 +168,8 @@ func SetUrlByScheme(scheme, urlStr string) (string, error) {
 func ParseJson(msg string) (Request, error) {
 	var request Request
 	var data map[string]interface{}
-	if err := json.Unmarshal([]byte(msg), &data); err != nil {
+	var err error
+	if err = json.Unmarshal([]byte(msg), &data); err != nil {
 		Log.Error(err)
 		return request, err
 	}
@@ -229,7 +230,7 @@ func ParseJson(msg string) (Request, error) {
 				headers[msg] = UA
 			}
 		}
-		schema := "http://"
+		schema := HTTP_SCHEMA
 		request.Url = schema + headers["Host"] + data["uri"].(string)
 	}
 	if !ValidateHost(request.Host) {
@@ -282,7 +283,7 @@ func ObtainUrl(data map[string]interface{}) string {
 	if data["uri"] != nil {
 		uri = data["uri"].(string)
 	}
-	return "http://" + host + uri
+	return HTTP_SCHEMA + host + uri
 }
 
 func InsertAsset(request Request) {

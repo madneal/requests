@@ -11,6 +11,7 @@ var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie"
 const ENCRYPT_KEY = "requests2019"
 const DENY_WORDS = "Access denied"
 const HEADER_TOKEN = "tkzeek"
+const HTTP_SCHEMA = "http://"
 
 var BLACK_EXTENSIONS = [...]string{".jpg", ".png"}
 

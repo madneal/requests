@@ -12,6 +12,8 @@ const ENCRYPT_KEY = "requests2019"
 const DENY_WORDS = "Access denied"
 const HEADER_TOKEN = "tkzeek"
 const HTTP_SCHEMA = "http://"
+const CSV_CONTENT_TYPE = "text/csv"
+const JSON_CONTENT_TYPE = "application/json"
 
 var BLACK_EXTENSIONS = [...]string{".jpg", ".png"}
 

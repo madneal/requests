@@ -17,7 +17,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("resources")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
@@ -51,7 +51,7 @@ func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
 	w.Write(data)
 }
 
@@ -77,7 +77,7 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
 	w.Write(data)
 }
 
@@ -87,7 +87,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 	}
 	wr := csv.NewWriter(w)
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("assets")
 	w.Header().Set("Content-Disposition", filename)
 	wr.Write([]string{"id", "url", "host", "ip", "method", "params", "created_time", "updated_time"})
@@ -141,7 +141,7 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Query host failed", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("hosts")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
@@ -166,7 +166,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Query cred falied", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("creds")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
@@ -194,7 +194,7 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Query cred falied", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("vulns")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)

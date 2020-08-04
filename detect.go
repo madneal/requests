@@ -19,7 +19,8 @@ func CheckWeakPassword(request *Request) (bool, string) {
 	if len(result) == 0 {
 		return false, pass
 	}
-	return true, result[5]
+	detail := fmt.Sprintf("Weak password found! Weakpassword: %s; Postdata: %s", result[5], request.Postdata)
+	return true, detail
 }
 
 func NewWeakPasswordPlugin() *Plugin {

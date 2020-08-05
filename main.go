@@ -17,13 +17,12 @@ func init() {
 	if err != nil {
 		Log.Error(err)
 	}
-	//Log.Info(CONFIG.Kafka)
 }
 
 func main() {
 	Log.Info("*********Begin the Assets detect*************")
 	if len(os.Args) < 2 {
-		Log.Info("Please speficy the option")
+		Log.Info("Please specify the option")
 	}
 	cmd := os.Args[1]
 	Log.Info(cmd)

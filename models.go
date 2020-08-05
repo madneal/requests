@@ -119,6 +119,12 @@ func init() {
 	} else {
 		db.AutoMigrate(&Vuln{})
 	}
+	if !db.HasTable(&Host{}) {
+		db.CreateTable(&Host{})
+		db.Model(&Host{}).AddIndex("host_index", "domain")
+	} else {
+		db.AutoMigrate(&Host{})
+	}
 	//defer db.Close()
 	if CONFIG.Run.Redis == true {
 		rdb = redis.NewClient(&redis.Options{

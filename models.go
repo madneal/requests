@@ -68,6 +68,14 @@ type Vuln struct {
 	UpdatedAt time.Time `gorm:"updated"`
 }
 
+type Host struct {
+	Id        int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Domain    string    `gorm:"type:varchar(100);column:domain"`
+	Ip        string    `gorm:"type:varchar(20);column:ip"`
+	CreatedAt time.Time `gorm:"created"`
+	UpdatedAt time.Time `gorm:"updated"`
+}
+
 var db *gorm.DB
 
 func init() {

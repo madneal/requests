@@ -159,7 +159,7 @@ func GetScheme(urlStr string) (string, error) {
 func CreateResourceByRequest(request Request, ip string) *Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
-		Log.Info(nil)
+		Log.Info(err)
 		return nil
 	}
 	path := "/" + strings.Split(u.Path, "/")[1]

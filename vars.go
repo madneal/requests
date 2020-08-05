@@ -14,6 +14,7 @@ const HEADER_TOKEN = "tkzeek"
 const HTTP_SCHEMA = "http://"
 const CSV_CONTENT_TYPE = "text/csv"
 const JSON_CONTENT_TYPE = "application/json"
+const LOG_FILE = "pvs.log"
 
 var BLACK_EXTENSIONS = [...]string{".jpg", ".png"}
 

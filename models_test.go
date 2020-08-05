@@ -43,12 +43,12 @@ func TestNewAsset(t *testing.T) {
 func TestExists(t *testing.T) {
 	url := "7c031d9efda97b77a7d6"
 	exists := Exists(url, "md5")
-	fmt.Println(exists)
+	Log.Info(exists)
 }
 
 func TestMatchUrl(t *testing.T) {
 	postUrl := "http://www.baidu.com/abc"
-	fmt.Println(*MatchUrl(postUrl))
+	Log.Info(*MatchUrl(postUrl))
 	assert.Equal(t, true, len(*MatchUrl(postUrl)) == 1, "there shoud mathch one")
 	postUrl1 := "http://www.baidu.com"
 	assert.Equal(t, false, len(*(MatchUrl(postUrl1))) == 1, "there shoud not mathch one")
@@ -80,31 +80,31 @@ func TestNewResouce(t *testing.T) {
 	}
 	err := NewResouce(resource)
 	if err != nil {
-		fmt.Println(err)
+		Log.Info(err)
 	}
 }
 
 func TestQueryAllServices(t *testing.T) {
 	resources, err := QueryAllServices()
 	if err != nil {
-		fmt.Println(err)
+		Log.Info(err)
 	}
-	fmt.Println(len(*resources))
+	Log.Info(len(*resources))
 }
 
 func TestQueryAllAssets(t *testing.T) {
 	assets, err := QueryAllAssets("www")
 	if err != nil {
-		fmt.Println(err)
+		Log.Info(err)
 	}
-	fmt.Println(len(*assets))
+	Log.Info(len(*assets))
 	fmt.Printf("%v", assets)
 }
 
 func TestQueryAllHosts(t *testing.T) {
 	domains, err := QueryAllHosts()
 	if err != nil {
-		fmt.Println(err)
+		Log.Info(err)
 	}
 	fmt.Printf("%v", domains)
 }
@@ -219,7 +219,7 @@ func TestUpdateHostIfEmpty(t *testing.T) {
 
 func TestDecryptPass(t *testing.T) {
 	cryped := Encrypt("res", ENCRYPT_KEY)
-	fmt.Println(cryped)
+	Log.Info(cryped)
 	decyped := Decrypt(cryped, ENCRYPT_KEY)
 	assert.Equal(t, "res", decyped, "the password should be decrypted")
 }
@@ -231,12 +231,12 @@ func TestUpdateParams(t *testing.T) {
 
 func TestQueryAssetHosts(t *testing.T) {
 	hosts, _ := QueryAssetHosts()
-	fmt.Println(*hosts)
+	Log.Info(*hosts)
 }
 
 func TestQueryHostAndPort(t *testing.T) {
 	results, _ := QueryHostAndPort()
-	fmt.Println(*results)
+	Log.Info(*results)
 }
 
 func TestBatchInsertAssets(t *testing.T) {
@@ -296,7 +296,7 @@ func TestUpdatePort(t *testing.T) {
 func TestQueryAllResults(t *testing.T) {
 	var result *[]Vuln
 	result, err := QueryAllVulns()
-	fmt.Println(result)
+	Log.Info(result)
 	if err != nil {
 		Log.Error(err)
 	}

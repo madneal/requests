@@ -102,11 +102,11 @@ func TestParseJson(t *testing.T) {
 	assert.Equal(t, request3.Postdata, "abc=123", "the post data should be the same")
 
 	request4, err := ParseJson(data4)
-	fmt.Println(err)
+	Log.Info(err)
 	assert.Equal(t, "http://www.baidu.com:80/abc/def?name=134", request4.Url, "the url should be the same")
 
 	request5, _ := ParseJson(data5)
-	fmt.Println(request5)
+	Log.Info(request5)
 }
 
 func TestInsertAsset(t *testing.T) {
@@ -144,12 +144,12 @@ func TestRedis(t *testing.T) {
 	if err != nil {
 		Log.Error(err)
 	}
-	fmt.Println(pong)
+	Log.Info(pong)
 	rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 	url := "wwww.baidu.com"
 	err = rdb.SAdd(CONFIG.Redis.Set, url).Err()
 	if err != nil {
-		fmt.Println(err)
+		Log.Info(err)
 	}
 	assert.Equal(t, true, rdb.SIsMember(CONFIG.Redis.Set, url).Val(), "the url should exists")
 	assert.Equal(t, false, rdb.SIsMember(CONFIG.Redis.Set, "25542352345").Val(), "the data "+
@@ -158,7 +158,7 @@ func TestRedis(t *testing.T) {
 
 func TestSetUrlByScheme(t *testing.T) {
 	url, _ := SetUrlByScheme("http", "https://play.golang.org/")
-	fmt.Println(url)
+	Log.Info(url)
 	assert.Equal(t, "http://play.golang.org/", url, "the url shoule be http")
 }
 
@@ -193,7 +193,7 @@ func TestCheckIfBlackExtension(t *testing.T) {
 
 func TestComputeHash(t *testing.T) {
 	hash := ComputeHash("http://www.baidu.comGET")
-	fmt.Println(hash)
+	Log.Info(hash)
 	assert.True(t, true, 20 == len(hash), "the length should be 20")
 }
 

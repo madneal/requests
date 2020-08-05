@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"net"
@@ -72,9 +71,9 @@ func SendRequest(request Request) {
 		res = DoGet(request, ip)
 	} else if request.Method == POST_METHOD {
 		//res = DoPost(request)
-		fmt.Println("there should not exist any post request")
+		Log.Info("there should not exist any post request")
 	} else {
-		fmt.Print("method does not support")
+		Log.Info("method does not support")
 	}
 	if res == nil {
 		return
@@ -161,7 +160,7 @@ func GetScheme(urlStr string) (string, error) {
 func CreateResourceByRequest(request Request, ip string) *Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
-		fmt.Println(nil)
+		Log.Info(nil)
 		return nil
 	}
 	path := "/" + strings.Split(u.Path, "/")[1]
@@ -208,7 +207,7 @@ func GetIpStr(host string) string {
 func MatchIp(ip string) (result bool) {
 	result = false
 	if len(CONFIG.Network.Network) == 0 {
-		fmt.Println("Please assign network in config.yaml!")
+		Log.Info("Please assign network in config.yaml!")
 	}
 	for _, network := range CONFIG.Network.Network {
 		_, subnet, err := net.ParseCIDR(network)

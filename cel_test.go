@@ -14,6 +14,6 @@ func TestCheck(t *testing.T) {
 		Method: GET_METHOD,
 	}
 	result, err := Check(def, &r)
-	fmt.Println(err)
-	fmt.Println(result)
+	Log.Info(err)
+	Log.Info(result)
 }

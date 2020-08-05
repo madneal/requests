@@ -34,7 +34,7 @@ func TestDoPost(t *testing.T) {
 		Postdata:  "_csrf=&tokens=1341234&desc=pinga2345234545234523452345n&type=github",
 	}
 	res := DoPost(request)
-	fmt.Println(string(res.Body()))
+	Log.Info(string(res.Body()))
 	assert.Equal(t, 302, res.StatusCode(), "the status code should be 302")
 }
 
@@ -65,7 +65,7 @@ func TestGetIp(t *testing.T) {
 	host := "www.baidu.com"
 	ips := GetIp(host)
 	for _, ip := range ips {
-		fmt.Println(ip)
+		Log.Info(ip)
 	}
 }
 
@@ -147,7 +147,7 @@ func TestIsNeedReplay(t *testing.T) {
 
 func TestGetIpStr(t *testing.T) {
 	ipStr := GetIpStr("www.baidu.com")
-	fmt.Println(ipStr)
+	Log.Info(ipStr)
 }
 
 func TestValidateUrl(t *testing.T) {

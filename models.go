@@ -82,7 +82,7 @@ func init() {
 	}
 	conStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", userDecrypted,
 		passDecrypted, CONFIG.Database.Host, CONFIG.Database.Port, CONFIG.Database.Name)
-	//fmt.Println(conStr)
+	//Log.Info(conStr)
 	var err error
 	db, err = gorm.Open("mysql", conStr)
 	db.DB().SetConnMaxLifetime(time.Minute * 5)
@@ -120,7 +120,7 @@ func init() {
 		})
 		_, err := rdb.Ping().Result()
 		if err != nil {
-			fmt.Println(err)
+			Log.Info(err)
 		}
 		rdb.Expire(CONFIG.Redis.Set, 24*time.Hour)
 	}

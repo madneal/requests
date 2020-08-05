@@ -11,8 +11,8 @@ func TestNewWeakPasswordPlugin(t *testing.T) {
 		Postdata: "password=1234",
 	}
 	isVuln, result := plugin.check(&request)
-	fmt.Println(isVuln)
-	fmt.Println(result)
+	Log.Info(isVuln)
+	Log.Info(result)
 }
 
 func TestConvertReqToStr(t *testing.T) {
@@ -24,5 +24,5 @@ func TestConvertReqToStr(t *testing.T) {
 		},
 	}
 	result := ConvertReqToStr(&req)
-	fmt.Println(result)
+	Log.Info(result)
 }

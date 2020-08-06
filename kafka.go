@@ -136,11 +136,11 @@ func RunTask(msg string) {
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
 		if isValidReferer == true {
-			url, err := SetUrlByScheme(scheme, request.Url)
+			urlModified, err := SetUrlByScheme(scheme, request.Url)
 			if err != nil {
 				Log.Errorf("obtain url for %s by referer failed", request.Url)
 			} else {
-				request.Url = url
+				request.Url = urlModified
 				SendRequest(request)
 			}
 			return

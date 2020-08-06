@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestNewWeakPasswordPlugin(t *testing.T) {
 	plugin := NewWeakPasswordPlugin()
 	request := Request{
-		Postdata: "password=1234",
+		Postdata: "password=cldNz4uQghdfdsfksdf==",
 	}
 	isVuln, result := plugin.check(&request)
 	Log.Info(isVuln)

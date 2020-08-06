@@ -228,7 +228,7 @@ func BatchObtainIp(assets *[]Asset) *[]Asset {
 }
 
 func getFilename(prefix string) string {
-	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
+	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02--15:04:05"))
 }
 
 // host string is splited by ,

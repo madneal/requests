@@ -107,15 +107,11 @@ func DoGet(request Request, ip string) *resty.Response {
 	client.SetProxy(CONFIG.Network.Proxy)
 	res := client.R()
 	res.SetHeaders(request.Headers)
-	//fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
-		//Log = Log.WithFields(logrus.Fields{"url": request.Url,
-		//	"ip": ip})
 		Log.Error(err)
 		return nil
 	}
-	//Log = Log.WithFields(logrus.Fields{"ip": ip})
 	Log.Infof("Request to %s: %d\n", request.Url, response.StatusCode())
 	return response
 }

@@ -79,7 +79,7 @@ func ConvertReqToStr(req *Request) string {
 func ObtainRespStr(req *Request) string {
 	var result string
 	if req.StatusCode != 0 {
-		result += "Statu Code:" + strconv.Itoa(req.StatusCode)
+		result += "Status Code:" + strconv.Itoa(req.StatusCode)
 	}
 	return result
 }

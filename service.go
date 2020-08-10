@@ -191,7 +191,7 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 	results, err := QueryAllVulns()
 	if err != nil {
 		Log.Error(err)
-		http.Error(w, "Query cred falied", http.StatusInternalServerError)
+		http.Error(w, "Query cred failed", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)

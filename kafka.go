@@ -186,10 +186,8 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
-	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {
-		port = data["id.resp_p"].(float64)
-		request.Port = int(port)
+		request.Port = int(data["id.resp_p"].(float64))
 	}
 	if !CONFIG.Run.Production && data["resp_p"] != nil {
 		request.Port, _ = strconv.Atoi(data["resp_p"].(string))

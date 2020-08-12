@@ -237,7 +237,7 @@ func ParseJson(msg string) (Request, error) {
 	if request.Url == "" {
 		request.Url = data["url"].(string)
 	}
-	// todo there is not post asset handle for post now
+
 	if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
 		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
 		if err != nil {

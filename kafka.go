@@ -197,6 +197,9 @@ func ParseJson(msg string) (Request, error) {
 	}
 	if data["status_code"] != nil {
 		request.StatusCode = int(data["status_code"].(float64))
+		if request.StatusCode == 0 {
+			Log.Infof("The request status code is 0, msg: %s", msg)
+		}
 	}
 	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {

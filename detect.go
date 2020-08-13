@@ -19,7 +19,7 @@ func CheckWeakPassword(request *Request) (bool, string) {
 	if len(result) == 0 {
 		return false, pass
 	}
-	detail := fmt.Sprintf("Weak password found! Weakpassword: %s; Postdata: %s", result[5], request.Postdata)
+	detail := result[5]
 	return true, detail
 }
 

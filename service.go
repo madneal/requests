@@ -188,6 +188,9 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+	}
 	results, err := QueryAllVulns()
 	if err != nil {
 		Log.Error(err)

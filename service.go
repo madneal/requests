@@ -201,10 +201,10 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 	filename := getFilename("vulns")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
-	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "resp"})
+	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "resp", "createdTime"})
 	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url,
-			result.ReqStr, result.RespStr}
+			result.ReqStr, result.RespStr, result.CreatedAt.Format("2016-01-02 15:05:05")}
 		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {

@@ -188,31 +188,19 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
-		http.Error(w, DENY_WORDS, http.StatusForbidden)
-	}
 	results, err := QueryAllVulns()
 	if err != nil {
 		Log.Error(err)
 		http.Error(w, "Query cred failed", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
-	filename := getFilename("vulns")
-	w.Header().Set("Content-Disposition", filename)
-	wr := csv.NewWriter(w)
-	wr.Write([]string{"id", "vulnName", "detail", "url", "req", "resp", "createdTime"})
-	for _, result := range *results {
-		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url,
-			result.ReqStr, result.RespStr, result.CreatedAt.Format("2016-01-02 15:05:05")}
-		AddQuotesForCsv(&record)
-		err := wr.Write(record)
-		if err != nil {
-			Log.Error(err)
-			return
-		}
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
+	data, err := json.Marshal(results)
+	if err != nil {
+		Log.Error(err)
+		return
 	}
-	wr.Flush()
+	w.Write(data)
 }
 
 func PostFileHandler(w http.ResponseWriter, r *http.Request) {

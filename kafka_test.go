@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-redis/redis/v7"
 	"testing"
 	"time"

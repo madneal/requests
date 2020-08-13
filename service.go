@@ -147,7 +147,9 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	wr := csv.NewWriter(w)
 	wr.Write([]string{"host", "port"})
 	for _, asset := range *assets {
-		err := wr.Write([]string{asset.Host, strconv.Itoa(asset.Port)})
+		record := []string{asset.Host, strconv.Itoa(asset.Port)}
+		AddQuotesForCsv(&record)
+		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
 			http.Error(w, "Write to csv failed", http.StatusInternalServerError)
@@ -175,6 +177,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
 			result.CreatedTime.Format("2006-01-02 15:04:05"),
 			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -202,6 +205,7 @@ func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Name, result.Detail, result.Url,
 			result.ReqStr, result.RespStr}
+		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -246,6 +250,12 @@ func PostFileHandler(w http.ResponseWriter, r *http.Request) {
 func HandleHosts(assets *[]Asset) {
 	assets = BatchObtainIp(assets)
 	BatchInsertAssets(assets)
+}
+
+func AddQuotesForCsv(csvData *[]string) {
+	for i, str := range *csvData {
+		(*csvData)[i] = fmt.Sprintf("\"%s\"", str)
+	}
 }
 
 func BatchObtainIp(assets *[]Asset) *[]Asset {

@@ -25,8 +25,8 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	for i := range *resources {
 		resource := (*resources)[i]
 		record := []string{strconv.Itoa(int(resource.Id)), resource.Url, resource.Protocol, resource.Method,
-			resource.Firstpath, resource.Ip, resource.CreatedTime.Format("2006-01-02 15:04:05"),
-			resource.UpdatedTime.Format("2006-01-02 15:04:05")}
+			resource.Firstpath, resource.Ip, resource.CreatedTime.Format(TIME_FORMAT),
+			resource.UpdatedTime.Format(TIME_FORMAT)}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -94,8 +94,8 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 	for i := range *assets {
 		asset := (*assets)[i]
 		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Host, asset.Ip, asset.Method, asset.Params,
-			asset.CreatedTime.Format("2006-01-02 15:04:05"),
-			asset.UpdatedTime.Format("2006-01-02 15:04:05")}
+			asset.CreatedTime.Format(TIME_FORMAT),
+			asset.UpdatedTime.Format(TIME_FORMAT)}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -175,8 +175,8 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Write([]string{"id", "url", "password", "postdata", "created_time", "updated_time"})
 	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
-			result.CreatedTime.Format("2006-01-02 15:04:05"),
-			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+			result.CreatedTime.Format(TIME_FORMAT),
+			result.UpdatedTime.Format(TIME_FORMAT)}
 		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
@@ -262,7 +262,7 @@ func getFilename(prefix string) string {
 	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
 }
 
-// host string is splited by ,
+// host string is splitted by ","
 func parseDomains(host string) *[]BlackDomain {
 	domains := make([]BlackDomain, 0)
 	hostArr := strings.Split(host, ",")

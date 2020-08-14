@@ -292,3 +292,12 @@ func TestUpdatePort(t *testing.T) {
 	}
 	UpdatePort(resource)
 }
+
+func TestQueryAllResults(t *testing.T) {
+	var result *[]Vuln
+	result, err := QueryAllVulns()
+	Log.Info(result)
+	if err != nil {
+		Log.Error(err)
+	}
+}

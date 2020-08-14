@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/sirupsen/logrus"
 	"net"
 	"net/url"
 	"regexp"
@@ -63,7 +62,7 @@ func SendRequest(request Request) {
 	}
 	isNeedReplay, ip := IsNeedReplay(request.Host)
 	if isNeedReplay == false {
-		Log.Infof("Requst to %s will not replay,host: %s\n", request.Url, request.Host)
+		Log.Infof("Request to %s will not replay,host: %s\n", request.Url, request.Host)
 		return
 	}
 	var res *resty.Response
@@ -108,15 +107,11 @@ func DoGet(request Request, ip string) *resty.Response {
 	client.SetProxy(CONFIG.Network.Proxy)
 	res := client.R()
 	res.SetHeaders(request.Headers)
-	//fmt.Printf("Request to %s\n", request.Url)
 	response, err := res.Get(request.Url)
 	if err != nil {
-		Log = Log.WithFields(logrus.Fields{"url": request.Url,
-			"ip": ip})
 		Log.Error(err)
 		return nil
 	}
-	Log = Log.WithFields(logrus.Fields{"ip": ip})
 	Log.Infof("Request to %s: %d\n", request.Url, response.StatusCode())
 	return response
 }
@@ -160,7 +155,7 @@ func GetScheme(urlStr string) (string, error) {
 func CreateResourceByRequest(request Request, ip string) *Resource {
 	u, err := url.Parse(request.Url)
 	if err != nil {
-		Log.Info(nil)
+		Log.Info(err)
 		return nil
 	}
 	path := "/" + strings.Split(u.Path, "/")[1]
@@ -179,7 +174,6 @@ func CreateResourceByRequest(request Request, ip string) *Resource {
 func GetIp(host string) []net.IP {
 	ip, err := net.LookupIP(host)
 	if err != nil {
-		//Log = Log.WithFields(logrus.Fields{"host": host})
 		Log.Error(err)
 		return []net.IP{}
 	}

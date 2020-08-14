@@ -68,6 +68,14 @@ type Vuln struct {
 	UpdatedAt time.Time `gorm:"updated"`
 }
 
+type Host struct {
+	Id        int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Domain    string    `gorm:"type:varchar(100);column:domain"`
+	Ip        string    `gorm:"type:varchar(20);column:ip"`
+	CreatedAt time.Time `gorm:"created"`
+	UpdatedAt time.Time `gorm:"updated"`
+}
+
 var db *gorm.DB
 
 func init() {
@@ -110,6 +118,12 @@ func init() {
 		db.CreateTable(&Vuln{})
 	} else {
 		db.AutoMigrate(&Vuln{})
+	}
+	if !db.HasTable(&Host{}) {
+		db.CreateTable(&Host{})
+		db.Model(&Host{}).AddIndex("host_index", "domain")
+	} else {
+		db.AutoMigrate(&Host{})
 	}
 	//defer db.Close()
 	if CONFIG.Run.Redis == true {
@@ -477,6 +491,12 @@ func QueryHostAndPort() (*[]Asset, error) {
 func QueryAllCreds() (*[]Cred, error) {
 	var result []Cred
 	err := db.Group("url").Find(&result).Error
+	return &result, err
+}
+
+func QueryAllVulns() (*[]Vuln, error) {
+	var result []Vuln
+	err := db.Find(&result).Error
 	return &result, err
 }
 

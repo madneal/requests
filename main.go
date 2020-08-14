@@ -17,7 +17,6 @@ func init() {
 	if err != nil {
 		Log.Error(err)
 	}
-	//Log.Info(CONFIG.Kafka)
 }
 
 func main() {

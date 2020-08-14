@@ -18,8 +18,6 @@ import (
 	"time"
 )
 
-var zeekMsg = [...]string{"Content-Type", "Accept-Encoding", "Referer", "Cookie", "Origin", "Host", "Accept-Language",
-	"Accept", "Accept-Charset", "Connection", "User-Agent"}
 var rdb *redis.Client
 
 func ReadKafka() {
@@ -145,11 +143,11 @@ func RunTask(msg string) {
 		// obtain scheme from referer and send request
 		isValidReferer, scheme := IsValidReferer(request)
 		if isValidReferer == true {
-			url, err := SetUrlByScheme(scheme, request.Url)
+			urlModified, err := SetUrlByScheme(scheme, request.Url)
 			if err != nil {
 				Log.Errorf("obtain url for %s by referer failed", request.Url)
 			} else {
-				request.Url = url
+				request.Url = urlModified
 				SendRequest(request)
 			}
 			return
@@ -203,8 +201,7 @@ func ParseJson(msg string) (Request, error) {
 	}
 	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {
-		port = data["id.resp_p"].(float64)
-		request.Port = int(port)
+		request.Port = int(data["id.resp_p"].(float64))
 	}
 	if !CONFIG.Run.Production && data["resp_p"] != nil {
 		request.Port, _ = strconv.Atoi(data["resp_p"].(string))
@@ -245,7 +242,7 @@ func ParseJson(msg string) (Request, error) {
 				headers[msg] = UA
 			}
 		}
-		schema := "http://"
+		schema := HTTP_SCHEMA
 		request.Url = schema + headers["Host"] + data["uri"].(string)
 	}
 	if !ValidateHost(request.Host) {
@@ -255,8 +252,17 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = data["url"].(string)
 	}
 
-	if request.Method == POST_METHOD && data["postdata"] != nil {
-		request.Postdata = data["postdata"].(string)
+	if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"] != nil {
+    if Production {
+      request.Postdata = data["postdata"].(string)
+    } else {
+      body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+      if err != nil {
+        Log.Error(err)
+      } else {
+        request.Postdata = string(body)
+      }
+    }
 	}
 
 	//if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
@@ -277,7 +283,8 @@ func ValidateHost(host string) bool {
 	if !strings.Contains(host, ".") || strings.Contains(host, "*") {
 		return false
 	}
-	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") || strings.HasPrefix(host, "127.") {
+	if strings.HasPrefix(host, "10.") || strings.HasPrefix(host, "172.") ||
+		strings.HasPrefix(host, "127.") || strings.HasPrefix(host, "29.") {
 		return false
 	}
 	hasPort, err := regexp.MatchString(`\w+:\d+`, host)
@@ -301,7 +308,7 @@ func ObtainUrl(data map[string]interface{}) string {
 	if data["uri"] != nil {
 		uri = data["uri"].(string)
 	}
-	return "http://" + host + uri
+	return HTTP_SCHEMA + host + uri
 }
 
 func InsertAsset(request Request) {

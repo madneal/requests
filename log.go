@@ -9,8 +9,6 @@ import (
 
 var Log *logrus.Entry
 
-const LOG_FILE = "pvs.log"
-
 type WriterHook struct {
 	Writer    io.Writer
 	LogLevels []logrus.Level

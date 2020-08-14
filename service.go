@@ -17,7 +17,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("resources")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
@@ -25,8 +25,8 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	for i := range *resources {
 		resource := (*resources)[i]
 		record := []string{strconv.Itoa(int(resource.Id)), resource.Url, resource.Protocol, resource.Method,
-			resource.Firstpath, resource.Ip, resource.CreatedTime.Format("2006-01-02 15:04:05"),
-			resource.UpdatedTime.Format("2006-01-02 15:04:05")}
+			resource.Firstpath, resource.Ip, resource.CreatedTime.Format(TIME_FORMAT),
+			resource.UpdatedTime.Format(TIME_FORMAT)}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -37,7 +37,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
@@ -51,12 +51,12 @@ func ResourcesHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
 	w.Write(data)
 }
 
 func AssetsHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, "Access denied", http.StatusForbidden)
 		return
 	}
@@ -77,7 +77,7 @@ func AssetsHandler(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
 	w.Write(data)
 }
 
@@ -87,15 +87,15 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 		Log.Error(err)
 	}
 	wr := csv.NewWriter(w)
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("assets")
 	w.Header().Set("Content-Disposition", filename)
 	wr.Write([]string{"id", "url", "host", "ip", "method", "params", "created_time", "updated_time"})
 	for i := range *assets {
 		asset := (*assets)[i]
 		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Host, asset.Ip, asset.Method, asset.Params,
-			asset.CreatedTime.Format("2006-01-02 15:04:05"),
-			asset.UpdatedTime.Format("2006-01-02 15:04:05")}
+			asset.CreatedTime.Format(TIME_FORMAT),
+			asset.UpdatedTime.Format(TIME_FORMAT)}
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -106,7 +106,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
@@ -132,7 +132,7 @@ func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HostsHandler(w http.ResponseWriter, r *http.Request) {
-	//if !IsTokenValid(r.Header.Get("tkzeek")) {
+	//if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 	//	http.Error(w, DENY_WORDS, http.StatusForbidden)
 	//}
 	assets, err := QueryHostAndPort()
@@ -141,13 +141,15 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Query host failed", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("hosts")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
 	wr.Write([]string{"host", "port"})
 	for _, asset := range *assets {
-		err := wr.Write([]string{asset.Host, strconv.Itoa(asset.Port)})
+		record := []string{asset.Host, strconv.Itoa(asset.Port)}
+		AddQuotesForCsv(&record)
+		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
 			http.Error(w, "Write to csv failed", http.StatusInternalServerError)
@@ -157,21 +159,26 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
-	result, err := QueryAllCreds()
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
+	}
+	results, err := QueryAllCreds()
 	if err != nil {
 		Log.Error(err)
 		http.Error(w, "Query cred falied", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Type", CSV_CONTENT_TYPE)
 	filename := getFilename("creds")
 	w.Header().Set("Content-Disposition", filename)
 	wr := csv.NewWriter(w)
 	wr.Write([]string{"id", "url", "password", "postdata", "created_time", "updated_time"})
-	for _, result := range *result {
+	for _, result := range *results {
 		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
-			result.CreatedTime.Format("2006-01-02 15:04:05"),
-			result.UpdatedTime.Format("2006-01-02 15:04:05")}
+			result.CreatedTime.Format(TIME_FORMAT),
+			result.UpdatedTime.Format(TIME_FORMAT)}
+		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -181,8 +188,28 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Flush()
 }
 
+func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
+	}
+	results, err := QueryAllVulns()
+	if err != nil {
+		Log.Error(err)
+		http.Error(w, "Query cred failed", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", JSON_CONTENT_TYPE)
+	data, err := json.Marshal(results)
+	if err != nil {
+		Log.Error(err)
+		return
+	}
+	w.Write(data)
+}
+
 func PostFileHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsTokenValid(r.Header.Get("tkzeek")) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
@@ -218,6 +245,12 @@ func HandleHosts(assets *[]Asset) {
 	BatchInsertAssets(assets)
 }
 
+func AddQuotesForCsv(csvData *[]string) {
+	for i, str := range *csvData {
+		(*csvData)[i] = fmt.Sprintf("\"%s\"", str)
+	}
+}
+
 func BatchObtainIp(assets *[]Asset) *[]Asset {
 	for index, asset := range *assets {
 		host := asset.Host
@@ -231,7 +264,7 @@ func getFilename(prefix string) string {
 	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02--15:04:05"))
 }
 
-// host string is splited by ,
+// host string is splitted by ","
 func parseDomains(host string) *[]BlackDomain {
 	domains := make([]BlackDomain, 0)
 	hostArr := strings.Split(host, ",")
@@ -259,7 +292,8 @@ func SetupServices() {
 	http.HandleFunc("/get-assets", AssetsHandler)
 	http.HandleFunc("/new-blackdomain", AddBlackDomainHandler)
 	http.HandleFunc("/get-assethosts", HostsHandler)
-	//http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
+	http.HandleFunc("/download-vulns", DownloadVulnHanlder)
 	http.HandleFunc("/post-hostandport", PostFileHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))

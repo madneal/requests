@@ -1,4 +1,5 @@
 #! /bin/bash
+
 function obtain_git_branch {
   br=`git branch | grep "*"`
   echo ${br/* /}

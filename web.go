@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-resty/resty/v2"
 	"net"
 	"net/url"
@@ -11,14 +10,15 @@ import (
 )
 
 type Request struct {
-	Url       string
-	Headers   map[string]string
-	Method    string
-	Host      string
-	AgentId   string
-	Port      int
-	Timestamp int64
-	Postdata  string
+	Url        string
+	Headers    map[string]string
+	Method     string
+	Host       string
+	AgentId    string
+	Port       int
+	Timestamp  int64
+	Postdata   string
+	StatusCode int
 }
 
 func SendRequest(request Request) {
@@ -72,7 +72,7 @@ func SendRequest(request Request) {
 		//res = DoPost(request)
 		Log.Info("there should not exist any post request")
 	} else {
-		fmt.Print("method does not support")
+		Log.Info("method does not support")
 	}
 	if res == nil {
 		return

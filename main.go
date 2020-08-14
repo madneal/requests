@@ -22,7 +22,7 @@ func init() {
 func main() {
 	Log.Info("*********Begin the Assets detect*************")
 	if len(os.Args) < 2 {
-		Log.Info("Please specify the option")
+		Log.Info("Please speficy the option")
 	}
 	cmd := os.Args[1]
 	Log.Info(cmd)

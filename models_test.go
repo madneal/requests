@@ -11,18 +11,18 @@ func TestNewAsset(t *testing.T) {
 	//asset := Asset{
 	//	//Id: 1,
 	//	Url:         "www.baidu.com",
-	//	Method:      "GET",
+	//	Method:      GET_METHOD,
 	//	Params:      "na111",
 	//	CreatedTime: time.Now(),
 	//	UpdatedTime: time.Now(),
 	//}
 	//err := NewAsset(&asset)
 	//if err != nil {
-	//	fmt.Print(err)
+	//	Log.Info(err)
 	//}
 	//asset1 := Asset{
 	//	Url:         "www.baidu.com",
-	//	Method:      "POST",
+	//	Method:      POST_METHOD,
 	//	Params:      "age",
 	//	CreatedTime: time.Now(),
 	//	UpdatedTime: time.Now(),
@@ -31,7 +31,7 @@ func TestNewAsset(t *testing.T) {
 
 	asset2 := Asset{
 		Url:         "http://www.baidu.com",
-		Method:      "GET",
+		Method:      GET_METHOD,
 		Port:        8080,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
@@ -134,7 +134,7 @@ func TestCheckIfResourceOutofdate(t *testing.T) {
 	testResource := Resource{
 		Url:         "www.test.com",
 		Protocol:    "http",
-		Method:      "GET",
+		Method:      GET_METHOD,
 		Firstpath:   "aaaa",
 		CreatedTime: testTime,
 		UpdatedTime: testTime,
@@ -151,7 +151,7 @@ func TestCheckIfResourceOutofdate(t *testing.T) {
 	resource := Resource{
 		Url:         "www.test.com.aaa",
 		Protocol:    "http",
-		Method:      "GET",
+		Method:      GET_METHOD,
 		Firstpath:   "SS",
 		CreatedTime: testTime1,
 		UpdatedTime: testTime1,
@@ -212,7 +212,7 @@ func TestUpdateIp(t *testing.T) {
 func TestUpdateHostIfEmpty(t *testing.T) {
 	asset := Asset{
 		Url:    "http://www.baidu.com",
-		Method: "GET",
+		Method: GET_METHOD,
 	}
 	UpdateHostIfEmpty(asset)
 }

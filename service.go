@@ -110,7 +110,7 @@ func AddBlackDomainHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
-	if r.Method == "POST" {
+	if r.Method == POST_METHOD {
 		err := r.ParseForm()
 		if err != nil {
 			Log.Error(err)
@@ -261,7 +261,7 @@ func BatchObtainIp(assets *[]Asset) *[]Asset {
 }
 
 func getFilename(prefix string) string {
-	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02 15:04:05"))
+	return fmt.Sprintf("attachment;filename=%s-%s.csv", prefix, time.Now().Format("2006-01-02--15:04:05"))
 }
 
 // host string is splitted by ","

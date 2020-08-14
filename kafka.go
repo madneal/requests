@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/md5"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -129,8 +128,16 @@ func RunTask(msg string) {
 			}
 		}
 
-		if CONFIG.Run.Production {
+		if CONFIG.Run.Production && CONFIG.Run.Asset {
 			InsertAsset(request)
+			return
+		}
+
+		if CONFIG.Run.Plugin {
+			CheckVulns(&request)
+		}
+
+		if !CONFIG.Run.Resource {
 			return
 		}
 		// obtain scheme from referer and send request
@@ -186,6 +193,13 @@ func ParseJson(msg string) (Request, error) {
 	if data["method"] != nil {
 		request.Method = data["method"].(string)
 	}
+	if data["status_code"] != nil {
+		request.StatusCode = int(data["status_code"].(float64))
+		if request.StatusCode == 0 {
+			Log.Infof("The request status code is 0, msg: %s", msg)
+		}
+	}
+	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {
 		request.Port = int(data["id.resp_p"].(float64))
 	}
@@ -238,14 +252,27 @@ func ParseJson(msg string) (Request, error) {
 		request.Url = data["url"].(string)
 	}
 
-	if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
-		body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
-		if err != nil {
-			Log.Error(err)
-		} else {
-			request.Postdata = string(body)
-		}
+	if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"] != nil {
+    if Production {
+      request.Postdata = data["postdata"].(string)
+    } else {
+      body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+      if err != nil {
+        Log.Error(err)
+      } else {
+        request.Postdata = string(body)
+      }
+    }
 	}
+
+	//if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
+	//	body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+	//	if err != nil {
+	//		Log.Error(err)
+	//	} else {
+	//		request.Postdata = string(body)
+	//	}
+	//}
 	request.Headers = headers
 	return request, err
 }

@@ -161,6 +161,7 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
 	}
 	results, err := QueryAllCreds()
 	if err != nil {
@@ -190,6 +191,7 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 func DownloadVulnHanlder(w http.ResponseWriter, r *http.Request) {
 	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
 	}
 	results, err := QueryAllVulns()
 	if err != nil {

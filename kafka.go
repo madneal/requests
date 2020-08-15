@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -253,26 +254,17 @@ func ParseJson(msg string) (Request, error) {
 	}
 
 	if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"] != nil {
-    if Production {
-      request.Postdata = data["postdata"].(string)
-    } else {
-      body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
-      if err != nil {
-        Log.Error(err)
-      } else {
-        request.Postdata = string(body)
-      }
-    }
+		if CONFIG.Run.Production {
+			request.Postdata = data["postdata"].(string)
+		} else {
+			body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
+			if err != nil {
+				Log.Error(err)
+			} else {
+				request.Postdata = string(body)
+			}
+		}
 	}
-
-	//if !CONFIG.Run.Production && request.Method == POST_METHOD && data["postdata"].(string) != "" {
-	//	body, err := base64.StdEncoding.DecodeString(data["postdata"].(string))
-	//	if err != nil {
-	//		Log.Error(err)
-	//	} else {
-	//		request.Postdata = string(body)
-	//	}
-	//}
 	request.Headers = headers
 	return request, err
 }

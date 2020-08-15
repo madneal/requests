@@ -200,7 +200,6 @@ func ParseJson(msg string) (Request, error) {
 			Log.Infof("The request status code is 0, msg: %s", msg)
 		}
 	}
-	var port float64
 	if CONFIG.Run.Production && data["id.resp_p"] != nil {
 		request.Port = int(data["id.resp_p"].(float64))
 	}

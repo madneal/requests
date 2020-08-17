@@ -11,7 +11,7 @@ import (
 const PreKey = "req_"
 
 var (
-	ErrNoExpr   = errors.New("cel: no expresson")
+	ErrNoExpr   = errors.New("cel: no expression")
 	ErrParsing  = errors.New("cel: error parsing the expression")
 	ErrChecking = errors.New("cel: error checking the expression and its param definition")
 )

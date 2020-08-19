@@ -99,6 +99,9 @@ func evalChecks(args map[string]interface{}, ps []cel.Program) (bool, error) {
 			Log.Error(err)
 			return false, err
 		}
+		//if !(res.Value().(bool)) {
+		//	return false, nil
+		//}
 		if v, ok := res.Value().(bool); !ok || !v {
 			return false, fmt.Errorf("CEL: request aborted by %+v", eval)
 		}

@@ -1,4 +1,5 @@
-name: demo-rule
+name:
 rule:
   method: GET
-  expression: postdata
+  expression: |
+    req_postdata.contains("GET")

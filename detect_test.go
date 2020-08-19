@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -24,4 +25,15 @@ func TestConvertReqToStr(t *testing.T) {
 	}
 	result := ConvertReqToStr(&req)
 	Log.Info(result)
+}
+
+func TestInitalYamlPlugins(t *testing.T) {
+	plugins := InitalYamlPlugins()
+	r := Request{
+		Method:   GET_METHOD,
+		Postdata: "T 1341234DFSADFASDFASDF",
+	}
+	result, err := plugins[0].checkExpression(&(plugins[0].Expression), &r)
+	fmt.Println(result)
+	fmt.Println(err)
 }

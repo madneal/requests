@@ -2,14 +2,50 @@ package main
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"strconv"
 )
 
 type Plugin struct {
-	Name  string
-	check func(*Request) (bool, string)
+	Name            string
+	Expression      string
+	check           func(*Request) (bool, string)
+	checkExpression func(*string, *Request) (bool, string)
+}
+
+type RuleConfig struct {
+	Name string
+	Rule struct {
+		Method     string
+		Expression string
+	}
+}
+
+func InitialRule(yamlName string) *RuleConfig {
+	var rule RuleConfig
+	source, err := ioutil.ReadFile(yamlName)
+	if err != nil {
+		Log.Error(err)
+		return nil
+	}
+	err = yaml.Unmarshal(source, &rule)
+	return &rule
+}
+
+func CheckExpression(express *string, r *Request) (bool, string) {
+	def := make([]InterpretableDefinition, 0)
+	def = append(def, InterpretableDefinition{
+		CheckExpression: *express,
+	})
+	result, err := Check(def, r)
+	if err != nil {
+		Log.Error(err)
+	}
+	return result, r.Postdata
 }
 
 func CheckWeakPassword(request *Request) (bool, string) {
@@ -28,6 +64,28 @@ func NewWeakPasswordPlugin() *Plugin {
 		Name:  "Weak password",
 		check: CheckWeakPassword,
 	}
+}
+
+func NewYamlPlugin(filename string) *Plugin {
+	rule := InitialRule(filename)
+	return &Plugin{
+		Name:            rule.Name,
+		Expression:      rule.Rule.Expression,
+		checkExpression: CheckExpression,
+	}
+}
+
+func InitalYamlPlugins() []*Plugin {
+	plugins := make([]*Plugin, 0)
+	files, err := ioutil.ReadDir("rules")
+	if err != nil {
+		Log.Error(err)
+		return plugins
+	}
+	for _, file := range files {
+		plugins = append(plugins, NewYamlPlugin(filepath.Join("rules", file.Name())))
+	}
+	return plugins
 }
 
 func CheckVulns(req *Request) {

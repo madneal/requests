@@ -7,12 +7,13 @@ import (
 func TestCheck(t *testing.T) {
 	def := make([]InterpretableDefinition, 0)
 	def = append(def, InterpretableDefinition{
-		CheckExpression: "req_method.contains(\"GET\")",
+		CheckExpression: "req_postdata.contains(\"GET\")",
 	})
 	r := Request{
-		Method: GET_METHOD,
+		Method:   GET_METHOD,
+		Postdata: "GET 1341234DFSADFASDFASDF",
 	}
 	result, err := Check(def, &r)
-	Log.Info(err)
+	Log.Error(err)
 	Log.Info(result)
 }

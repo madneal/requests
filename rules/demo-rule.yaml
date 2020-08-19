@@ -2,4 +2,4 @@ name:
 rule:
   method: GET
   expression: |
-    req_postdata.contains("GET")
+    (req_postdata.contains("password") || req_postdata.contains("pass") || req_postdata.contains("passwd")) && (req_postdata.contains("paic1234") || req_postdata.contains("123456"))

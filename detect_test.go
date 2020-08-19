@@ -31,7 +31,7 @@ func TestInitalYamlPlugins(t *testing.T) {
 	plugins := InitalYamlPlugins()
 	r := Request{
 		Method:   GET_METHOD,
-		Postdata: "T 1341234DFSADFASDFASDF",
+		Postdata: "password 123456",
 	}
 	result, err := plugins[0].checkExpression(&(plugins[0].Expression), &r)
 	fmt.Println(result)

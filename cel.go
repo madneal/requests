@@ -86,8 +86,9 @@ func (p ExParser) ParsePre(denitions []InterpretableDefinition) ([]cel.Program, 
 
 func newReqActivation(r *Request) map[string]interface{} {
 	return map[string]interface{}{
-		PreKey + "method":  r.Method,
-		PreKey + "headers": r.Headers,
+		PreKey + "method":   r.Method,
+		PreKey + "headers":  r.Headers,
+		PreKey + "postdata": r.Postdata,
 	}
 }
 

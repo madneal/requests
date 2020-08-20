@@ -25,6 +25,7 @@ type Asset struct {
 	Params      string    `gorm:"type:varchar(1000);column:params"`
 	Host        string    `gorm:"type:varchar(100);column:host"`
 	Ip          string    `gorm:"type:varchar(100);column:ip"`
+	Env         string    `gorm:"type:varchar(10);column:env"`
 	Md5         string    `gorm:"type:varchar(20);column:md5"`
 	Port        int       `gorm:"type:int;column:port"`
 	CreatedTime time.Time `gorm:"created"`

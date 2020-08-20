@@ -75,7 +75,7 @@ func NewYamlPlugin(filename string) *Plugin {
 	}
 }
 
-func InitalYamlPlugins() []*Plugin {
+func InitialYamlPlugins() []*Plugin {
 	plugins := make([]*Plugin, 0)
 	files, err := ioutil.ReadDir("rules")
 	if err != nil {

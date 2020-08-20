@@ -28,7 +28,7 @@ func TestConvertReqToStr(t *testing.T) {
 }
 
 func TestInitalYamlPlugins(t *testing.T) {
-	plugins := InitalYamlPlugins()
+	plugins := InitialYamlPlugins()
 	r := Request{
 		Method:   GET_METHOD,
 		Postdata: "password 123456",

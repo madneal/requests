@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestNewWeakPasswordPlugin(t *testing.T) {
 	plugin := NewWeakPasswordPlugin()
 	request := Request{
-		Postdata: "password=cldNz4uQghdfdsfksdf==",
+		Postdata: "password=123456&",
 	}
 	isVuln, result := plugin.check(&request)
-	Log.Info(isVuln)
-	Log.Info(result)
+	assert.True(t, true, isVuln, "This is vulnerable")
+	assert.Equal(t, "123456", result, "The password should be 123456")
 }
 
 func TestConvertReqToStr(t *testing.T) {

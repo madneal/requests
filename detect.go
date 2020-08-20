@@ -51,7 +51,7 @@ func CheckExpression(express *string, r *Request) (bool, string) {
 
 func CheckWeakPassword(request *Request) (bool, string) {
 	var pass string
-	re := regexp.MustCompile(`(?i)(password|passwd|pass|pwd)("|')?\s?(:|=)\s?("|'|)?([0-9a-zA-Z]{1,8})("|'|&)+`)
+	re := regexp.MustCompile(`(?i)(password|passwd|pass|pwd)(["'])?\s?([:=])\s?("|'|)?([0-9a-zA-Z]{1,8})(["'&])+`)
 	result := re.FindStringSubmatch(request.Postdata)
 	if len(result) == 0 {
 		return false, pass

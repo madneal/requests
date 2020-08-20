@@ -168,13 +168,6 @@ func TestSetUrlByScheme(t *testing.T) {
 //	assert.Equal(t, "ff,name,bcd", asset.Params, "the params should be the same")
 //}
 
-func TestObtainIp(t *testing.T) {
-	ip := ObtainIp("wwww.baidu.com")
-	assert.Equal(t, "1.1.1.1", ip, "the ip should be the same")
-	ip1 := ObtainIp("taobao.com")
-	assert.Equal(t, "140.205.94.189", ip1, "the ip should be looked up by dns")
-}
-
 func TestRunTask(t *testing.T) {
 	msg := "{\"id.resp_p\": 80, \"method\": \"POST\", \"host\": \"bill.sdb.com\", \"postdata\": \"password=123\"}"
 	RunTask(msg)

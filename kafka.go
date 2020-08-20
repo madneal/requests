@@ -359,14 +359,3 @@ func ObtainQueryKeys(u *url.URL) string {
 	}
 	return result
 }
-
-func ObtainIp(host string) string {
-	ip := QueryIp(host)
-	if ip == "" {
-		ips := GetIp(host)
-		for _, ipEle := range ips {
-			ip += ipEle.String() + ","
-		}
-	}
-	return ip
-}

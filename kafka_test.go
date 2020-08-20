@@ -155,12 +155,6 @@ func TestRedis(t *testing.T) {
 		"should not exists")
 }
 
-func TestSetUrlByScheme(t *testing.T) {
-	url, _ := SetUrlByScheme("http", "https://play.golang.org/")
-	Log.Info(url)
-	assert.Equal(t, "http://play.golang.org/", url, "the url shoule be http")
-}
-
 //func TestCreateAssetByUrl(t *testing.T) {
 //	urlStr := ""
 //	asset := CreateAssetByUrl(urlStr)

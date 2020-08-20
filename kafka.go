@@ -129,48 +129,12 @@ func RunTask(msg string) {
 			}
 		}
 
-		if CONFIG.Run.Production && CONFIG.Run.Asset {
-			InsertAsset(request)
-			return
-		}
+		InsertAsset(request)
 
 		if CONFIG.Run.Plugin {
 			CheckVulns(&request)
 		}
-
-		if !CONFIG.Run.Resource {
-			return
-		}
-		// obtain scheme from referer and send request
-		isValidReferer, scheme := IsValidReferer(request)
-		if isValidReferer == true {
-			urlModified, err := SetUrlByScheme(scheme, request.Url)
-			if err != nil {
-				Log.Errorf("obtain url for %s by referer failed", request.Url)
-			} else {
-				request.Url = urlModified
-				SendRequest(request)
-			}
-			return
-		}
-		SendRequest(request)
-		// repeat the request, for http and https respectively
-		if strings.Contains(request.Url, "https") {
-			request.Url = strings.Replace(request.Url, "https", "http", 1)
-		} else {
-			request.Url = strings.Replace(request.Url, "http", "https", 1)
-		}
-		SendRequest(request)
 	}
-}
-
-func SetUrlByScheme(scheme, urlStr string) (string, error) {
-	u, err := url.Parse(urlStr)
-	if nil != err {
-		return "", err
-	}
-	u.Scheme = scheme
-	return u.String(), err
 }
 
 func ParseJson(msg string) (Request, error) {
@@ -304,7 +268,10 @@ func ObtainUrl(data map[string]interface{}) string {
 
 func InsertAsset(request Request) {
 	asset := CreateAssetByUrl(request.Url, request.Host, request.Port)
-	if asset == nil {
+	if CONFIG.Run.Env == QA_ENV {
+		asset.Ip = GetIpStr(asset.Host)
+	}
+	if asset == nil || !MatchIp(asset.Ip) {
 		return
 	}
 	asset.Method = request.Method

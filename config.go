@@ -16,7 +16,7 @@ type Config struct {
 		Name string
 	}
 	Network struct {
-		Network [3]string
+		Network []string
 		Proxy   string
 	}
 	Run struct {
@@ -30,6 +30,7 @@ type Config struct {
 		Asset       bool
 		Plugin      bool
 		Resource    bool
+		Env         string
 	}
 	Redis struct {
 		Host     string

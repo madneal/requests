@@ -227,6 +227,11 @@ func NewDomain(domain *BlackDomain) error {
 	}
 }
 
+func Delete(host string) error {
+	err := db.Where("host = ?", host).Delete(Asset{}).Error
+	return err
+}
+
 // UpdateHostIfEmpty is utilized to fix for history data where host is empty
 func UpdateHostIfEmpty(asset Asset) error {
 	err := db.Where("url = ? and method = ?", asset.Url, asset.Method).First(&asset).Error

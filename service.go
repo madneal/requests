@@ -240,6 +240,42 @@ func PostFileHandler(w http.ResponseWriter, r *http.Request) {
 	go HandleHosts(&assets)
 }
 
+func BatchUpdateIpHandler(w http.ResponseWriter, r *http.Request) {
+	if !IsTokenValid(r.Header.Get(HEADER_TOKEN)) {
+		http.Error(w, DENY_WORDS, http.StatusForbidden)
+		return
+	}
+
+}
+
+func BatchUpdateIp() {
+	hosts, err := QueryAssetHosts()
+	if err != nil {
+		Log.Error(err)
+	}
+	for _, host := range *hosts {
+		ip := GetIpStr(host)
+		if !CheckIpStrValid(ip) {
+			Delete(host)
+			continue
+		}
+		err = UpdateIp(host, ip)
+		if err != nil {
+			Log.Error(err)
+		}
+	}
+}
+
+func CheckIpStrValid(ipStr string) bool {
+	ips := strings.Split(ipStr, ",")
+	for _, ip := range ips {
+		if !MatchIp(ip) {
+			return false
+		}
+	}
+	return true
+}
+
 func HandleHosts(assets *[]Asset) {
 	assets = BatchObtainIp(assets)
 	BatchInsertAssets(assets)

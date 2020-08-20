@@ -301,3 +301,10 @@ func TestQueryAllResults(t *testing.T) {
 		Log.Error(err)
 	}
 }
+
+func TestDelete(t *testing.T) {
+	err := Delete("www.baidu.com")
+	if err != nil {
+		Log.Error(err)
+	}
+}

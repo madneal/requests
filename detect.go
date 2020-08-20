@@ -12,6 +12,7 @@ import (
 
 type Plugin struct {
 	Name            string
+	Type            string
 	Expression      string
 	check           func(*Request) (bool, string)
 	checkExpression func(*string, *Request) (bool, string)
@@ -70,6 +71,7 @@ func NewYamlPlugin(filename string) *Plugin {
 	rule := InitialRule(filename)
 	return &Plugin{
 		Name:            rule.Name,
+		Type:            "yaml",
 		Expression:      rule.Rule.Expression,
 		checkExpression: CheckExpression,
 	}
@@ -90,10 +92,17 @@ func InitialYamlPlugins() []*Plugin {
 
 func CheckVulns(req *Request) {
 	plugins := make([]*Plugin, 0)
-	WeackPasswordPlugin := NewWeakPasswordPlugin()
-	plugins = append(plugins, WeackPasswordPlugin)
+	WeakPasswordPlugin := NewWeakPasswordPlugin()
+	plugins = append(plugins, WeakPasswordPlugin)
+	plugins = append(plugins, InitialYamlPlugins()...)
 	for _, plugin := range plugins {
-		isVuln, result := plugin.check(req)
+		var isVuln bool
+		var result string
+		if "yaml" == plugin.Type {
+			isVuln, result = plugin.checkExpression(&plugin.Expression, req)
+		} else {
+			isVuln, result = plugin.check(req)
+		}
 		if isVuln {
 			vuln := CreateVuln(plugin.Name, result, req)
 			err := NewVuln(vuln)

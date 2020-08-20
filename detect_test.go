@@ -37,3 +37,11 @@ func TestInitalYamlPlugins(t *testing.T) {
 	fmt.Println(result)
 	fmt.Println(err)
 }
+
+func TestCheckVulns(t *testing.T) {
+	r := Request{
+		Method:   GET_METHOD,
+		Postdata: "password 123456",
+	}
+	CheckVulns(&r)
+}

@@ -28,7 +28,7 @@ func TestConvertReqToStr(t *testing.T) {
 	Log.Info(result)
 }
 
-func TestInitalYamlPlugins(t *testing.T) {
+func TestInitialYamlPlugins(t *testing.T) {
 	plugins := InitialYamlPlugins()
 	r := Request{
 		Method:   GET_METHOD,

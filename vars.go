@@ -16,6 +16,8 @@ const CSV_CONTENT_TYPE = "text/csv"
 const JSON_CONTENT_TYPE = "application/json"
 const LOG_FILE = "pvs.log"
 const TIME_FORMAT = "2006-01-02 15:04:05"
+const PRD_ENV = "PRD"
+const QA_ENV = "QA"
 
 var BLACK_EXTENSIONS = [...]string{".jpg", ".png"}
 

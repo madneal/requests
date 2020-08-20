@@ -354,7 +354,7 @@ func CreateAssetByUrl(urlStr, host string, port int) *Asset {
 func ObtainQueryKeys(u *url.URL) string {
 	q := u.Query()
 	var result string
-	for k, _ := range q {
+	for k := range q {
 		result += k + ","
 	}
 	return result

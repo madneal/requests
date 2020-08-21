@@ -148,7 +148,6 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	wr.Write([]string{"host", "port"})
 	for _, asset := range *assets {
 		record := []string{asset.Host, strconv.Itoa(asset.Port)}
-		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -178,7 +177,6 @@ func DownloadCredsHandler(w http.ResponseWriter, r *http.Request) {
 		record := []string{strconv.Itoa(int(result.Id)), result.Url, result.Password, result.Postdata,
 			result.CreatedTime.Format(TIME_FORMAT),
 			result.UpdatedTime.Format(TIME_FORMAT)}
-		AddQuotesForCsv(&record)
 		err := wr.Write(record)
 		if err != nil {
 			Log.Error(err)
@@ -279,12 +277,6 @@ func CheckIpStrValid(ipStr string) bool {
 func HandleHosts(assets *[]Asset) {
 	assets = BatchObtainIp(assets)
 	BatchInsertAssets(assets)
-}
-
-func AddQuotesForCsv(csvData *[]string) {
-	for i, str := range *csvData {
-		(*csvData)[i] = fmt.Sprintf("\"%s\"", str)
-	}
 }
 
 func BatchObtainIp(assets *[]Asset) *[]Asset {

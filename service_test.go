@@ -33,3 +33,7 @@ func TestAddQuotesForCsv(t *testing.T) {
 	//AddQuotesForCsv(&data)
 	fmt.Println(data)
 }
+
+func TestBatchUpdateIp(t *testing.T) {
+	BatchUpdateIp()
+}

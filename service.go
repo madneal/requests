@@ -245,7 +245,7 @@ func BatchUpdateIpHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, DENY_WORDS, http.StatusForbidden)
 		return
 	}
-
+	BatchUpdateIp()
 }
 
 func BatchUpdateIp() {
@@ -331,6 +331,7 @@ func SetupServices() {
 	http.HandleFunc("/download-creds-temp-2020", DownloadCredsHandler)
 	http.HandleFunc("/download-vulns", DownloadVulnHanlder)
 	http.HandleFunc("/post-hostandport", PostFileHandler)
+	http.HandleFunc("/batch-update-ip-temp", BatchUpdateIpHandler)
 	port := fmt.Sprintf(":%d", CONFIG.Run.Port)
 	Log.Info(http.ListenAndServe(port, nil))
 }

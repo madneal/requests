@@ -43,3 +43,7 @@ func main() {
 		Log.Info(Decrypt(os.Args[2], ENCRYPT_KEY))
 	}
 }
+
+func CleanAssets() {
+
+}

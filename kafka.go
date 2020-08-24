@@ -129,7 +129,9 @@ func RunTask(msg string) {
 			}
 		}
 
-		InsertAsset(request)
+		if CONFIG.Run.Asset {
+			InsertAsset(request)
+		}
 
 		if CONFIG.Run.Plugin {
 			CheckVulns(&request)
@@ -267,11 +269,11 @@ func ObtainUrl(data map[string]interface{}) string {
 }
 
 func InsertAsset(request Request) {
-	asset := CreateAssetByUrl(request.Host, request.Port)
+	asset := CreateAsset(request.Host, request.Port)
 	if CONFIG.Run.Env == QA_ENV {
 		asset.Ip = GetIpStr(asset.Host)
 	}
-	if asset == nil || !MatchIp(asset.Ip) {
+	if asset == nil {
 		return
 	}
 	err := NewAsset(asset)
@@ -297,7 +299,7 @@ func CheckIfBlackExtension(url string) bool {
 	return false
 }
 
-func CreateAssetByUrl(host string, port int) *Asset {
+func CreateAsset(host string, port int) *Asset {
 	return &Asset{
 		Host:        host,
 		Ip:          "",

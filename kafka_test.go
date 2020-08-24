@@ -157,7 +157,7 @@ func TestRedis(t *testing.T) {
 
 //func TestCreateAssetByUrl(t *testing.T) {
 //	urlStr := ""
-//	asset := CreateAssetByUrl(urlStr)
+//	asset := CreateAsset(urlStr)
 //	assert.Equal(t, "http://gitlab.com/pa/edf/aa", asset.Url, "the url should be the same")
 //	assert.Equal(t, "ff,name,bcd", asset.Params, "the params should be the same")
 //}

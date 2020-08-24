@@ -6,3 +6,4 @@ requests
 cred
 .DS_Store
 cel
+rules/*.yaml

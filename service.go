@@ -284,6 +284,7 @@ func BatchObtainIp(assets *[]Asset) *[]Asset {
 		ip := GetIpStr(host)
 		(*assets)[index].Ip = ip
 	}
+	fmt.Println("Batch obtain ip finished")
 	return assets
 }
 

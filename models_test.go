@@ -7,39 +7,6 @@ import (
 	"time"
 )
 
-func TestNewAsset(t *testing.T) {
-	//asset := Asset{
-	//	//Id: 1,
-	//	Url:         "www.baidu.com",
-	//	Method:      GET_METHOD,
-	//	Params:      "na111",
-	//	CreatedTime: time.Now(),
-	//	UpdatedTime: time.Now(),
-	//}
-	//err := NewAsset(&asset)
-	//if err != nil {
-	//	Log.Info(err)
-	//}
-	//asset1 := Asset{
-	//	Url:         "www.baidu.com",
-	//	Method:      POST_METHOD,
-	//	Params:      "age",
-	//	CreatedTime: time.Now(),
-	//	UpdatedTime: time.Now(),
-	//}
-	//NewAsset(&asset1)
-
-	asset2 := Asset{
-		Url:         "http://www.baidu.com",
-		Method:      GET_METHOD,
-		Port:        8080,
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-	asset2.Md5 = ComputeHash(asset2.Url + asset2.Method)
-	NewAsset(&asset2)
-}
-
 func TestExists(t *testing.T) {
 	url := "7c031d9efda97b77a7d6"
 	exists := Exists(url, "md5")
@@ -209,24 +176,11 @@ func TestUpdateIp(t *testing.T) {
 	UpdateIp("www.baidu.com", "2.2.2.2")
 }
 
-func TestUpdateHostIfEmpty(t *testing.T) {
-	asset := Asset{
-		Url:    "http://www.baidu.com",
-		Method: GET_METHOD,
-	}
-	UpdateHostIfEmpty(asset)
-}
-
 func TestDecryptPass(t *testing.T) {
 	cryped := Encrypt("res", ENCRYPT_KEY)
 	Log.Info(cryped)
 	decyped := Decrypt(cryped, ENCRYPT_KEY)
 	assert.Equal(t, "res", decyped, "the password should be decrypted")
-}
-
-func TestUpdateParams(t *testing.T) {
-	md5 := "836642ca442d7d145900"
-	UpdateParams(md5, "aaaaa")
 }
 
 func TestQueryAssetHosts(t *testing.T) {

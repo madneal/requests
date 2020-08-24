@@ -179,7 +179,7 @@ func Decrypt(data, passphrase string) string {
 }
 
 func NewVuln(vuln *Vuln) error {
-	if !ExistsByMultiFields(vuln, vuln.Url, "url", vuln.Name, "name") {
+	if !ExistsByMultiFields(vuln, vuln.Url, "url", vuln.Name, "name", vuln.Detail, "detail") {
 		return db.Create(&vuln).Error
 	} else {
 		return nil
@@ -270,10 +270,10 @@ func Exists(field, fieldName string) bool {
 	return !db.Where(query, field).First(&asset).RecordNotFound()
 }
 
-func ExistsByMultiFields(item interface{}, field, fieldName, field1, fieldName1 string) bool {
+func ExistsByMultiFields(item interface{}, field, fieldName, field1, fieldName1, field2, fieldName2 string) bool {
 	db.LogMode(true)
-	query := fmt.Sprintf("%s = ? and %s = ?", fieldName, fieldName1)
-	return !db.Where(query, field, field1).First(item).RecordNotFound()
+	query := fmt.Sprintf("%s = ? and %s = ? and %s = ?", fieldName, fieldName1, fieldName2)
+	return !db.Where(query, field, field1, field2).First(item).RecordNotFound()
 }
 
 func IsPortZero(md5 string) bool {

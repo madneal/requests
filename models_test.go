@@ -263,6 +263,12 @@ func TestDelete(t *testing.T) {
 	}
 }
 
-func TestMoveResourcesToAssets(t *testing.T) {
-	MoveResourcesToAssets()
+func TestExistsByMultiFields(t *testing.T) {
+	vuln := Vuln{
+		Name:   "Weak password",
+		Detail: "123",
+		Url:    "http://bill.sdb.com",
+	}
+	result := ExistsByMultiFields(&vuln, vuln.Url, "url", vuln.Name, "name", vuln.Detail, "detail")
+	assert.Equal(t, true, result, "The result should be true")
 }

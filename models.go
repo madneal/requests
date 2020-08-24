@@ -286,12 +286,6 @@ func ExistsByHostAndPort(host string, port int) bool {
 	return !db.Where("host = ? and port = ?", host, port).First(&asset).RecordNotFound()
 }
 
-// check if record exists
-func AssetExists(method, url string) bool {
-	var asset Asset
-	return !db.Where("method = ? and url = ?", method, url).First(&asset).RecordNotFound()
-}
-
 func DomainExists(host string) bool {
 	var domain BlackDomain
 	return !db.Where("host = ?", host).First(&domain).RecordNotFound()

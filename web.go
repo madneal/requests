@@ -200,6 +200,9 @@ func GetIpStr(host string) string {
 // check if ip in the given networks
 func MatchIp(ip string) (result bool) {
 	result = false
+	if ip == "" {
+		return result
+	}
 	if len(CONFIG.Network.Network) == 0 {
 		Log.Info("Please assign network in config.yaml!")
 	}

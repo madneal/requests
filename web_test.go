@@ -46,6 +46,8 @@ func TestMatchIp(t *testing.T) {
 	assert.Equal(t, false, MatchIp(ip1), "the ip should not match")
 	assert.Equal(t, false, MatchIp(ip2), "the ip should not match")
 	assert.Equal(t, false, MatchIp(ip3), "the ip should not match")
+	ip4 := ""
+	assert.Equal(t, false, MatchIp(ip4), "the ip empty should not match")
 }
 
 //func TestMatchUrl(t *testing.T) {

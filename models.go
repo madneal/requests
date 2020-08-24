@@ -497,6 +497,9 @@ func MatchUrl(postUrl string) *[]Resource {
 // duplicate by host
 func BatchInsertAssets(assets *[]Asset) {
 	for _, asset := range *assets {
+		if !MatchIp(asset.Ip) {
+			continue
+		}
 		if !ExistsByHostAndPort(asset.Host, asset.Port) && asset.Port != 0 {
 			err := db.Create(&asset).Error
 			if err != nil {

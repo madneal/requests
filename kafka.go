@@ -267,15 +267,13 @@ func ObtainUrl(data map[string]interface{}) string {
 }
 
 func InsertAsset(request Request) {
-	asset := CreateAssetByUrl(request.Url, request.Host, request.Port)
+	asset := CreateAssetByUrl(request.Host, request.Port)
 	if CONFIG.Run.Env == QA_ENV {
 		asset.Ip = GetIpStr(asset.Host)
 	}
 	if asset == nil || !MatchIp(asset.Ip) {
 		return
 	}
-	asset.Method = request.Method
-	asset.Md5 = ComputeHash(asset.Url + asset.Method)
 	err := NewAsset(asset)
 	if err != nil {
 		Log.Error(err)
@@ -299,16 +297,8 @@ func CheckIfBlackExtension(url string) bool {
 	return false
 }
 
-func CreateAssetByUrl(urlStr, host string, port int) *Asset {
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		Log.Error(err)
-		return nil
-	}
-	params := ObtainQueryKeys(u)
+func CreateAssetByUrl(host string, port int) *Asset {
 	return &Asset{
-		Url:         fmt.Sprintf("%s%s%s%s", u.Scheme, "://", u.Host, u.Path),
-		Params:      params,
 		Host:        host,
 		Ip:          "",
 		Port:        port,

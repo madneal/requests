@@ -20,13 +20,9 @@ import _ "github.com/jinzhu/gorm/dialects/mysql"
 
 type Asset struct {
 	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url         string    `gorm:"type:varchar(1000);column:url"`
-	Method      string    `gorm:"type:varchar(10);column:method"`
-	Params      string    `gorm:"type:varchar(1000);column:params"`
 	Host        string    `gorm:"type:varchar(100);column:host"`
 	Ip          string    `gorm:"type:varchar(100);column:ip"`
 	Env         string    `gorm:"type:varchar(10);column:env"`
-	Md5         string    `gorm:"type:varchar(20);column:md5"`
 	Port        int       `gorm:"type:int;column:port"`
 	CreatedTime time.Time `gorm:"created"`
 	UpdatedTime time.Time `gorm:"updated"`
@@ -191,29 +187,9 @@ func NewVuln(vuln *Vuln) error {
 }
 
 func NewAsset(asset *Asset) error {
-	if !Exists(asset.Md5, "md5") {
+	if !ExistsByHostAndPort(asset.Host, asset.Port) {
 		return db.Create(&asset).Error
 	} else {
-		// temporal remove the logic
-		// if asset out of date, try to update the ip of host
-		//if CheckIfAssetOutofDate(*asset) {
-		//	isNeedUpdateIp, ip := IsIpNeedUpdate((*asset).Host)
-		//	if isNeedUpdateIp {
-		//		err := UpdateIp((*asset).Host, ip)
-		//		if err != nil {
-		//			Log.Error(err)
-		//		}
-		//	}
-		//}
-		//newParams := asset.Params
-		//oldParams := GetParams(asset)
-		//params := GetFreshParams(oldParams, newParams)
-		//return UpdateParams(asset.Md5, params)
-		if 0 != asset.Port && IsPortZero(asset.Md5) {
-			db.Model(&asset).Where("md5 = ?", asset.Md5).Update("port", asset.Port)
-		} else {
-			Log.Infof("The asset %s exists", asset.Url)
-		}
 		return nil
 	}
 }
@@ -233,30 +209,30 @@ func Delete(host string) error {
 }
 
 // UpdateHostIfEmpty is utilized to fix for history data where host is empty
-func UpdateHostIfEmpty(asset Asset) error {
-	err := db.Where("url = ? and method = ?", asset.Url, asset.Method).First(&asset).Error
-	if err != nil {
-		return err
-	}
-	if asset.Host == "" {
-		u, err := url.Parse(asset.Url)
-		if err != nil {
-			return nil
-		}
-		asset.Host = u.Host
-	}
-	return db.Save(&asset).Error
-}
+//func UpdateHostIfEmpty(asset Asset) error {
+//	err := db.Where("url = ? and method = ?", asset.Url, asset.Method).First(&asset).Error
+//	if err != nil {
+//		return err
+//	}
+//	if asset.Host == "" {
+//		u, err := url.Parse(asset.Url)
+//		if err != nil {
+//			return nil
+//		}
+//		asset.Host = u.Host
+//	}
+//	return db.Save(&asset).Error
+//}
 
 func UpdateIp(host, ip string) error {
 	err := db.Table("assets").Where("host = ?", host).Update(Asset{Ip: ip, UpdatedTime: time.Now()}).Error
 	return err
 }
 
-func UpdateParams(md5, params string) error {
-	err := db.Table("assets").Where("md5 = ?", md5).Update(Asset{Params: params, UpdatedTime: time.Now()}).Error
-	return err
-}
+//func UpdateParams(md5, params string) error {
+//	err := db.Table("assets").Where("md5 = ?", md5).Update(Asset{Params: params, UpdatedTime: time.Now()}).Error
+//	return err
+//}
 
 func IsIpNeedUpdate(host string) (bool, string) {
 	freshIp := GetIpStr(host)
@@ -284,15 +260,6 @@ func CompareStringArr(a, b string) bool {
 		}
 	}
 	return true
-}
-
-func GetParams(asset *Asset) string {
-	err := db.First(&asset).Error
-	if err != nil {
-		Log.Error(err)
-		return ""
-	}
-	return asset.Params
 }
 
 // check if record exists

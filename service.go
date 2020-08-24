@@ -93,8 +93,7 @@ func DownloadAssets(w http.ResponseWriter, r *http.Request) {
 	wr.Write([]string{"id", "url", "host", "ip", "method", "params", "created_time", "updated_time"})
 	for i := range *assets {
 		asset := (*assets)[i]
-		record := []string{strconv.Itoa(int(asset.Id)), asset.Url, asset.Host, asset.Ip, asset.Method, asset.Params,
-			asset.CreatedTime.Format(TIME_FORMAT),
+		record := []string{strconv.Itoa(int(asset.Id)), asset.Host, asset.Ip, asset.CreatedTime.Format(TIME_FORMAT),
 			asset.UpdatedTime.Format(TIME_FORMAT)}
 		err := wr.Write(record)
 		if err != nil {

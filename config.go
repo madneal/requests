@@ -29,7 +29,6 @@ type Config struct {
 		Port        int
 		Asset       bool
 		Plugin      bool
-		Resource    bool
 		Env         string
 	}
 	Redis struct {

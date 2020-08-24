@@ -211,7 +211,7 @@ func ParseJson(msg string) (Request, error) {
 		schema := HTTP_SCHEMA
 		request.Url = schema + headers["Host"] + data["uri"].(string)
 	}
-	if (CONFIG.Run.Asset || CONFIG.Run.Resource) && !ValidateHost(request.Host) {
+	if CONFIG.Run.Asset && !ValidateHost(request.Host) {
 		return request, errors.New(fmt.Sprintf("The host is invalid, msg: %s", msg))
 	}
 	if request.Url == "" {

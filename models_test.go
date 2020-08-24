@@ -262,3 +262,7 @@ func TestDelete(t *testing.T) {
 		Log.Error(err)
 	}
 }
+
+func TestMoveResourcesToAssets(t *testing.T) {
+	MoveResourcesToAssets()
+}

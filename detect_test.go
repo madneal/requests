@@ -41,8 +41,9 @@ func TestInitialYamlPlugins(t *testing.T) {
 
 func TestCheckVulns(t *testing.T) {
 	r := Request{
+		Url:      "http://www.test.com",
 		Method:   GET_METHOD,
-		Postdata: "password 123456",
+		Postdata: "password 1234",
 	}
 	CheckVulns(&r)
 }

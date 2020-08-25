@@ -43,7 +43,7 @@ func TestCheckVulns(t *testing.T) {
 	r := Request{
 		Url:      "http://www.test.com",
 		Method:   GET_METHOD,
-		Postdata: "password 1234",
+		Postdata: "password 123456",
 	}
 	CheckVulns(&r)
 }

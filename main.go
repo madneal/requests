@@ -25,7 +25,6 @@ func main() {
 		Log.Info("Please speficy the option")
 	}
 	cmd := os.Args[1]
-	Log.Info(cmd)
 	if cmd == "kafka" {
 		if CONFIG.Kafka.Topic == "" {
 			Log.Info("Please set the topic")

@@ -41,7 +41,6 @@ func (p ExParser) Parse(definition InterpretableDefinition) (cel.Program, error)
 	if expr == "" {
 		return nil, ErrNoExpr
 	}
-	Log.Info(expr)
 	env, err := cel.NewEnv(defaultDeclarations())
 	if err != nil {
 		Log.Error(err)

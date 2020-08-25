@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/checker/decls"
 	"strings"
@@ -102,7 +101,7 @@ func evalChecks(args map[string]interface{}, ps []cel.Program) (bool, error) {
 		//	return false, nil
 		//}
 		if v, ok := res.Value().(bool); !ok || !v {
-			return false, fmt.Errorf("CEL: request aborted by %+v", eval)
+			return false, errors.New("Expression execute failed")
 		}
 	}
 	return true, nil

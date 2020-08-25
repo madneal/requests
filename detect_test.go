@@ -32,7 +32,7 @@ func TestInitialYamlPlugins(t *testing.T) {
 	plugins := InitialYamlPlugins()
 	r := Request{
 		Method:   GET_METHOD,
-		Postdata: "password 123456",
+		Postdata: "password ",
 	}
 	result, err := plugins[0].checkExpression(&(plugins[0].Expression), &r)
 	fmt.Println(result)
@@ -43,7 +43,7 @@ func TestCheckVulns(t *testing.T) {
 	r := Request{
 		Url:      "http://www.test.com",
 		Method:   GET_METHOD,
-		Postdata: "password 123456",
+		Postdata: "password ewrppsdfsdfkasdfkl",
 	}
 	CheckVulns(&r)
 }

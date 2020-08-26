@@ -230,6 +230,7 @@ func PostFileHandler(w http.ResponseWriter, r *http.Request) {
 		assets = append(assets, Asset{
 			Host:        record[0],
 			Port:        port,
+			Env:         PRD_ENV,
 			CreatedTime: time.Now(),
 			UpdatedTime: time.Now(),
 		})

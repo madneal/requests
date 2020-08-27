@@ -45,6 +45,7 @@ func CheckExpression(express *string, r *Request) (bool, string) {
 	result, err := Check(def, r)
 	if err != nil {
 		Log.Error(err)
+		return false, "check failed"
 	}
 	return result, r.Postdata
 }

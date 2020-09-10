@@ -181,6 +181,7 @@ func BatchUpdateIp() {
 	for _, host := range *hosts {
 		ip := GetIpStr(host)
 		if !CheckIpStrValid(ip) {
+			fmt.Sprintf("Host: %s with ip(%s) is invalid", host, ip)
 			Delete(host)
 			continue
 		}
@@ -189,6 +190,7 @@ func BatchUpdateIp() {
 			Log.Error(err)
 		}
 	}
+	fmt.Println("Batch update ip finished!")
 }
 
 func CheckIpStrValid(ipStr string) bool {

@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v7"
 	"github.com/segmentio/kafka-go"
-	"net/url"
 	"os"
 	"reflect"
 	"regexp"
@@ -272,6 +271,9 @@ func InsertAsset(request Request) {
 	asset := CreateAsset(request.Host, request.Port)
 	if CONFIG.Run.Env == QA_ENV {
 		asset.Ip = GetIpStr(asset.Host)
+		if !MatchIp(asset.Ip) {
+			return
+		}
 	}
 	if asset == nil {
 		return
@@ -308,14 +310,4 @@ func CreateAsset(host string, port int) *Asset {
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
-}
-
-// ObtainQueryKeys is utilized to obtain query keys
-func ObtainQueryKeys(u *url.URL) string {
-	q := u.Query()
-	var result string
-	for k := range q {
-		result += k + ","
-	}
-	return result
 }

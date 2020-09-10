@@ -8,7 +8,7 @@ import (
 func TestMatchIp(t *testing.T) {
 	ip4 := ""
 	assert.Equal(t, false, MatchIp(ip4), "the ip empty should not match")
-	ip5 := "61.160.224.33"
+	ip5 := "1.192.158.172"
 	assert.Equal(t, false, MatchIp(ip5), "the ip should not match")
 }
 

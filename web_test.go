@@ -5,49 +5,11 @@ import (
 	"testing"
 )
 
-func TestDoGet(t *testing.T) {
-	request := Request{
-		Url:       "https://www.baidu.com",
-		Headers:   nil,
-		Method:    GET_METHOD,
-		Host:      "www.baidu.com",
-		AgentId:   "test",
-		Timestamp: 0,
-		Postdata:  "",
-	}
-	res := DoGet(request, "1.1.1.1")
-	assert.Equal(t, 200, res.StatusCode(), "the status code should be 200")
-}
-
-func TestDoPost(t *testing.T) {
-	request := Request{
-		Url: "http://111.231.70.62:8000/admin/tokens/new/",
-		Headers: map[string]string{
-			"Cookie":       "MacaronSession=a3cf053cd0b2d457; user=admin",
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		Method:    POST_METHOD,
-		Host:      "111.231.70.62:8000",
-		AgentId:   "TEST",
-		Timestamp: 0,
-		Postdata:  "_csrf=&tokens=1341234&desc=pinga2345234545234523452345n&type=github",
-	}
-	res := DoPost(request)
-	Log.Info(string(res.Body()))
-	assert.Equal(t, 302, res.StatusCode(), "the status code should be 302")
-}
-
 func TestMatchIp(t *testing.T) {
-	falseIp := "192.168.21.1"
-	assert.Equal(t, false, MatchIp(falseIp), "the ip should not match")
-	ip1 := "113.98.55.193"
-	ip2 := "113.98.240.35"
-	ip3 := "183.62.75.65"
-	assert.Equal(t, false, MatchIp(ip1), "the ip should not match")
-	assert.Equal(t, false, MatchIp(ip2), "the ip should not match")
-	assert.Equal(t, false, MatchIp(ip3), "the ip should not match")
 	ip4 := ""
 	assert.Equal(t, false, MatchIp(ip4), "the ip empty should not match")
+	ip5 := "61.160.224.33"
+	assert.Equal(t, false, MatchIp(ip5), "the ip should not match")
 }
 
 //func TestMatchUrl(t *testing.T) {
@@ -84,46 +46,6 @@ func TestCreateResourceByRequest(t *testing.T) {
 	assert.Equal(t, "www.baidu.com/abc/def", resource.Url, "the url should be the same")
 	assert.Equal(t, "www.baidu.com/abc", resource.Firstpath, "the fisrtpath should be the same")
 	assert.Equal(t, GET_METHOD, resource.Method, "the method should be the same")
-}
-
-func TestIsValidReferer(t *testing.T) {
-	request := Request{
-		Url: "https://www.baidu.com/abc",
-		Headers: map[string]string{
-			"Referer": "https://www.baidu.com/abc",
-		},
-		Method:    GET_METHOD,
-		Host:      "www.baidu.com",
-		AgentId:   "test",
-		Timestamp: 0,
-		Postdata:  "",
-	}
-	result, _ := IsValidReferer(request)
-	assert.Equal(t, true, result, "it should be valid Referer")
-	request1 := Request{
-		Url: "https://www.baidu.com/abc",
-		Headers: map[string]string{
-			"Referer": "https://www.baidu.com/",
-		},
-		Method:    GET_METHOD,
-		Host:      "www.baidu.com",
-		AgentId:   "test",
-		Timestamp: 0,
-		Postdata:  "",
-	}
-	result1, _ := IsValidReferer(request1)
-	assert.Equal(t, false, result1, "it should not be valid Referer")
-	request2 := Request{
-		Url:       "https://www.baidu.com/abc",
-		Headers:   nil,
-		Method:    GET_METHOD,
-		Host:      "www.baidu.com",
-		AgentId:   "test",
-		Timestamp: 0,
-		Postdata:  "",
-	}
-	result2, _ := IsValidReferer(request2)
-	assert.Equal(t, false, result2, "it should not be valid Referer")
 }
 
 func TestGetIpFromHost(t *testing.T) {

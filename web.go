@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/go-resty/resty/v2"
 	"net"
 	"net/url"
 	"regexp"
@@ -27,56 +26,6 @@ func ValidateUrl(url string) bool {
 		Log.Error(err)
 	}
 	return !matched
-}
-
-func DoGet(request Request, ip string) *resty.Response {
-	client := resty.New()
-	client.SetProxy(CONFIG.Network.Proxy)
-	res := client.R()
-	res.SetHeaders(request.Headers)
-	response, err := res.Get(request.Url)
-	if err != nil {
-		Log.Error(err)
-		return nil
-	}
-	Log.Infof("Request to %s: %d\n", request.Url, response.StatusCode())
-	return response
-}
-
-func DoPost(request Request) *resty.Response {
-	client := resty.New()
-
-	res, err := client.R().SetHeaders(request.Headers).SetBody(request.Postdata).Post(request.Url)
-	if err != nil {
-		Log.Error(err)
-	}
-	return res
-}
-
-// judge if referer valid, the host + firstpath of referer and url is same
-// return isValid referer and schema
-func IsValidReferer(request Request) (bool, string) {
-	for k, v := range request.Headers {
-		if k == REFERER {
-			if IsCommonUrl(request.Url, v) == true {
-				scheme, err := GetScheme(v)
-				if err != nil {
-					Log.Error(err)
-					return false, ""
-				}
-				return true, scheme
-			}
-		}
-	}
-	return false, ""
-}
-
-func GetScheme(urlStr string) (string, error) {
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		return "", err
-	}
-	return u.Scheme, err
 }
 
 func CreateResourceByRequest(request Request, ip string) *Resource {

@@ -237,7 +237,6 @@ func IsTokenValid(token string) bool {
 	dateStr := time.Now().Format("2006-01-02")
 	str := dateStr + "-zeekpab"
 	md5Sum := md5.Sum([]byte(str))
-	fmt.Printf("%x", md5Sum)
 	return fmt.Sprintf("%x", md5Sum) == token
 }
 

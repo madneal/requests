@@ -304,6 +304,7 @@ func CreateAsset(host string, port int) *Asset {
 		Host:        host,
 		Ip:          "",
 		Port:        port,
+		Env:         CONFIG.Run.Env,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}

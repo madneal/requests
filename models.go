@@ -305,58 +305,6 @@ func QueryIp(host string) string {
 	return ip
 }
 
-// GetFreshParams is utilized to update the params according to the new asset
-func GetFreshParams(oldParams, newParams string) string {
-	f := func(c rune) bool {
-		return c == ','
-	}
-	oldParamsArr := strings.FieldsFunc(oldParams, f)
-	newParamsArr := strings.Split(newParams, ",")
-	for _, param := range newParamsArr {
-		if strings.Contains(oldParams, param) {
-			continue
-		} else {
-			oldParamsArr = append(oldParamsArr, param)
-		}
-	}
-	return strings.Join(oldParamsArr, ",")
-
-}
-
-func DeleteIfExists(resource Resource) error {
-	if ResourceExists(resource.Url, resource.Protocol, resource.Method) {
-		return db.Delete(resource).Error
-	}
-	return nil
-}
-
-func NewResouce(resource Resource) error {
-	if !ResourceExists(resource.Url, resource.Protocol, resource.Method) {
-		return db.Create(&resource).Error
-	} else {
-		if resource.Port != 0 && CheckPortOfResource(resource) {
-			err := UpdatePort(resource)
-			if err != nil {
-				Log.Error(err)
-			}
-		}
-		if CheckIfResourceOutofdate(resource) {
-			ip := resource.Ip
-			updated := resource.UpdatedTime
-			db.First(&resource)
-			resource.Ip = ip
-			resource.UpdatedTime = updated
-			return db.Save(&resource).Error
-		}
-		return nil
-	}
-}
-
-func CheckIfResourceOutofdate(resource Resource) bool {
-	lastUpdated := getLastUpdatedTime(resource)
-	return CheckIfOutofdate(lastUpdated)
-}
-
 func UpdatePort(resource Resource) error {
 	err := db.Model(&resource).Where("url = ?", resource.Url).Update("port", resource.Port).Error
 	return err
@@ -400,12 +348,6 @@ func CheckIfOutofdate(lastUpdated time.Time) bool {
 func ComputeDuration(hours float64, startTime, endTime time.Time) bool {
 	diff := endTime.Sub(startTime).Hours()
 	return math.Abs(diff) > hours
-}
-
-func ResourceExists(url, protocol, method string) bool {
-	var reource Resource
-	return !db.Where("url = ? and protocol = ? and method = ?", url, protocol, method).
-		First(&reource).RecordNotFound()
 }
 
 func QueryAllServices() (*[]Resource, error) {
@@ -452,12 +394,6 @@ func QueryHostAndPort() (*[]Asset, error) {
 	var result []Asset
 	db.LogMode(true)
 	err := db.Debug().Table("assets").Group("host, port").Select("host, port").Scan(&result).Error
-	return &result, err
-}
-
-func QueryAllCreds() (*[]Cred, error) {
-	var result []Cred
-	err := db.Group("url").Find(&result).Error
 	return &result, err
 }
 

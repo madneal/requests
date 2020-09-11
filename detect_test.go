@@ -31,19 +31,19 @@ func TestConvertReqToStr(t *testing.T) {
 func TestInitialYamlPlugins(t *testing.T) {
 	plugins := InitialYamlPlugins()
 	r := Request{
-		Method:   GET_METHOD,
-		Postdata: "password ",
+		Method:   POST_METHOD,
+		Postdata: "password sdb1234",
 	}
-	result, err := plugins[0].checkExpression(&(plugins[0].Expression), &r)
-	fmt.Println(result)
+	result, err := plugins[0].checkExpression(plugins[0].Rule, &r)
+	fmt.Printf("the result is %v\n", result)
 	fmt.Println(err)
 }
 
 func TestCheckVulns(t *testing.T) {
 	r := Request{
 		Url:      "http://www.test.com",
-		Method:   GET_METHOD,
-		Postdata: "password ewrppsdfsdfkasdfkl",
+		Method:   "POST",
+		Postdata: "password a123456789",
 	}
 	CheckVulns(&r)
 }

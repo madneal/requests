@@ -13,9 +13,15 @@ import (
 type Plugin struct {
 	Name            string
 	Type            string
-	Expression      string
+	Rule            *Rule
+	Method          string
 	check           func(*Request) (bool, string)
-	checkExpression func(*string, *Request) (bool, string)
+	checkExpression func(*Rule, *Request) (bool, string)
+}
+
+type Rule struct {
+	Method     string
+	Expression string
 }
 
 type RuleConfig struct {
@@ -37,16 +43,17 @@ func InitialRule(yamlName string) *RuleConfig {
 	return &rule
 }
 
-func CheckExpression(express *string, r *Request) (bool, string) {
+func CheckExpression(rule *Rule, r *Request) (bool, string) {
 	def := make([]InterpretableDefinition, 0)
 	def = append(def, InterpretableDefinition{
-		CheckExpression: *express,
+		CheckExpression: rule.Expression,
 	})
 	result, err := Check(def, r)
 	if err != nil {
 		Log.Error(err)
 		return false, "check failed"
 	}
+	result = result && rule.Method == r.Method
 	return result, r.Postdata
 }
 
@@ -70,11 +77,15 @@ func NewWeakPasswordPlugin() *Plugin {
 
 func NewYamlPlugin(filename string) *Plugin {
 	rule := InitialRule(filename)
+	expressionRule := Rule{
+		Expression: rule.Rule.Expression,
+		Method:     rule.Rule.Method,
+	}
 	return &Plugin{
 		Name:            rule.Name,
 		Type:            "yaml",
-		Expression:      rule.Rule.Expression,
 		checkExpression: CheckExpression,
+		Rule:            &expressionRule,
 	}
 }
 
@@ -100,7 +111,7 @@ func CheckVulns(req *Request) {
 		var isVuln bool
 		var result string
 		if "yaml" == plugin.Type {
-			isVuln, result = plugin.checkExpression(&plugin.Expression, req)
+			isVuln, result = plugin.checkExpression(plugin.Rule, req)
 		} else {
 			isVuln, result = plugin.check(req)
 		}

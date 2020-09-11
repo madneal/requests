@@ -21,36 +21,6 @@ func TestMatchUrl(t *testing.T) {
 	assert.Equal(t, false, len(*(MatchUrl(postUrl1))) == 1, "there shoud not mathch one")
 }
 
-func TestResourceExists(t *testing.T) {
-	resource := Resource{
-		Url:         "www.fff.com",
-		Protocol:    "",
-		Method:      "",
-		Firstpath:   "",
-		Ip:          "2.1.1.1",
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-	assert.Equal(t, true, ResourceExists(resource.Url, resource.Protocol, resource.Method),
-		"The resource should exist")
-}
-
-func TestNewResouce(t *testing.T) {
-	resource := Resource{
-		Url:         "www.fff.com",
-		Protocol:    "",
-		Method:      "",
-		Firstpath:   "",
-		Ip:          "2.1.1.1",
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-	err := NewResouce(resource)
-	if err != nil {
-		Log.Info(err)
-	}
-}
-
 func TestQueryAllServices(t *testing.T) {
 	resources, err := QueryAllServices()
 	if err != nil {
@@ -94,59 +64,6 @@ func TestCheckIfOutofdate(t *testing.T) {
 	lastUpdated1 := time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local)
 	result1 := CheckIfOutofdate(lastUpdated1)
 	assert.Equal(t, true, result1, "The last updated time is larger than 10 days")
-}
-
-func TestCheckIfResourceOutofdate(t *testing.T) {
-	testTime := time.Date(2020, 2, 1, 0, 0, 0, 0, time.Local)
-	testResource := Resource{
-		Url:         "www.test.com",
-		Protocol:    "http",
-		Method:      GET_METHOD,
-		Firstpath:   "aaaa",
-		CreatedTime: testTime,
-		UpdatedTime: testTime,
-	}
-	err := NewResouce(testResource)
-	if err != nil {
-		Log.Error(err)
-	}
-	result := CheckIfResourceOutofdate(testResource)
-	db.Delete(testResource)
-	assert.Equal(t, true, result, "The resource should be out of date")
-
-	testTime1 := time.Date(2020, 3, 25, 0, 0, 0, 0, time.Local)
-	resource := Resource{
-		Url:         "www.test.com.aaa",
-		Protocol:    "http",
-		Method:      GET_METHOD,
-		Firstpath:   "SS",
-		CreatedTime: testTime1,
-		UpdatedTime: testTime1,
-	}
-	err1 := NewResouce(resource)
-	if err1 != nil {
-		Log.Error(err)
-	}
-	result1 := CheckIfResourceOutofdate(resource)
-	db.Delete(resource)
-	assert.Equal(t, false, result1, "The resource should not be out of date")
-}
-
-func TestDeleteIfExists(t *testing.T) {
-	resource := Resource{
-		Url:         "www.fff.com",
-		Protocol:    "",
-		Method:      "",
-		Firstpath:   "",
-		Ip:          "2.1.1.1",
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
-	err := DeleteIfExists(resource)
-	if err != nil {
-		Log.Error(err)
-	}
-	db.First(&resource)
 }
 
 func TestGetIps(t *testing.T) {

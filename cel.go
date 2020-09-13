@@ -101,7 +101,7 @@ func evalChecks(args map[string]interface{}, ps []cel.Program) (bool, error) {
 		//	return false, nil
 		//}
 		if v, ok := res.Value().(bool); !ok || !v {
-			return false, errors.New("Expression execute failed")
+			return false, errors.New("expression execute failed")
 		}
 	}
 	return true, nil

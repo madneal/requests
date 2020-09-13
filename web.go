@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"time"
 )
 
 type Request struct {
@@ -26,25 +25,6 @@ func ValidateUrl(url string) bool {
 		Log.Error(err)
 	}
 	return !matched
-}
-
-func CreateResourceByRequest(request Request, ip string) *Resource {
-	u, err := url.Parse(request.Url)
-	if err != nil {
-		Log.Info(err)
-		return nil
-	}
-	path := "/" + strings.Split(u.Path, "/")[1]
-	return &Resource{
-		Url:         u.Host + u.Path,
-		Protocol:    u.Scheme,
-		Method:      request.Method,
-		Firstpath:   u.Host + path,
-		Ip:          ip,
-		Port:        request.Port,
-		CreatedTime: time.Now(),
-		UpdatedTime: time.Now(),
-	}
 }
 
 func GetIp(host string) []net.IP {

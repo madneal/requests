@@ -51,6 +51,17 @@ type Host struct {
 	UpdatedAt time.Time `gorm:"updated"`
 }
 
+type Url struct {
+	Id        int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
+	Host      string    `gorm:"type:varchar(100);column:host"`
+	Path      string    `gorm:"type:varchar(150);column:path"`
+	Method    string    `gorm:"type:varchar(10);column:method"`
+	Body      string    `gorm:"type:varchar(280);column:body"`
+	Port      int       `gorm:"type:int;column:port"`
+	CreatedAt time.Time `gorm:"created"`
+	UpdatedAt time.Time `gorm:"updated"`
+}
+
 var db *gorm.DB
 
 func init() {

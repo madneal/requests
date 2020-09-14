@@ -12,7 +12,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"io"
 	"math"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -28,30 +27,9 @@ type Asset struct {
 	UpdatedTime time.Time `gorm:"updated"`
 }
 
-type Resource struct {
-	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url         string    `gorm:"type:varchar(1000);column:url"`
-	Protocol    string    `gorm:"type:varchar(10);column:protocol"`
-	Method      string    `gorm:"type:varchar(10);column:method"`
-	Firstpath   string    `gorm:"type:varchar(100);column:firstpath"`
-	Ip          string    `gorm:"type:varchar(20);column:ip"`
-	Port        int       `gorm:"type:int;column:port"`
-	CreatedTime time.Time `gorm:"created"`
-	UpdatedTime time.Time `gorm:"updated"`
-}
-
 type BlackDomain struct {
 	Id   int64  `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
 	Host string `gorm:"type:varchar(100);column:host"`
-}
-
-type Cred struct {
-	Id          int64     `gorm:"type:bigint(20) auto_increment;column:id;primary_key"`
-	Url         string    `gorm:"type:varchar(1000);column:url"`
-	Password    string    `gorm:"type:varchar(100);column:password"`
-	Postdata    string    `gorm:"type:varchar(1000);column:postdata"`
-	CreatedTime time.Time `gorm:"created"`
-	UpdatedTime time.Time `gorm:"updated"`
 }
 
 type Vuln struct {
@@ -100,11 +78,6 @@ func init() {
 		db.CreateTable(&Asset{})
 	} else {
 		db.AutoMigrate(&Asset{})
-	}
-	if !db.HasTable(&Resource{}) {
-		db.CreateTable(&Resource{})
-	} else {
-		db.AutoMigrate(&Resource{})
 	}
 	if !db.HasTable(&BlackDomain{}) {
 		db.CreateTable(&BlackDomain{})
@@ -284,30 +257,6 @@ func QueryIp(host string) string {
 	return ip
 }
 
-func UpdatePort(resource Resource) error {
-	err := db.Model(&resource).Where("url = ?", resource.Url).Update("port", resource.Port).Error
-	return err
-}
-
-// check if port of resource is 0
-func CheckPortOfResource(resource Resource) bool {
-	return !db.Where("url = ? and port = ?", resource.Url, 0).
-		First(&resource).RecordNotFound()
-}
-
-func CheckIfAssetOutofDate(asset Asset) bool {
-	lastUpdated := getLastUpdatedTimeOfAsset(asset)
-	return CheckIfOutofdate(lastUpdated)
-}
-
-func getLastUpdatedTime(resource Resource) time.Time {
-	err := db.First(&resource).Error
-	if err != nil {
-		Log.Error(err)
-	}
-	return resource.UpdatedTime
-}
-
 func getLastUpdatedTimeOfAsset(asset Asset) time.Time {
 	err := db.First(&asset).Error
 	if err != nil {
@@ -327,12 +276,6 @@ func CheckIfOutofdate(lastUpdated time.Time) bool {
 func ComputeDuration(hours float64, startTime, endTime time.Time) bool {
 	diff := endTime.Sub(startTime).Hours()
 	return math.Abs(diff) > hours
-}
-
-func QueryAllServices() (*[]Resource, error) {
-	resources := make([]Resource, 0)
-	err := db.Find(&resources).Error
-	return &resources, err
 }
 
 func QueryAllAssets(host string) (*[]Asset, error) {
@@ -380,26 +323,6 @@ func QueryAllVulns() (*[]Vuln, error) {
 	var result []Vuln
 	err := db.Find(&result).Error
 	return &result, err
-}
-
-func MatchUrl(postUrl string) *[]Resource {
-	resources := make([]Resource, 0)
-	uPost, err := url.Parse(postUrl)
-	if err != nil {
-		Log.Error(err)
-		return &resources
-	}
-	if uPost.Path == "" {
-		return &resources
-	}
-	pathPost := "/" + strings.Split(uPost.Path, "/")[1]
-	firstUrl := uPost.Host + pathPost
-	err = db.Where("firstpath = ?", firstUrl).Find(&resources).Error
-	if err != nil {
-		Log.Error(err)
-		return nil
-	}
-	return &resources
 }
 
 // Batch insert asset, only include host and port

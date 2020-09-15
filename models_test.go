@@ -13,22 +13,6 @@ func TestExists(t *testing.T) {
 	Log.Info(exists)
 }
 
-func TestMatchUrl(t *testing.T) {
-	postUrl := "http://www.baidu.com/abc"
-	Log.Info(*MatchUrl(postUrl))
-	assert.Equal(t, true, len(*MatchUrl(postUrl)) == 1, "there shoud mathch one")
-	postUrl1 := "http://www.baidu.com"
-	assert.Equal(t, false, len(*(MatchUrl(postUrl1))) == 1, "there shoud not mathch one")
-}
-
-func TestQueryAllServices(t *testing.T) {
-	resources, err := QueryAllServices()
-	if err != nil {
-		Log.Info(err)
-	}
-	Log.Info(len(*resources))
-}
-
 func TestQueryAllAssets(t *testing.T) {
 	assets, err := QueryAllAssets("www")
 	if err != nil {
@@ -146,22 +130,6 @@ func TestIsPortZero(t *testing.T) {
 	result := IsPortZero("7c031d9efda97b77a7d63dd0315e36fa")
 	assert.Equal(t, true, result, "the result should be true")
 	db.Model(&asset).Where("md5 = ?", "7c031d9efda97b77a7d63dd0315e36fa").Update("port", 1234)
-}
-
-func TestCheckPortOfResource(t *testing.T) {
-	resource := Resource{
-		Url: "www.baidu.com",
-	}
-	result := CheckPortOfResource(resource)
-	assert.Equal(t, true, result, "the result should be true")
-}
-
-func TestUpdatePort(t *testing.T) {
-	resource := Resource{
-		Url:  "www.baidu.com",
-		Port: 1234,
-	}
-	UpdatePort(resource)
 }
 
 func TestQueryAllResults(t *testing.T) {

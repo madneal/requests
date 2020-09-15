@@ -22,10 +22,10 @@ var rdb *redis.Client
 
 func ReadKafka() {
 	if CONFIG.Run.MultiThread {
-		Log.Info("Read kafka as multi thread")
+		fmt.Println("Read kafka as multi thread")
 		MultiThreadKafka()
 	} else {
-		Log.Info("Read kafka as single thread")
+		fmt.Println("Read kafka as single thread")
 		SingleThreadKafka()
 	}
 }

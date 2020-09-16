@@ -86,7 +86,10 @@ func MultiThreadKafka() {
 				defer reader.Close()
 
 				// seek to the last committed offset for this partition.
-				reader.SetOffset(offset)
+				err = reader.SetOffset(offset)
+				if err != nil {
+					Log.Error(err)
+				}
 				for {
 					msg, err := reader.ReadMessage(ctx)
 					switch err {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"net"
-	"net/url"
 	"regexp"
 	"strings"
 )
@@ -109,33 +108,4 @@ func GetIpFromHost(host string) *[]string {
 		}
 	}
 	return &ips
-}
-
-// judge if urls match, host + only one path
-func IsCommonUrl(url1, url2 string) bool {
-	if strings.Contains(url1, "/") == false || strings.Contains(url2, "/") == false {
-		return false
-	}
-	u1, err := url.Parse(url1)
-	if err != nil {
-		Log.Error(err)
-		return false
-	}
-	u2, err := url.Parse(url2)
-	if err != nil {
-		Log.Error(err)
-		return false
-	}
-	if u1.Path == "" || u2.Path == "" {
-		return false
-	}
-	var pathGet string
-	var pathPost string
-	if len(strings.Split(u1.Path, "/")) > 1 && len(strings.Split(u2.Path, "/")) > 1 {
-		pathGet = "/" + strings.Split(u1.Path, "/")[1]
-		pathPost = "/" + strings.Split(u2.Path, "/")[1]
-	} else {
-		return false
-	}
-	return (u1.Host + pathGet) == (u2.Host + pathPost)
 }

@@ -171,7 +171,7 @@ func NewVuln(vuln *Vuln) error {
 }
 
 func NewAsset(asset *Asset) error {
-	if !ExistsByHostAndPort(asset.Host, asset.Port) {
+	if !Exists(asset.Host, "host") {
 		return db.Create(&asset).Error
 	} else {
 		return nil

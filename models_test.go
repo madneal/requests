@@ -8,9 +8,9 @@ import (
 )
 
 func TestExists(t *testing.T) {
-	url := "7c031d9efda97b77a7d6"
-	exists := Exists(url, "md5")
-	Log.Info(exists)
+	host := "www.baidu.com"
+	exists1 := Exists(host, "host")
+	assert.Equal(t, true, exists1, "the host should exists")
 }
 
 func TestQueryAllAssets(t *testing.T) {
